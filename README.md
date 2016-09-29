@@ -1,38 +1,30 @@
-# MEA2N Kickstarter
+# MEEN Kickstarter
+
+[WARNING: Kickstarter Incomplete (working on it now...)]
 
 ### Some Quick Credit
 
 After a summer of working with [Radify](http://radify.io), a (hopefully) stable base
-for mea2n applications was developed mostly by [Nate](https://github.com/nateabele) and
-myself. Thank's to Radify's love for open-source, another kickstarter can be
-launched into the community!
+for [mea2n applications](https://github.com/amilner42/mea2n-kickstarter) was
+developed mostly by [Nate](https://github.com/nateabele) and
+myself.
+
+I then chopped off the a2, replacing it with e (Elm). Now we have meen stack.
 
 ### General Idea
 
-The focus of this kickstarter is to give you a well-documented *simple*
-foundation for mea2n development including:
-  - An intuitive file structure (frontend in `frontend`, backend in `backend`
-    etc...)
-  - A full typescript project with all typings *already* set up on both the
-    frontend and the backend. Some really sweet stuff here with module
-    augmentation and namespaces resolving in a *simple* developer experience.
-  - The frontend is generated with the angular-cli, so you can cruise through
-    your development automatically generating all your `services`, `components`
-    etc...
-  - Authentication done out of the box, register at `/register` and login at
-    `/login`, duh!
-  - Custom services added to the frontend, including the `globalStateService`
-    for a *simple* way of monitoring your apps globalState in *one place*, an
-    `authService` for logging-in/registering/logging-out, a `base-service` that
-    all services extends that removes duplicate code, and some more...
-  - Some routing already set up with `canActivate` guards including a
-    welcome-page which already handles sign-up / log-in.
-  - And more...
+Ahh where to begin...I realized there were fundamental problems with Angular,
+with React, with all these Frontend frameworks. I realized my frame of mind was off,
+I was building apps that were "easy" to develop on but they were very "complex".
+I needed to go for "simple", and the "easy" would come over time. This shift of
+mind was inspired by this incredible [talk](https://www.youtube.com/watch?v=rI8tNMsozo0).
+I highly recommend watching that...now. Then I discovered Elm, both faster than
+Angular 2 and React, 100% Type Inference, 0 runtime exceptions, forwards/backwards debugging,
+no null-undefined etc...heaven.
 
-### Getting Started
-
-If you're new to this kick-starter, you'll probably wanna go read
-[getting-started](/docs/getting-started.md).
+This kickstarter attempts to offer similar benefits to my last
+[mea2n kickstarter](https://github.com/amilner42/mea2n-kickstarter), but uses
+Elm for better **simple** software engineering.
 
 ### Local Dependencies
 
@@ -61,8 +53,10 @@ structure.
 
 ##### Frontend
 
-The `frontend` is generated with the angular-cli so it already follows all the
-style conventions...that was easy.
+I'm new to Elm, will document my style guide as I see the communities and
+get some experience with the code.
+
+TODO Styles...
 
 ##### Backend
 
