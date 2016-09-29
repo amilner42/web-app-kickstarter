@@ -1,0 +1,30 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "author": "Arie Milner",
+  "description": "Basic Elm Kickstarter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amilner42/mee"
+  },
+  "keywords": [
+    "elm"
+  ],
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/amilner42/meen-kickstarter/issues"
+  },
+  "scripts": {
+    "dev": "gulp",
+    "build": "gulp build"
+  },
+  "homepage": "https://github.com/amilner42/meen-kickstarter",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-connect": "^4.0.0",
+    "gulp-elm": "^0.4.4",
+    "gulp-plumber": "^1.1.0",
+    "gulp-util": "^3.0.7"
+  }
+}

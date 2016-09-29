@@ -26,7 +26,7 @@ echo "========================================================"
 echo "STARTING BACKGROUND TASK: Watch Frontend"
 echo "========================================================"
 cd frontend;
-"$FRONTEND_NODE_MODULES_BIN"/ng serve &
+"$FRONTEND_NODE_MODULES_BIN"/gulp &
 pid[0]=$!;
 cd -;
 

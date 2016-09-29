@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "========================================================"
-echo "STARTING TASK: Install frontend dependencies"
+echo "STARTING TASK: Install frontend npm dependencies"
 echo "========================================================"
 cd frontend;
 npm install;
@@ -11,10 +11,10 @@ echo "COMPLETE TASK"
 echo "========================================================"
 
 echo "========================================================"
-echo "STARTING TASK: Install frontend typings"
+echo "STARTING TASK: Install frontend elm dependencies"
 echo "========================================================"
 cd frontend;
-"$FRONTEND_NODE_MODULES_BIN"/typings install;
+elm package install;
 cd -;
 echo "========================================================"
 echo "COMPLETE TASK"
