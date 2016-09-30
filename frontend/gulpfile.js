@@ -7,7 +7,7 @@ var connect = require('gulp-connect');
 // File paths
 var paths = {
   dest: 'dist',
-  elm: 'src/*.elm',
+  elm: 'src/**/*.elm',
   static: 'src/*.{html,css}'
 };
 

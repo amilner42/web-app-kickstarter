@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Chuck Norris Quoter</title>
+        <title>Meen Kickstarter</title>
         <script src="Main.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" href="styles.css">
@@ -12,14 +12,20 @@
     </body>
 
     <script>
-        var storedState = localStorage.getItem('model');
-        var startingState = storedState ? JSON.parse(storedState) : null;
-        var elmApp = Elm.Main.fullscreen(startingState);
-        elmApp.ports.setStorage.subscribe(function(state) {
-            localStorage.setItem('model', JSON.stringify(state));
-        });
-        elmApp.ports.removeStorage.subscribe(function() {
-            localStorage.removeItem('model');
-        });
+      var modelKey = "model";
+      var storedModel = localStorage.getItem(modelKey);
+      var startingModel = storedModel ? JSON.parse(storedModel) : null;
+      var elmApp = Elm.Main.fullscreen(startingModel);
+
+      // Saves the model to local storage.
+      elmApp.ports.saveModelToLocalStorage.subscribe(function(model) {
+        localStorage.setItem(storageKey, JSON.stringify(model));
+      });
+
+      // Load the model from localStorage and send message to subscription over
+      // port.
+      elmApp.ports.loadModelFromLocalStorage.subscribe(function() {
+        app.ports.onLoadModelFromLocalStorage.send(localStorage.getItem(modelKey))
+      });
     </script>
 </html>
