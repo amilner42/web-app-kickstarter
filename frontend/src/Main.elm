@@ -7,6 +7,7 @@ import Json.Encode as Encode
 import Task
 
 import Api
+import DefaultServices.LocalStorage as LocalStorage
 import Ports
 import Types
 import Models.Model as Model
@@ -47,7 +48,7 @@ update msg model  =
       let
         newModel = { model | user = Just user }
       in
-        (newModel, saveModelToLocalStorage <| newModel)
+        (newModel, LocalStorage.saveModel newModel)
     Types.GetUserFailure err ->
       (model, Cmd.none)
 
@@ -56,7 +57,7 @@ update msg model  =
 subscriptions: Types.Model -> Sub Types.Msg
 subscriptions model =
   Sub.batch [
-    Ports.onLoadModelFromLocalStorage onLoadModelFromLocalStorage
+    Ports.onLoadModelFromLocalStorage LocalStorage.onLoadModel
   ]
 
 
@@ -72,22 +73,6 @@ view model =
       [ button [ onClick Types.NoOp ] [],
         div [] [ Html.text <| toString <| loggedIn ]
       ]
-
-
--- Saves the model to localStorage using the port.
-saveModelToLocalStorage: Types.Model -> Cmd Types.Msg
-saveModelToLocalStorage model =
-  Ports.saveModelToLocalStorage <| Model.encoder <| model
-
-
--- A subscription to loading the model from local storage.
-onLoadModelFromLocalStorage: String -> Types.Msg
-onLoadModelFromLocalStorage modelAsStringFromStorage =
-  case Model.fromJsonString modelAsStringFromStorage of
-    Ok model ->
-      Types.ModelLoadedFromLocalStorage model
-    Err error ->
-      Types.NoOp -- TODO deal with this
 
 
 -- Gets the user from the API
