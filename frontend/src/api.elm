@@ -1,4 +1,4 @@
-module Api exposing (api)
+module Api exposing (getAccount, postLogin, postRegister)
 
 import Http
 
@@ -9,7 +9,7 @@ import Types
 
 -- TODO come up with a nice way to change this for production. Probably
 -- environment variables is the way to go.
-apiBaseUrl = "localhost:3000/api/"
+apiBaseUrl = "http://localhost:3000/api/"
 
 -- Gets the users account, or an error if unauthenticated.
 getAccount: Types.ApiRoute Types.User
@@ -24,15 +24,3 @@ postLogin user =
 postRegister: Types.User -> Types.ApiRoute Types.User
 postRegister user =
   HttpService.post (apiBaseUrl ++ "register") User.decoder (User.toJsonString user)
-
--- Exposed
--- The API is all accessed through this object.
-api = {
-  get = {
-    account = getAccount
-  },
-  post = {
-    login = postLogin,
-    register = postRegister
-  }
-  }

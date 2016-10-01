@@ -19,7 +19,7 @@
 
       // Saves the model to local storage.
       elmApp.ports.saveModelToLocalStorage.subscribe(function(model) {
-        localStorage.setItem(storageKey, JSON.stringify(model));
+        localStorage.setItem(modelKey, JSON.stringify(model));
       });
 
       // Load the model from localStorage and send message to subscription over

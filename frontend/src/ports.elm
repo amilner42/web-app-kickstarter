@@ -1,10 +1,11 @@
 port module Ports exposing(..)
 
 import Types
+import Json.Encode as Encode
 
 
 -- Saves the model to localstorage.
-port saveModelToLocalStorage : String -> Cmd msg
+port saveModelToLocalStorage : Encode.Value -> Cmd msg
 
 -- Loads the model from local storage.
 port loadModelFromLocalStorage : () -> Cmd msg

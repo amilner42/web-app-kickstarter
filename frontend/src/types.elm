@@ -5,8 +5,11 @@ import Http
 {- Fundamental To Elm Architecture
    The app `Msg`.
 -}
-type Msg = DoNothing
-  | ModelLoaded Model
+type Msg = NoOp
+  | ModelLoadedFromLocalStorage Model
+  | GetUser
+  | GetUserSuccess User
+  | GetUserFailure Http.Error
 
 {- Fundamental To Elm Architecture
    The app `Model`.
