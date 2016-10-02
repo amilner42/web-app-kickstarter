@@ -1,8 +1,9 @@
 module DefaultServices.LocalStorage exposing (saveModel, onLoadModel)
 
-import Types
 import Ports
-import Models.Model as Model
+import Components.Model exposing (Model, encoder, fromJsonString)
+import Components.Messages exposing (Msg (..))
+
 
 {-
   This module will not be needed soon, they are working on a cool localStorage
@@ -45,16 +46,16 @@ import Models.Model as Model
 
 
 -- Saves the model to localStorage using the port.
-saveModel: Types.Model -> Cmd Types.Msg
+saveModel: Model -> Cmd Msg
 saveModel model =
-  Ports.saveModelToLocalStorage <| Model.encoder <| model
+  Ports.saveModelToLocalStorage <| encoder <| model
 
 
 -- Will be used for the port subscription.
-onLoadModel: String -> Types.Msg
+onLoadModel: String -> Msg
 onLoadModel modelAsStringFromStorage =
-  case Model.fromJsonString modelAsStringFromStorage of
+  case fromJsonString modelAsStringFromStorage of
     Ok model ->
-      Types.ModelLoadedFromLocalStorage model
+      ModelLoadedFromLocalStorage model
     Err error ->
-      Types.NoOp -- TODO deal with this
+      NoOp -- TODO deal with this
