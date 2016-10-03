@@ -25,9 +25,8 @@ decoder =
 encoder: User -> Encode.Value
 encoder user =
   Encode.object
-    [
-      ("email", Encode.string user.email),
-      ("password", justValueOrNull Encode.string user.password)
+    [ ("email", Encode.string user.email)
+    , ("password", justValueOrNull Encode.string user.password)
     ]
 
 

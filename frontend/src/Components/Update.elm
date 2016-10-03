@@ -4,6 +4,7 @@ import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
 import DefaultServices.LocalStorage as LocalStorage
 import Api
+import Router
 
 
 {-| Updates the application base component. -}
@@ -12,20 +13,24 @@ update msg model  =
   case msg of
     NoOp ->
       (model, Cmd.none )
-    ModelLoadedFromLocalStorage model ->
+    LoadModelFromLocalStorage ->
+      (model, LocalStorage.loadModel ())
+    OnLoadModelFromLocalStorageSuccess model ->
       (model, Cmd.none)
+    OnLoadModelFromLocalStorageFailure err ->
+      (model, getUser ())
     GetUser ->
       (model, getUser () )
-    GetUserSuccess user ->
+    OnGetUserSuccess user ->
       let
         newModel = { model | user = Just user }
       in
         (newModel, LocalStorage.saveModel newModel)
-    GetUserFailure err ->
-      (model, Cmd.none)
+    OnGetUserFailure err ->
+      (model, LocalStorage.saveModel model)
 
 
 {-| Gets the user from the API. -}
 getUser: () -> Cmd Msg
 getUser () =
-  Api.getAccount GetUserFailure GetUserSuccess
+  Api.getAccount OnGetUserFailure OnGetUserSuccess

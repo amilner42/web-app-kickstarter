@@ -9,7 +9,9 @@ import Components.Model exposing (Model)
 {-| All the messages for the base component. -}
 type Msg
   = NoOp
-  | ModelLoadedFromLocalStorage Model
+  | LoadModelFromLocalStorage
+  | OnLoadModelFromLocalStorageSuccess Model
+  | OnLoadModelFromLocalStorageFailure String
   | GetUser
-  | GetUserSuccess User
-  | GetUserFailure Http.Error
+  | OnGetUserSuccess User
+  | OnGetUserFailure Http.Error

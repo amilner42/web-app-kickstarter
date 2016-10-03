@@ -13,9 +13,8 @@
 
     <script>
       var modelKey = "model";
-      var storedModel = localStorage.getItem(modelKey);
-      var startingModel = storedModel ? JSON.parse(storedModel) : null;
-      var elmApp = Elm.Main.fullscreen(startingModel);
+
+      var elmApp = Elm.Main.fullscreen();
 
       // Saves the model to local storage.
       elmApp.ports.saveModelToLocalStorage.subscribe(function(model) {
@@ -25,7 +24,9 @@
       // Load the model from localStorage and send message to subscription over
       // port.
       elmApp.ports.loadModelFromLocalStorage.subscribe(function() {
-        app.ports.onLoadModelFromLocalStorage.send(localStorage.getItem(modelKey))
+        // Send the item or a blank string if nothing there...elm doesn't like when
+        // you send null through the port because we say it expects a string.
+        elmApp.ports.onLoadModelFromLocalStorage.send(localStorage.getItem(modelKey) || "")
       });
     </script>
 </html>

@@ -32,13 +32,3 @@ hashParser location =
 parser : Navigation.Parser (Result String Route)
 parser =
   Navigation.makeParser hashParser
-
-
-{-| Gets the route from the result, defaulting to the HomeComponent route -}
-routeFromResult : Result String Route -> Route
-routeFromResult result =
-  case result of
-    Ok route ->
-      route
-    Err string ->
-      HomeComponent -- Go to home component as default
