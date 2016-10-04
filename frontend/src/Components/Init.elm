@@ -5,7 +5,7 @@ import DefaultServices.Router as Router
 import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
 import Components.Update exposing (update)
-import Components.Models.Route as Route
+import Models.Route as Route
 
 
 {-| Initializes the application -}

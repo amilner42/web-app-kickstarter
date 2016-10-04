@@ -1,4 +1,4 @@
-module Components.Models.User exposing (User, decoder, encoder, toJsonString, fromJsonString)
+module Models.User exposing (User, decoder, encoder, toJsonString, fromJsonString)
 
 import Json.Decode as Decode exposing ((:=))
 import Json.Encode as Encode

@@ -1,4 +1,4 @@
-module Components.Welcome.Models.ShowView exposing (ShowView, encoder, stringToDecoder)
+module Models.Welcome.ShowView exposing (ShowView, encoder, stringToDecoder)
 
 import Json.Encode as Encode
 import Json.Decode as Decode

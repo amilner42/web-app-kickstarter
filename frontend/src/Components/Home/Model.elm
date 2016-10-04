@@ -3,7 +3,7 @@ module Components.Home.Model exposing (Model, encoder, decoder)
 import Json.Encode as Encode
 import Json.Decode as Decode exposing ((:=))
 
-import Components.Home.Models.ShowView as ShowView
+import Models.Home.ShowView as ShowView
 
 
 {-| The Home Component Model -}

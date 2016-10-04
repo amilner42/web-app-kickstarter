@@ -4,7 +4,7 @@ import Navigation
 
 import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
-import Components.Models.Route as Route
+import Models.Route as Route
 import DefaultServices.LocalStorage as LocalStorage
 import DefaultServices.Router as Router
 import Api

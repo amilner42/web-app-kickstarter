@@ -7,7 +7,7 @@ import Components.Model exposing (Model)
 import Components.Messages exposing (Msg(..))
 import Components.Home.View as HomeView
 import Components.Welcome.View as WelcomeView
-import Components.Models.Route as Route
+import Models.Route as Route
 
 
 {-| The view for the application base component. -}

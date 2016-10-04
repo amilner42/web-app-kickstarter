@@ -5,7 +5,7 @@ import Navigation
 import UrlParser
 
 import Config
-import Components.Models.Route as Route
+import Models.Route as Route
 
 
 {-| Matchers for the urls. -}
