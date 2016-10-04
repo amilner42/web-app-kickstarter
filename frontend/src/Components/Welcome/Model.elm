@@ -3,7 +3,7 @@ module Components.Welcome.Model exposing (Model, encoder, decoder)
 import Json.Encode as Encode
 import Json.Decode as Decode exposing ((:=))
 
-import Components.Welcome.Models.ShowView as ShowView
+import Models.Welcome.ShowView as ShowView
 
 
 {-| The Welcome Component Model. -}

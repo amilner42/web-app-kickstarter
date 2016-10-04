@@ -2,7 +2,7 @@ module Components.Messages exposing (..)
 
 import Http
 
-import Components.Models.User exposing (User)
+import Models.User exposing (User)
 import Components.Model exposing (Model)
 import Components.Home.Messages as HomeMessages
 import Components.Welcome.Messages as WelcomeMessages

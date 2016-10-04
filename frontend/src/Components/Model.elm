@@ -5,9 +5,9 @@ import Json.Encode as Encode
 
 import Components.Home.Model as HomeModel
 import Components.Welcome.Model as WelcomeModel
-import Components.Models.User as User
-import Components.Models.Route as Route
+import Models.Route as Route
 import DefaultServices.Util exposing ( justValueOrNull )
+import Models.User as User
 
 
 {-| The model for the base component. Sub-component models are placed under

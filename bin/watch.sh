@@ -26,7 +26,7 @@ echo "========================================================"
 echo "STARTING BACKGROUND TASK: Watch Frontend"
 echo "========================================================"
 cd frontend;
-"$FRONTEND_NODE_MODULES_BIN"/gulp &
+"$FRONTEND_NODE_MODULES_BIN"/webpack --watch &
 pid[0]=$!;
 cd -;
 

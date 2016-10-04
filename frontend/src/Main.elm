@@ -7,7 +7,7 @@ import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
 import Components.View exposing (view)
 import Components.Update exposing (update)
-import Components.Models.Route as Route
+import Models.Route as Route
 import DefaultServices.Util as Util
 import DefaultServices.Router as Router
 import DefaultServices.LocalStorage as LocalStorage
