@@ -3,6 +3,7 @@ module Api exposing (ApiRoute, getAccount, postLogin, postRegister)
 import Http
 
 import DefaultServices.Http as HttpService
+import Config exposing (apiBaseUrl)
 import Components.Models.User as User
 import Components.Messages exposing (Msg)
 
@@ -10,14 +11,6 @@ import Components.Messages exposing (Msg)
 {-| The result of calling an API route, you have to deal with both the sucess
 and failure cases. -}
 type alias ApiRoute a b = (Http.Error -> b) -> (a -> b) -> Cmd b
-
-
-{-| The API base URL.
-
-TODO Come up with a nice way to change this for production, probably using
-environment variables. -}
-apiBaseUrl: String
-apiBaseUrl = "http://localhost:3000/api/"
 
 
 {-| Gets the users account, or an error if unauthenticated. -}
