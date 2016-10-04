@@ -3,30 +3,42 @@ module Components.Model exposing (Model, decoder, encoder, toJsonString, fromJso
 import Json.Decode as Decode exposing ((:=))
 import Json.Encode as Encode
 
-import Models.User as User
+import Components.Home.Model as HomeModel
+import Components.Welcome.Model as WelcomeModel
+import Components.Models.User as User
+import Components.Models.Route as Route
 import DefaultServices.Util exposing ( justValueOrNull )
-import Router
 
 
-{-| The model for the base component. -}
+{-| The model for the base component. Sub-component models are placed under
+`<name>Component`, with a Maybe so it is not the responsibility of the base
+component to initialize sub components, but rather there responsibility if the
+model they are passed is `Nothing` to do initilization. -}
 type alias Model =
   { user: Maybe(User.User)
-  , route: Router.Route }
+  , route: Route.Route
+  , homeComponent: Maybe(HomeModel.Model)
+  , welcomeComponent: Maybe(WelcomeModel.Model)
+  }
 
 
 {-| The decoder for the base component model. -}
 decoder: Decode.Decoder Model
 decoder =
-  Decode.object2 Model
+  Decode.object4 Model
     ("user" := (Decode.maybe(User.decoder)))
-    ("route" := Decode.string `Decode.andThen` routeDecoder)
+    ("route" := Decode.string `Decode.andThen` Route.stringToDecoder)
+    ("homeComponent" := (Decode.maybe(HomeModel.decoder)))
+    ("welcomeComponent" := (Decode.maybe(WelcomeModel.decoder)))
 
 
 {-| The encoder for the base component model. -}
 encoder: Model -> Encode.Value
 encoder model = Encode.object
     [ ("user", justValueOrNull User.encoder model.user)
-    , ("route", routeEncoder model.route)
+    , ("route", Route.encoder model.route)
+    , ("homeComponent", justValueOrNull HomeModel.encoder model.homeComponent)
+    , ("welcomeComponent", justValueOrNull WelcomeModel.encoder model.welcomeComponent)
     ]
 
 
@@ -40,29 +52,3 @@ toJsonString model =
 fromJsonString: String -> Result String Model
 fromJsonString modelJsonString =
     Decode.decodeString decoder modelJsonString
-
-
-{-| Private function for converting a Route to a string for encoding -}
-routeEncoder: Router.Route -> Encode.Value
-routeEncoder route =
-  let
-    routeString =
-      case route of
-        Router.HomeComponent ->
-          "HomeComponent"
-        Router.WelcomeComponent ->
-          "WelcomeComponent"
-  in
-    Encode.string routeString
-
-
-{-| Private function for decoding route string to route -}
-routeDecoder: String -> Decode.Decoder Router.Route
-routeDecoder encodedRouteString =
-  case encodedRouteString of
-    "HomeComponent" ->
-      Decode.succeed Router.HomeComponent
-    "WelcomeComponent" ->
-      Decode.succeed Router.WelcomeComponent
-    _ -> -- Technically string could be anything in local storage, _ is a wildcard
-      Decode.fail <| encodedRouteString ++ " is not a valid route encoding!"

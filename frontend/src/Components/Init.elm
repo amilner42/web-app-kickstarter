@@ -5,14 +5,26 @@ import Router
 import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
 import Components.Update exposing (update)
+import Components.Models.Route as Route
 
 
 {-| Initializes the application -}
-init: Result String Router.Route -> (Model, Cmd Msg)
+init: Result String Route.Route -> (Model, Cmd Msg)
 init routeResult =
   let
-    -- TODO logic here needs a re-think...
-    route = Util.resultOr routeResult Router.WelcomeComponent
-    defaultModel = { user = Nothing, route = route }
+    route = Util.resultOr routeResult Route.HomeComponent
+
+    -- This is the first interesting case of Elm type inference not doing the
+    -- job perfectly. I say update takes a `model`, but I think because it
+    -- doesn't use anything Elm doesn't make it pass in a full model, but then
+    -- update calls other thing and causes runtime probelms with localStorage.
+    -- TODO report to github elm issues
+    defaultModel: Model
+    defaultModel =
+      { user = Nothing
+      , route = route
+      , homeComponent = Nothing
+      , welcomeComponent = Nothing
+      }
   in
     update LoadModelFromLocalStorage defaultModel

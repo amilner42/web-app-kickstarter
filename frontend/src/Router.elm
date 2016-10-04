@@ -4,24 +4,21 @@ import String
 import Navigation
 import UrlParser
 
+import Components.Models.Route as Route
 
-{-| All of the app routes. -}
-type Route
-  = HomeComponent
-  | WelcomeComponent
-
+-- TODO Move to default services
 
 {-| Matchers for the urls. -}
-matchers : UrlParser.Parser (Route -> a) a
+matchers : UrlParser.Parser (Route.Route -> a) a
 matchers =
   UrlParser.oneOf
-    [ UrlParser.format HomeComponent (UrlParser.s "")
-    , UrlParser.format WelcomeComponent (UrlParser.s "welcome")
+    [ UrlParser.format Route.HomeComponent (UrlParser.s "")
+    , UrlParser.format Route.WelcomeComponent (UrlParser.s "welcome")
     ]
 
 
 {-| The Parser, currently intakes routes prefixed by hash. -}
-hashParser : Navigation.Location -> Result String Route
+hashParser : Navigation.Location -> Result String Route.Route
 hashParser location =
   location.hash
     |> String.dropLeft 1
@@ -29,6 +26,6 @@ hashParser location =
 
 
 {-| The Navigation Parser (requires the parser) -}
-parser : Navigation.Parser (Result String Route)
+parser : Navigation.Parser (Result String Route.Route)
 parser =
   Navigation.makeParser hashParser

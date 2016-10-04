@@ -3,7 +3,7 @@ module Api exposing (ApiRoute, getAccount, postLogin, postRegister)
 import Http
 
 import DefaultServices.Http as HttpService
-import Models.User as User
+import Components.Models.User as User
 import Components.Messages exposing (Msg)
 
 
