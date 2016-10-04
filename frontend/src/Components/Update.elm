@@ -3,8 +3,8 @@ module Components.Update exposing (update)
 import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
 import DefaultServices.LocalStorage as LocalStorage
+import DefaultServices.Router as Router
 import Api
-import Router
 
 
 {-| Updates the application base component. -}
@@ -28,6 +28,10 @@ update msg model  =
         (newModel, LocalStorage.saveModel newModel)
     OnGetUserFailure err ->
       (model, LocalStorage.saveModel model)
+    HomeMessage msg ->
+      (model, Cmd.none) -- TODO
+    WelcomeMessage msg ->
+      (model, Cmd.none) -- TODO
 
 
 {-| Gets the user from the API. -}

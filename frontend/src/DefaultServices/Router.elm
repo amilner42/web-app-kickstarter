@@ -1,4 +1,4 @@
-module Router exposing (..)
+module DefaultServices.Router exposing (..)
 
 import String
 import Navigation
@@ -6,7 +6,6 @@ import UrlParser
 
 import Components.Models.Route as Route
 
--- TODO Move to default services
 
 {-| Matchers for the urls. -}
 matchers : UrlParser.Parser (Route.Route -> a) a

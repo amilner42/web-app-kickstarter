@@ -9,7 +9,7 @@ import Components.View exposing (view)
 import Components.Update exposing (update)
 import Components.Models.Route as Route
 import DefaultServices.Util as Util
-import Router
+import DefaultServices.Router as Router
 import Subscriptions exposing (subscriptions)
 
 

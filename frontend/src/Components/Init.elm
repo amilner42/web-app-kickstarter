@@ -1,7 +1,7 @@
 module Components.Init exposing (init)
 
 import DefaultServices.Util as Util
-import Router
+import DefaultServices.Router as Router
 import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
 import Components.Update exposing (update)
