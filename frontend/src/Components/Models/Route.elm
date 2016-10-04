@@ -1,4 +1,4 @@
-module Components.Models.Route exposing (Route, Route(..), encoder, stringToDecoder)
+module Components.Models.Route exposing (Route(..), encoder, stringToDecoder)
 
 import Json.Decode as Decode
 import Json.Encode as Encode

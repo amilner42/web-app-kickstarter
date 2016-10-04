@@ -4,6 +4,7 @@ import String
 import Navigation
 import UrlParser
 
+import Config
 import Components.Models.Route as Route
 
 
@@ -28,3 +29,13 @@ hashParser location =
 parser : Navigation.Parser (Result String Route.Route)
 parser =
   Navigation.makeParser hashParser
+
+
+{-| Gets the url for a route. -}
+toUrl: Route.Route -> String
+toUrl route =
+  case route of
+    Route.HomeComponent ->
+      Config.baseUrl ++ "#"
+    Route.WelcomeComponent ->
+      Config.baseUrl ++ "#welcome"

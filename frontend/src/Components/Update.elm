@@ -1,7 +1,10 @@
 module Components.Update exposing (update)
 
+import Navigation
+
 import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
+import Components.Models.Route as Route
 import DefaultServices.LocalStorage as LocalStorage
 import DefaultServices.Router as Router
 import Api
@@ -16,18 +19,36 @@ update msg model  =
     LoadModelFromLocalStorage ->
       (model, LocalStorage.loadModel ())
     OnLoadModelFromLocalStorageSuccess model ->
-      (model, Cmd.none)
+      let
+        routeUrl = Router.toUrl model.route
+      in
+        (model, Navigation.modifyUrl routeUrl)
     OnLoadModelFromLocalStorageFailure err ->
       (model, getUser ())
     GetUser ->
-      (model, getUser () )
+      (model, getUser ())
     OnGetUserSuccess user ->
       let
         newModel = { model | user = Just user }
+
+        routeUrl = Router.toUrl newModel.route
       in
-        (newModel, LocalStorage.saveModel newModel)
+        (newModel, Cmd.batch
+          [ (Navigation.modifyUrl routeUrl)
+          , (LocalStorage.saveModel newModel)
+          ]
+        )
     OnGetUserFailure err ->
-      (model, LocalStorage.saveModel model)
+      let
+        newModel = { model | route = Route.WelcomeComponent }
+
+        routeUrl = Router.toUrl newModel.route
+      in
+        (model, Cmd.batch
+          [ (Navigation.modifyUrl routeUrl)
+          , (LocalStorage.saveModel newModel)
+          ]
+        )
     HomeMessage msg ->
       (model, Cmd.none) -- TODO
     WelcomeMessage msg ->

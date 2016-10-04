@@ -10,6 +10,7 @@ import Components.Update exposing (update)
 import Components.Models.Route as Route
 import DefaultServices.Util as Util
 import DefaultServices.Router as Router
+import DefaultServices.LocalStorage as LocalStorage
 import Subscriptions exposing (subscriptions)
 
 
@@ -29,7 +30,12 @@ main =
 {-| Updates the model `route` field when the route is updated. -}
 urlUpdate : Result String Route.Route -> Model -> ( Model, Cmd Msg )
 urlUpdate routeResult model =
-  let
-    currentRoute = Util.resultOr routeResult Route.HomeComponent
-  in
-    ( { model | route = currentRoute }, Cmd.none )
+  case routeResult of
+    Ok route ->
+      let
+        newModel =
+          { model | route = route }
+      in
+        (newModel, Cmd.none)
+    Err err ->
+      (model, Navigation.back 1)
