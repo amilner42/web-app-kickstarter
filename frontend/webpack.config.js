@@ -1,4 +1,6 @@
 var path = require("path");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 
 module.exports = {
   entry: {
@@ -16,10 +18,7 @@ module.exports = {
     loaders: [
       {
         test: /\.(css|scss)$/,
-        loaders: [
-          'style-loader',
-          'css-loader',
-        ]
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')
       },
       {
         test:    /\.html$/,
@@ -43,6 +42,10 @@ module.exports = {
 
     noParse: /\.elm$/,
   },
+
+  plugins: [
+    new ExtractTextPlugin("[name].css")
+  ],
 
   devServer: {
     inline: true,
