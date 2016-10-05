@@ -1,10 +1,17 @@
 'use strict';
 
-require('ace-css/css/ace.css');
-require('font-awesome/css/font-awesome.css');
+// Must require all scss.
+require("./Styles/global.scss");
+require("./Styles/mixins.scss");
+require("./Styles/variables.scss");
+
+require("./Components/Styles.scss");
+require("./Components/Home/Styles.scss");
+require("./Components/Welcome/Styles.scss");
 
 // Require index.html so it gets copied to dist
 require('./index.html');
+
 
 var Elm = require('./Main.elm');
 var mountNode = document.getElementById('main');
