@@ -7,7 +7,8 @@ import Json.Encode as Encode
 {-| All of the app routes. -}
 type Route
   = HomeComponent
-  | WelcomeComponent
+  | WelcomeComponentLogin
+  | WelcomeComponentRegister
 
 
 {-| Convert a Route to a string. -}
@@ -18,8 +19,10 @@ encoder route =
       case route of
         HomeComponent ->
           "HomeComponent"
-        WelcomeComponent ->
-          "WelcomeComponent"
+        WelcomeComponentLogin ->
+          "WelcomeComponentLogin"
+        WelcomeComponentRegister ->
+          "WelcomeComponentRegister"
   in
     Encode.string routeString
 
@@ -30,7 +33,9 @@ stringToDecoder encodedRouteString =
   case encodedRouteString of
     "HomeComponent" ->
       Decode.succeed HomeComponent
-    "WelcomeComponent" ->
-      Decode.succeed WelcomeComponent
+    "WelcomeComponentLogin" ->
+      Decode.succeed WelcomeComponentLogin
+    "WelcomeComponentRegister" ->
+      Decode.succeed WelcomeComponentRegister
     _ -> -- Technically string could be anything in local storage, _ is a wildcard
       Decode.fail <| encodedRouteString ++ " is not a valid route encoding!"

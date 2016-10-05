@@ -1,0 +1,5 @@
+@import "mixins";
+
+html, body {
+  @include full-screen-absolute();
+}

@@ -1,3 +1,15 @@
-.welcome-component {
+@import '../../Styles/mixins';
+@import '../../Styles/variables';
 
+
+.welcome-component-wrapper {
+  @include full-screen-absolute();
+}
+
+
+.welcome-component {
+  @include absolutely-centered-min-box();
+  background-color: $color1;
+  border-radius: 5px;
+  border: 2px solid $color2;
 }

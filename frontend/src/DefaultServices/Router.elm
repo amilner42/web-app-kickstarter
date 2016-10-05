@@ -2,7 +2,7 @@ module DefaultServices.Router exposing (..)
 
 import String
 import Navigation
-import UrlParser
+import UrlParser exposing (s, (</>))
 
 import Config
 import Models.Route as Route
@@ -12,8 +12,9 @@ import Models.Route as Route
 matchers : UrlParser.Parser (Route.Route -> a) a
 matchers =
   UrlParser.oneOf
-    [ UrlParser.format Route.HomeComponent (UrlParser.s "")
-    , UrlParser.format Route.WelcomeComponent (UrlParser.s "welcome")
+    [ UrlParser.format Route.HomeComponent (s "")
+    , UrlParser.format Route.WelcomeComponentRegister (s "welcome" </> s "register")
+    , UrlParser.format Route.WelcomeComponentLogin (s "welcome" </> s "login")
     ]
 
 
@@ -37,5 +38,7 @@ toUrl route =
   case route of
     Route.HomeComponent ->
       Config.baseUrl ++ "#"
-    Route.WelcomeComponent ->
-      Config.baseUrl ++ "#welcome"
+    Route.WelcomeComponentLogin ->
+      Config.baseUrl ++ "#welcome/login"
+    Route.WelcomeComponentRegister ->
+      Config.baseUrl ++ "#welcome/register"

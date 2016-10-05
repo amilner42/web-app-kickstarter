@@ -2,9 +2,14 @@ module Components.Update exposing (update)
 
 import Navigation
 
+import Components.Welcome.Update as WelcomeUpdate
+import Components.Welcome.Init as WelcomeInit
+
 import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
+
 import Models.Route as Route
+
 import DefaultServices.LocalStorage as LocalStorage
 import DefaultServices.Router as Router
 import Api
@@ -40,7 +45,7 @@ update msg model  =
         )
     OnGetUserFailure err ->
       let
-        newModel = { model | route = Route.WelcomeComponent }
+        newModel = { model | route = Route.WelcomeComponentRegister }
 
         routeUrl = Router.toUrl newModel.route
       in
@@ -49,10 +54,14 @@ update msg model  =
           , (LocalStorage.saveModel newModel)
           ]
         )
-    HomeMessage msg ->
+    HomeMessage subMsg ->
       (model, Cmd.none) -- TODO
-    WelcomeMessage msg ->
-      (model, Cmd.none) -- TODO
+    WelcomeMessage subMsg ->
+      let
+        (newModel, newSubMsg) =
+          WelcomeUpdate.update subMsg model
+      in
+        (newModel, Cmd.map WelcomeMessage newSubMsg)
 
 
 {-| Gets the user from the API. -}

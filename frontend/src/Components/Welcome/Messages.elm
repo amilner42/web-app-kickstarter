@@ -1,4 +1,4 @@
-module Components.Welcome.Messages exposing (Msg)
+module Components.Welcome.Messages exposing (Msg(..))
 
 import Http
 

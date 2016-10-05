@@ -21,10 +21,10 @@ view model =
         True
 
     welcomeView =
-      Html.App.map WelcomeMessage (WelcomeView.view model.welcomeComponent)
+      Html.App.map WelcomeMessage (WelcomeView.view model)
 
     homeView =
-      Html.App.map HomeMessage (HomeView.view model.homeComponent)
+      Html.App.map HomeMessage (HomeView.view model)
 
     componentViewForRoute = case loggedIn of
       False ->
@@ -33,7 +33,9 @@ view model =
         -- For now this case is not needed, but for future if the user is
         -- loggedIn we want them to be able to go straight to their page.
         case model.route of
-          Route.WelcomeComponent ->
+          Route.WelcomeComponentRegister ->
+            homeView
+          Route.WelcomeComponentLogin ->
             homeView
           Route.HomeComponent ->
             homeView

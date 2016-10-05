@@ -11,14 +11,12 @@ import Models.User as User
 
 
 {-| The model for the base component. Sub-component models are placed under
-`<name>Component`, with a Maybe so it is not the responsibility of the base
-component to initialize sub components, but rather there responsibility if the
-model they are passed is `Nothing` to do initilization. -}
+`<name>Component`, -}
 type alias Model =
   { user: Maybe(User.User)
   , route: Route.Route
-  , homeComponent: Maybe(HomeModel.Model)
-  , welcomeComponent: Maybe(WelcomeModel.Model)
+  , homeComponent: HomeModel.Model
+  , welcomeComponent: WelcomeModel.Model
   }
 
 
@@ -28,8 +26,8 @@ decoder =
   Decode.object4 Model
     ("user" := (Decode.maybe(User.decoder)))
     ("route" := Decode.string `Decode.andThen` Route.stringToDecoder)
-    ("homeComponent" := (Decode.maybe(HomeModel.decoder)))
-    ("welcomeComponent" := (Decode.maybe(WelcomeModel.decoder)))
+    ("homeComponent" := (HomeModel.decoder))
+    ("welcomeComponent" := (WelcomeModel.decoder))
 
 
 {-| The encoder for the base component model. -}
@@ -37,8 +35,8 @@ encoder: Model -> Encode.Value
 encoder model = Encode.object
     [ ("user", justValueOrNull User.encoder model.user)
     , ("route", Route.encoder model.route)
-    , ("homeComponent", justValueOrNull HomeModel.encoder model.homeComponent)
-    , ("welcomeComponent", justValueOrNull WelcomeModel.encoder model.welcomeComponent)
+    , ("homeComponent", HomeModel.encoder model.homeComponent)
+    , ("welcomeComponent", WelcomeModel.encoder model.welcomeComponent)
     ]
 
 
