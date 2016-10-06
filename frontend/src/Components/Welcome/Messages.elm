@@ -15,3 +15,6 @@ type Msg
   | OnLoginFailure Http.Error
   | GoToRegisterView
   | GoToLoginView
+  | OnPasswordInput String
+  | OnConfirmPasswordInput String
+  | OnEmailInput String

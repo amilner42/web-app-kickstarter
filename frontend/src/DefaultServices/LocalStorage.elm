@@ -46,7 +46,7 @@ import Components.Messages exposing (Msg (..))
 
 
 {-| Saves the model to localStorage using the port. -}
-saveModel: Model -> Cmd Msg
+saveModel: Model -> Cmd msg
 saveModel model =
   Ports.saveModelToLocalStorage <| encoder <| model
 
@@ -62,6 +62,6 @@ onLoadModel modelAsStringFromStorage =
 
 
 {-| Triggers the model to be loaded from local storage -}
-loadModel: () -> Cmd msg
+loadModel: () -> Cmd Msg
 loadModel =
   Ports.loadModelFromLocalStorage

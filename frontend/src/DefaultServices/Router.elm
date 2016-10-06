@@ -42,3 +42,9 @@ toUrl route =
       Config.baseUrl ++ "#welcome/login"
     Route.WelcomeComponentRegister ->
       Config.baseUrl ++ "#welcome/register"
+
+
+{-| Navigates to a given route. -}
+navigateTo: Route.Route -> Cmd msg
+navigateTo route =
+  Navigation.newUrl <| toUrl <| route

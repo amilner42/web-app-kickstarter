@@ -4,12 +4,41 @@
 
 .welcome-component-wrapper {
   @include full-screen-absolute();
-}
 
+  .welcome-component {
+    @include absolutely-centered-min-box();
+    background-color: $color1;
+    border-radius: 5px;
+    border: 2px solid $color2;
 
-.welcome-component {
-  @include absolutely-centered-min-box();
-  background-color: $color1;
-  border-radius: 5px;
-  border: 2px solid $color2;
+    text-align: center;
+
+    form {
+      input {
+        border: 1px solid $color3;
+        background-color: $color1;
+        display: block;
+        text-align: center;
+        margin: auto;
+        width: 270px;
+        height: 53px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      button {
+        display: block;
+        height: 30px;
+        width: 270px;
+        margin: auto;
+        color: $color1;
+        background-color: $color2;
+        border: none;
+      }
+    }
+
+    a {
+      color: $link-color1;
+    }
+  }
 }
