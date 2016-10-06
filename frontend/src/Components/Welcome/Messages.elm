@@ -11,7 +11,7 @@ type Msg
   | OnRegisterSuccess User
   | OnRegisterFailure Http.Error
   | Login
-  | OnLoginSuccesss User
+  | OnLoginSuccess User
   | OnLoginFailure Http.Error
   | GoToRegisterView
   | GoToLoginView

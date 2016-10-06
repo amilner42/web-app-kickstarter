@@ -31,8 +31,8 @@ loginView model =
     [ h1
       [ class "title" ]
       [ text "Login" ]
-    , form
-      [ ]
+    , div
+      [ class "welcome-form" ]
       [ input
         [ placeholder "Email"
         , onInput OnEmailInput
@@ -47,7 +47,7 @@ loginView model =
         ]
         [ ]
       , button
-        [ ]
+        [ onClick Login ]
         [ text "Login" ]
       ]
     , a
@@ -64,8 +64,8 @@ registerView model =
     [ h1
       [ class "title" ]
       [ text "Register" ]
-    , form
-      [ ]
+    , div
+      [ class "welcome-form" ]
       [ input
         [ placeholder "Email"
         , onInput OnEmailInput
@@ -87,7 +87,7 @@ registerView model =
         ]
         [ ]
       , button
-        [ ]
+        [ onClick Register ]
         [ text "Register"]
       ]
     , a

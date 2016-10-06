@@ -6,6 +6,8 @@ import DefaultServices.LocalStorage as LocalStorage
 import DefaultServices.Router as Router
 import Models.Route as Route
 
+import Api
+
 
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -44,15 +46,44 @@ update msg model =
         in
           (newModel, LocalStorage.saveModel newModel)
       Register ->
-        toDo
+        let
+          -- TODO check if passwords match on frontend
+          user =
+            { username = model.welcomeComponent.email
+            , password = model.welcomeComponent.password
+            }
+        in
+          (model, Api.postRegister user OnRegisterFailure OnRegisterSuccess)
       OnRegisterFailure httpError ->
         toDo
-      OnRegisterSuccess user ->
-        toDo
+      OnRegisterSuccess newUser ->
+        let
+          newModel = { model | user = Just newUser, route = Route.HomeComponent }
+        in
+        (newModel
+        , Cmd.batch
+          [ LocalStorage.saveModel newModel
+          , Router.navigateTo newModel.route
+          ]
+        )
       Login ->
-        toDo
-      OnLoginSuccesss user ->
-        toDo
+        let
+          user =
+            { username = model.welcomeComponent.email
+            , password = model.welcomeComponent.password
+            }
+        in
+          (model, Api.postLogin user OnLoginFailure OnLoginSuccess)
+      OnLoginSuccess newUser ->
+        let
+          newModel = { model | user = Just newUser, route = Route.HomeComponent }
+        in
+        (newModel
+        , Cmd.batch
+          [ LocalStorage.saveModel newModel
+          , Router.navigateTo newModel.route
+          ]
+        )
       OnLoginFailure httpError ->
         toDo
       GoToLoginView ->
