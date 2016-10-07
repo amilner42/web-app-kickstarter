@@ -49,3 +49,25 @@ cssComponentNamespace componentName additionalClasses html =
     cssNamespace
       wrapperClassName
       (cssNamespace classes html)
+
+
+{-| Returns true if `a` is nothing. -}
+isNothing: Maybe(a) -> Bool
+isNothing maybeValue =
+  case maybeValue of
+    Nothing ->
+      True
+    Just something ->
+      False
+
+
+{-| Returns `baseClasses` if `boolean` is False, otherwise returns `baseClasses`
+with `additionalClasses`. Basic helper for conditionally adding classes.
+-}
+withClassesIf: String -> String -> Bool -> String
+withClassesIf baseClasses additionalClasses boolean =
+  case boolean of
+    True ->
+      baseClasses ++ " " ++ additionalClasses
+    False ->
+      baseClasses

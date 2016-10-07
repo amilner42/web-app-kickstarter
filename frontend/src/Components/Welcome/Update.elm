@@ -5,10 +5,12 @@ import Components.Welcome.Messages exposing (Msg(..))
 import DefaultServices.LocalStorage as LocalStorage
 import DefaultServices.Router as Router
 import Models.Route as Route
+import Models.ApiError as ApiError
 
 import Api
 
 
+{-| The update for the welcome component. -}
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
@@ -21,7 +23,7 @@ update msg model =
             { welcomeComponent | password = newPassword}
           }
       in
-        ( newModel, Cmd.none )
+        ( wipeError newModel, Cmd.none )
     OnConfirmPasswordInput newConfirmPassword ->
       let
         welcomeComponent = model.welcomeComponent
@@ -31,7 +33,7 @@ update msg model =
             { welcomeComponent | confirmPassword = newConfirmPassword }
           }
       in
-        ( newModel, Cmd.none )
+        ( wipeError newModel, Cmd.none )
     OnEmailInput newEmail ->
       let
         welcomeComponent = model.welcomeComponent
@@ -41,16 +43,29 @@ update msg model =
             { welcomeComponent | email = newEmail }
           }
       in
-        ( newModel, LocalStorage.saveModel newModel )
+        ( wipeError newModel, LocalStorage.saveModel newModel )
     Register ->
       let
-        -- TODO check if passwords match on frontend
+        passwordsMatch =
+          model.welcomeComponent.password == model.welcomeComponent.confirmPassword
+
         user =
           { username = model.welcomeComponent.email
           , password = model.welcomeComponent.password
           }
+
+        welcomeComponent = model.welcomeComponent
+
+        newModelIfPasswordsDontMatch =
+          { model | welcomeComponent =
+            { welcomeComponent | apiError = Just ApiError.PasswordDoesNotMatchConfirmPassword }
+          }
       in
-        ( model, Api.postRegister user OnRegisterFailure OnRegisterSuccess )
+        case passwordsMatch of
+          True ->
+            ( model, Api.postRegister user OnRegisterFailure OnRegisterSuccess )
+          False ->
+            (newModelIfPasswordsDontMatch, Cmd.none)
     OnRegisterFailure newApiError ->
       let
         welcomeComponent = model.welcomeComponent
@@ -100,6 +115,21 @@ update msg model =
       in
         ( newModel, Cmd.none)
     GoToLoginView ->
-      ( model, Router.navigateTo Route.WelcomeComponentLogin )
+      ( wipeError model, Router.navigateTo Route.WelcomeComponentLogin )
     GoToRegisterView ->
-      ( model, Router.navigateTo Route.WelcomeComponentRegister )
+      ( wipeError model, Router.navigateTo Route.WelcomeComponentRegister )
+
+
+{-| Wipes the `apiError` from the `model.welcomeComponent`. -}
+wipeError: Model -> Model
+wipeError model =
+  let
+    welcomeComponent =
+      model.welcomeComponent
+
+    newModel =
+      { model | welcomeComponent =
+        { welcomeComponent | apiError = Nothing }
+      }
+  in
+    newModel
