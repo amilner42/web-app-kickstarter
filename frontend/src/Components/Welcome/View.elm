@@ -9,6 +9,7 @@ import Components.Welcome.Messages exposing (Msg(..))
 import DefaultServices.Util as Util
 import DefaultServices.Router as Router
 import Models.Route as Route
+import Models.ApiError as ApiError
 
 
 {-| In the case that the view is not passed a model (Nothing), then it must
@@ -21,6 +22,17 @@ view model =
     (
       div [] [ displayViewForRoute model ]
     )
+
+
+{-| Temp, for testing. -}
+displayError: Maybe(ApiError.ApiError) -> String
+displayError maybeErrorCode =
+  case maybeErrorCode of
+    Nothing ->
+      "No errors sir"
+    Just errorCode ->
+      toString errorCode
+
 
 
 {-| The welcome login view -}

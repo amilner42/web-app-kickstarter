@@ -2,6 +2,7 @@ module Components.Welcome.Messages exposing (Msg(..))
 
 import Http
 
+import Models.ApiError as ApiError
 import Models.User exposing (User)
 
 
@@ -9,10 +10,10 @@ import Models.User exposing (User)
 type Msg
   = Register
   | OnRegisterSuccess User
-  | OnRegisterFailure Http.Error
+  | OnRegisterFailure ApiError.ApiError
   | Login
   | OnLoginSuccess User
-  | OnLoginFailure Http.Error
+  | OnLoginFailure ApiError.ApiError
   | GoToRegisterView
   | GoToLoginView
   | OnPasswordInput String

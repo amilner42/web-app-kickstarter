@@ -9,4 +9,5 @@ init =
   { email = ""
   , password = ""
   , confirmPassword = ""
+  , apiError = Nothing
   }
