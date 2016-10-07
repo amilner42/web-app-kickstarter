@@ -3,6 +3,7 @@ module Components.Messages exposing (..)
 import Http
 
 import Models.User exposing (User)
+import Models.ApiError as ApiError
 import Components.Model exposing (Model)
 import Components.Home.Messages as HomeMessages
 import Components.Welcome.Messages as WelcomeMessages
@@ -16,6 +17,6 @@ type Msg
   | OnLoadModelFromLocalStorageFailure String
   | GetUser
   | OnGetUserSuccess User
-  | OnGetUserFailure Http.Error
+  | OnGetUserFailure ApiError.ApiError
   | HomeMessage HomeMessages.Msg
   | WelcomeMessage WelcomeMessages.Msg

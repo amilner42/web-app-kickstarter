@@ -43,7 +43,7 @@ update msg model  =
           , (LocalStorage.saveModel newModel)
           ]
         )
-    OnGetUserFailure err ->
+    OnGetUserFailure newApiError ->
       let
         newModel = { model | route = Route.WelcomeComponentRegister }
 

@@ -11,7 +11,7 @@ import Components.Messages exposing (Msg)
 
 
 {-| Gets the users account, or an error if unauthenticated. -}
-getAccount: (Http.Error -> b) -> (User.User -> b) -> Cmd b
+getAccount: (ApiError.ApiError-> b) -> (User.User -> b) -> Cmd b
 getAccount = HttpService.get (apiBaseUrl ++ "account") User.decoder
 
 
