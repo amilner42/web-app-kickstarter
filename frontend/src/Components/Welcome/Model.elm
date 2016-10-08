@@ -8,7 +8,7 @@ import DefaultServices.Util as Util
 import Models.ApiError as ApiError
 
 
-{-| The Welcome Component Model. -}
+{-| Welcome Component Model. -}
 type alias Model =
   { email: String
   , password: String
@@ -17,7 +17,7 @@ type alias Model =
   }
 
 
-{-| The welcome component model encoder. -}
+{-| Welcome Component encoder. -}
 encoder: Model -> Encode.Value
 encoder model =
   Encode.object
@@ -28,7 +28,7 @@ encoder model =
     ]
 
 
-{-| The welcome component model decoder. -}
+{-| Welcome Component decoder. -}
 decoder: Decode.Decoder Model
 decoder =
   Decode.object4 Model

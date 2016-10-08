@@ -13,7 +13,7 @@ import Components.Update exposing (update)
 import Models.Route as Route
 
 
-{-| Initializes the application -}
+{-| Base Component Init. -}
 init: Result String Route.Route -> (Model, Cmd Msg)
 init routeResult =
   let

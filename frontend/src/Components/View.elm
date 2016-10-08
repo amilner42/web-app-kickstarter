@@ -10,7 +10,7 @@ import Components.Welcome.View as WelcomeView
 import Models.Route as Route
 
 
-{-| The view for the application base component. -}
+{-| Base Component View. -}
 view: Model -> Html.Html Msg
 view model =
   let

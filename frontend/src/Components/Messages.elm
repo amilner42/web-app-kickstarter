@@ -9,7 +9,7 @@ import Components.Home.Messages as HomeMessages
 import Components.Welcome.Messages as WelcomeMessages
 
 
-{-| All the messages for the base component. -}
+{-| Base Component Msg. -}
 type Msg
   = NoOp
   | LoadModelFromLocalStorage

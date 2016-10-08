@@ -10,7 +10,7 @@ import Models.ApiError as ApiError
 import Api
 
 
-{-| The update for the welcome component. -}
+{-| Welcome Component Update. -}
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of

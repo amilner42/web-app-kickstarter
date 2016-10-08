@@ -6,7 +6,7 @@ import Models.ApiError as ApiError
 import Models.User exposing (User)
 
 
-{-| The messages for the welcome component. -}
+{-| Welcome Component Msg.-}
 type Msg
   = Register
   | OnRegisterSuccess User

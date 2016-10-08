@@ -3,7 +3,7 @@ module Components.Welcome.Init exposing (init)
 import Components.Welcome.Model exposing (Model)
 
 
--- The initial home component model.
+{-| Welcome Component Init. -}
 init: Model
 init =
   { email = ""

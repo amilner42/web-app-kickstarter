@@ -4,7 +4,7 @@ import Components.Home.Model exposing (Model)
 import Models.Home.ShowView exposing (ShowView(..))
 
 
-{-| The initial home component model. -}
+{-| Home Component Init. -}
 init: Model
 init =
   { showView = Main

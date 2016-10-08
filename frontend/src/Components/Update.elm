@@ -15,7 +15,7 @@ import DefaultServices.Router as Router
 import Api
 
 
-{-| Updates the application base component. -}
+{-| Base Component Update. -}
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model  =
   case msg of

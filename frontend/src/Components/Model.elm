@@ -10,8 +10,7 @@ import DefaultServices.Util exposing ( justValueOrNull )
 import Models.User as User
 
 
-{-| The model for the base component. Sub-component models are placed under
-`<name>Component`, -}
+{-| Base Component Model. -}
 type alias Model =
   { user: Maybe(User.User)
   , route: Route.Route
@@ -20,7 +19,7 @@ type alias Model =
   }
 
 
-{-| The decoder for the base component model. -}
+{-| Base Component decoder. -}
 decoder: Decode.Decoder Model
 decoder =
   Decode.object4 Model
@@ -30,7 +29,7 @@ decoder =
     ("welcomeComponent" := (WelcomeModel.decoder))
 
 
-{-| The encoder for the base component model. -}
+{-| Base Component encoder. -}
 encoder: Model -> Encode.Value
 encoder model = Encode.object
     [ ("user", justValueOrNull User.encoder model.user)
@@ -40,13 +39,13 @@ encoder model = Encode.object
     ]
 
 
-{-| Turns the base component model into a JSON string. -}
+{-| Base Component `toJsonString`. -}
 toJsonString: Model -> String
 toJsonString model =
     Encode.encode 0 (encoder model)
 
 
-{-| Turns a JSON string into the base component model. -}
+{-| Base Component `fromJsonString`. -}
 fromJsonString: String -> Result String Model
 fromJsonString modelJsonString =
     Decode.decodeString decoder modelJsonString

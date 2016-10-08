@@ -12,8 +12,7 @@ import Models.Route as Route
 import Models.ApiError as ApiError
 
 
-{-| In the case that the view is not passed a model (Nothing), then it must
-initialize the model. -}
+{-| The welcome View. -}
 view: Model -> Html Msg
 view model =
   Util.cssComponentNamespace
