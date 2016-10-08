@@ -1,11 +1,26 @@
 module Components.Home.Update exposing (update)
 
+import DefaultServices.Router as Router
 import Components.Home.Messages exposing (Msg(..))
-import Components.Home.Model exposing (Model)
+import Components.Model exposing (Model)
+import Models.Route as Route
 
 
 {-| Home Component Update.
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        GoToMainView ->
+            let
+                newModel =
+                    { model | route = Route.HomeComponentMain }
+            in
+                ( newModel, Router.navigateTo newModel.route )
+
+        GoToProfileView ->
+            let
+                newModel =
+                    { model | route = Route.HomeComponentProfile }
+            in
+                ( newModel, Router.navigateTo newModel.route )

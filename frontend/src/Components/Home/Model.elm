@@ -2,13 +2,14 @@ module Components.Home.Model exposing (Model, encoder, decoder)
 
 import Json.Encode as Encode
 import Json.Decode as Decode exposing ((:=))
-import Models.Home.ShowView as ShowView
 
 
-{-| Home Component Model.
+{-| Home Component Model. Currently contains no meaningful information, just
+random data (strings) to display the cacheing.
 -}
 type alias Model =
-    { showView : ShowView.ShowView
+    { data1 : String
+    , data2 : String
     }
 
 
@@ -17,7 +18,8 @@ type alias Model =
 encoder : Model -> Encode.Value
 encoder model =
     Encode.object
-        [ ( "showView", ShowView.encoder model.showView )
+        [ ( "data1", Encode.string model.data1 )
+        , ( "data2", Encode.string model.data2 )
         ]
 
 
@@ -25,19 +27,6 @@ encoder model =
 -}
 decoder : Decode.Decoder Model
 decoder =
-    Decode.object1 Model
-        ("showView" := Decode.string `Decode.andThen` ShowView.stringToDecoder)
-
-
-{-| Home Component `toJsonString`.
--}
-toJsonString : Model -> String
-toJsonString model =
-    Encode.encode 0 (encoder model)
-
-
-{-| Home Component `fromJsonString`.
--}
-fromJsonString : String -> Result String Model
-fromJsonString modelJsonString =
-    Decode.decodeString decoder modelJsonString
+    Decode.object2 Model
+        ("data1" := Decode.string)
+        ("data2" := Decode.string)

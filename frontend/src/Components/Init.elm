@@ -16,7 +16,7 @@ init : Result String Route.Route -> ( Model, Cmd Msg )
 init routeResult =
     let
         route =
-            Util.resultOr routeResult Route.HomeComponent
+            Util.resultOr routeResult Route.HomeComponentMain
 
         {- This is the first interesting case of Elm type inference not doing the
            job perfectly. I say update takes a `model`, but I think because it

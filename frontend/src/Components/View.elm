@@ -2,10 +2,12 @@ module Components.View exposing (view)
 
 import Html exposing (div, text)
 import Html.App
+import Html.Attributes exposing (class)
 import Components.Model exposing (Model)
 import Components.Messages exposing (Msg(..))
 import Components.Home.View as HomeView
 import Components.Welcome.View as WelcomeView
+import DefaultServices.Util as Util
 import Models.Route as Route
 
 
@@ -45,7 +47,13 @@ view model =
                         Route.WelcomeComponentLogin ->
                             homeView
 
-                        Route.HomeComponent ->
+                        Route.HomeComponentMain ->
+                            homeView
+
+                        Route.HomeComponentProfile ->
                             homeView
     in
-        div [] [ componentViewForRoute ]
+        Util.cssComponentNamespace
+            "base"
+            Nothing
+            componentViewForRoute
