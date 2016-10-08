@@ -1,36 +1,38 @@
 module Components.Welcome.Model exposing (Model, encoder, decoder)
 
+import Http
 import Json.Encode as Encode
 import Json.Decode as Decode exposing ((:=))
 
-import Models.Welcome.ShowView as ShowView
+import DefaultServices.Util as Util
+import Models.ApiError as ApiError
 
 
-{-| The Welcome Component Model. -}
+{-| Welcome Component Model. -}
 type alias Model =
   { email: String
   , password: String
   , confirmPassword: String
-  , showView: ShowView.ShowView
+  , apiError: Maybe(ApiError.ApiError)
   }
 
 
-{-| The welcome component model encoder. -}
+{-| Welcome Component encoder. -}
 encoder: Model -> Encode.Value
 encoder model =
   Encode.object
     [ ("email", Encode.string model.email)
     , ("password", Encode.string "") -- we don't want to save the password to localStorage
     , ("confirmPassword", Encode.string "")
-    , ("showView", ShowView.encoder model.showView)
+    , ("errorCode", Encode.null) -- we don't want errors to persist in localStorage
     ]
 
 
-{-| The welcome component model decoder. -}
+{-| Welcome Component decoder. -}
 decoder: Decode.Decoder Model
 decoder =
   Decode.object4 Model
     ("email" := Decode.string)
     ("password" := Decode.string)
     ("confirmPassword" := Decode.string)
-    ("showView" := Decode.string `Decode.andThen` ShowView.stringToDecoder)
+    ("errorCode" := Decode.null Nothing) -- we always save null to localStorage

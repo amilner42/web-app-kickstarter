@@ -1,0 +1,10 @@
+@import "mixins";
+@import "variables";
+
+html, body {
+  @include full-screen-absolute();
+}
+
+.input-error-highlight {
+  border: 2px solid $error-color1 !important;
+}

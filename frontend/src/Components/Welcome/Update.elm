@@ -1,10 +1,135 @@
 module Components.Welcome.Update exposing (update)
 
-import Components.Welcome.Messages exposing (Msg (..))
-import Components.Welcome.Model exposing (Model)
+import Components.Model exposing (Model)
+import Components.Welcome.Messages exposing (Msg(..))
+import DefaultServices.LocalStorage as LocalStorage
+import DefaultServices.Router as Router
+import Models.Route as Route
+import Models.ApiError as ApiError
+
+import Api
 
 
-{-| TODO implement and doc... -}
+{-| Welcome Component Update. -}
 update: Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  (model, Cmd.none)
+  case msg of
+    OnPasswordInput newPassword ->
+      let
+        welcomeComponent = model.welcomeComponent
+
+        newModel =
+          { model | welcomeComponent =
+            { welcomeComponent | password = newPassword}
+          }
+      in
+        ( wipeError newModel, Cmd.none )
+    OnConfirmPasswordInput newConfirmPassword ->
+      let
+        welcomeComponent = model.welcomeComponent
+
+        newModel =
+          { model | welcomeComponent =
+            { welcomeComponent | confirmPassword = newConfirmPassword }
+          }
+      in
+        ( wipeError newModel, Cmd.none )
+    OnEmailInput newEmail ->
+      let
+        welcomeComponent = model.welcomeComponent
+
+        newModel =
+          { model | welcomeComponent =
+            { welcomeComponent | email = newEmail }
+          }
+      in
+        ( wipeError newModel, LocalStorage.saveModel newModel )
+    Register ->
+      let
+        passwordsMatch =
+          model.welcomeComponent.password == model.welcomeComponent.confirmPassword
+
+        user =
+          { username = model.welcomeComponent.email
+          , password = model.welcomeComponent.password
+          }
+
+        welcomeComponent = model.welcomeComponent
+
+        newModelIfPasswordsDontMatch =
+          { model | welcomeComponent =
+            { welcomeComponent | apiError = Just ApiError.PasswordDoesNotMatchConfirmPassword }
+          }
+      in
+        case passwordsMatch of
+          True ->
+            ( model, Api.postRegister user OnRegisterFailure OnRegisterSuccess )
+          False ->
+            (newModelIfPasswordsDontMatch, Cmd.none)
+    OnRegisterFailure newApiError ->
+      let
+        welcomeComponent = model.welcomeComponent
+
+        newModel =
+          { model | welcomeComponent =
+            { welcomeComponent | apiError = Just newApiError }
+          }
+      in
+        ( newModel, Cmd.none )
+    OnRegisterSuccess newUser ->
+      let
+        newModel = { model | user = Just newUser, route = Route.HomeComponent }
+      in
+      ( newModel
+      , Cmd.batch
+        [ LocalStorage.saveModel newModel
+        , Router.navigateTo newModel.route
+        ]
+      )
+    Login ->
+      let
+        user =
+          { username = model.welcomeComponent.email
+          , password = model.welcomeComponent.password
+          }
+      in
+        ( model, Api.postLogin user OnLoginFailure OnLoginSuccess )
+    OnLoginSuccess newUser ->
+      let
+        newModel = { model | user = Just newUser, route = Route.HomeComponent }
+      in
+      ( newModel
+      , Cmd.batch
+        [ LocalStorage.saveModel newModel
+        , Router.navigateTo newModel.route
+        ]
+      )
+    OnLoginFailure newApiError ->
+      let
+        welcomeComponent = model.welcomeComponent
+
+        newModel =
+          { model | welcomeComponent =
+            { welcomeComponent | apiError = Just newApiError }
+          }
+      in
+        ( newModel, Cmd.none)
+    GoToLoginView ->
+      ( wipeError model, Router.navigateTo Route.WelcomeComponentLogin )
+    GoToRegisterView ->
+      ( wipeError model, Router.navigateTo Route.WelcomeComponentRegister )
+
+
+{-| Wipes the `apiError` from the `model.welcomeComponent`. -}
+wipeError: Model -> Model
+wipeError model =
+  let
+    welcomeComponent =
+      model.welcomeComponent
+
+    newModel =
+      { model | welcomeComponent =
+        { welcomeComponent | apiError = Nothing }
+      }
+  in
+    newModel

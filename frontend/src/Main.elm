@@ -36,6 +36,6 @@ urlUpdate routeResult model =
         newModel =
           { model | route = route }
       in
-        (newModel, Cmd.none)
+        (newModel, LocalStorage.saveModel newModel)
     Err err ->
       (model, Navigation.back 1)

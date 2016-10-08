@@ -10,45 +10,42 @@ import DefaultServices.Util exposing ( justValueOrNull )
 import Models.User as User
 
 
-{-| The model for the base component. Sub-component models are placed under
-`<name>Component`, with a Maybe so it is not the responsibility of the base
-component to initialize sub components, but rather there responsibility if the
-model they are passed is `Nothing` to do initilization. -}
+{-| Base Component Model. -}
 type alias Model =
   { user: Maybe(User.User)
   , route: Route.Route
-  , homeComponent: Maybe(HomeModel.Model)
-  , welcomeComponent: Maybe(WelcomeModel.Model)
+  , homeComponent: HomeModel.Model
+  , welcomeComponent: WelcomeModel.Model
   }
 
 
-{-| The decoder for the base component model. -}
+{-| Base Component decoder. -}
 decoder: Decode.Decoder Model
 decoder =
   Decode.object4 Model
     ("user" := (Decode.maybe(User.decoder)))
     ("route" := Decode.string `Decode.andThen` Route.stringToDecoder)
-    ("homeComponent" := (Decode.maybe(HomeModel.decoder)))
-    ("welcomeComponent" := (Decode.maybe(WelcomeModel.decoder)))
+    ("homeComponent" := (HomeModel.decoder))
+    ("welcomeComponent" := (WelcomeModel.decoder))
 
 
-{-| The encoder for the base component model. -}
+{-| Base Component encoder. -}
 encoder: Model -> Encode.Value
 encoder model = Encode.object
     [ ("user", justValueOrNull User.encoder model.user)
     , ("route", Route.encoder model.route)
-    , ("homeComponent", justValueOrNull HomeModel.encoder model.homeComponent)
-    , ("welcomeComponent", justValueOrNull WelcomeModel.encoder model.welcomeComponent)
+    , ("homeComponent", HomeModel.encoder model.homeComponent)
+    , ("welcomeComponent", WelcomeModel.encoder model.welcomeComponent)
     ]
 
 
-{-| Turns the base component model into a JSON string. -}
+{-| Base Component `toJsonString`. -}
 toJsonString: Model -> String
 toJsonString model =
     Encode.encode 0 (encoder model)
 
 
-{-| Turns a JSON string into the base component model. -}
+{-| Base Component `fromJsonString`. -}
 fromJsonString: String -> Result String Model
 fromJsonString modelJsonString =
     Decode.decodeString decoder modelJsonString

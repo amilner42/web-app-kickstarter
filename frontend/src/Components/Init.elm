@@ -2,13 +2,18 @@ module Components.Init exposing (init)
 
 import DefaultServices.Util as Util
 import DefaultServices.Router as Router
+
+import Components.Welcome.Init as WelcomeInit
+import Components.Home.Init as HomeInit
+
 import Components.Messages exposing (Msg (..))
 import Components.Model exposing (Model)
 import Components.Update exposing (update)
+
 import Models.Route as Route
 
 
-{-| Initializes the application -}
+{-| Base Component Init. -}
 init: Result String Route.Route -> (Model, Cmd Msg)
 init routeResult =
   let
@@ -23,8 +28,8 @@ init routeResult =
     defaultModel =
       { user = Nothing
       , route = route
-      , homeComponent = Nothing
-      , welcomeComponent = Nothing
+      , homeComponent = HomeInit.init
+      , welcomeComponent = WelcomeInit.init
       }
   in
     update LoadModelFromLocalStorage defaultModel
