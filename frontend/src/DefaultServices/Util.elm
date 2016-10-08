@@ -75,6 +75,13 @@ isNothing maybeValue =
             False
 
 
+{-| Returns true if `a` is not nothing.
+-}
+isNotNothing : Maybe a -> Bool
+isNotNothing maybeValue =
+    not <| isNothing <| maybeValue
+
+
 {-| Returns `baseClasses` if `boolean` is False, otherwise returns `baseClasses`
 with `additionalClasses`. Basic helper for conditionally adding classes.
 -}

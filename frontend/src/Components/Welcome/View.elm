@@ -1,7 +1,7 @@
 module Components.Welcome.View exposing (view)
 
 import Html exposing (Html, div, text, button, h1, input, form, a)
-import Html.Attributes exposing (class, placeholder, type', value, hidden)
+import Html.Attributes exposing (class, placeholder, type', value, hidden, disabled)
 import Html.Events exposing (onClick, onInput)
 import Components.Model exposing (Model)
 import Components.Welcome.Messages exposing (Msg(..))
@@ -63,6 +63,16 @@ loginView model =
 
         hightlightPassword =
             currentError == Just ApiError.IncorrectPasswordForEmail
+
+        incompleteForm =
+            List.member
+                ""
+                [ model.welcomeComponent.email
+                , model.welcomeComponent.password
+                ]
+
+        invalidForm =
+            incompleteForm || Util.isNotNothing currentError
     in
         div
             []
@@ -88,7 +98,9 @@ loginView model =
                     []
                 , errorBox currentError
                 , button
-                    [ onClick Login ]
+                    [ onClick Login
+                    , disabled invalidForm
+                    ]
                     [ text "Login" ]
                 ]
             , a
@@ -118,6 +130,17 @@ registerView model =
                 [ Just ApiError.InvalidPassword
                 , Just ApiError.PasswordDoesNotMatchConfirmPassword
                 ]
+
+        incompleteForm =
+            List.member
+                ""
+                [ model.welcomeComponent.email
+                , model.welcomeComponent.password
+                , model.welcomeComponent.confirmPassword
+                ]
+
+        invalidForm =
+            incompleteForm || Util.isNotNothing currentError
     in
         div
             []
@@ -151,7 +174,9 @@ registerView model =
                     []
                 , errorBox currentError
                 , button
-                    [ onClick Register ]
+                    [ onClick Register
+                    , disabled invalidForm
+                    ]
                     [ text "Register" ]
                 ]
             , a

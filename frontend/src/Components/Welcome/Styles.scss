@@ -37,6 +37,10 @@
         color: $color1;
         background-color: $color2;
         border: none;
+
+        &:disabled {
+            cursor: not-allowed;
+        }
       }
 
       .welcome-error-box {
