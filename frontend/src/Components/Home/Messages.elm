@@ -1,7 +1,9 @@
-module Components.Home.Messages exposing ( Msg(..) )
+module Components.Home.Messages exposing (Msg(..))
+
+{-| Home Component Msg.
+-}
 
 
-{-| Home Component Msg. -}
 type Msg
-  = GoToMainView
-  | GoToProfileView
+    = GoToMainView
+    | GoToProfileView

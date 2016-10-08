@@ -4,7 +4,8 @@ import Components.Home.Messages exposing (Msg(..))
 import Components.Home.Model exposing (Model)
 
 
-{-| Home Component Update. -}
-update: Msg -> Model -> (Model, Cmd Msg)
+{-| Home Component Update.
+-}
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  (model, Cmd.none)
+    ( model, Cmd.none )

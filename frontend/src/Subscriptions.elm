@@ -6,7 +6,8 @@ import Components.Model exposing (Model)
 import Components.Messages exposing (Msg)
 
 
-{-| All the application subscriptions. -}
-subscriptions: Model -> Sub Msg
+{-| All the application subscriptions.
+-}
+subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.batch [ Ports.onLoadModelFromLocalStorage LocalStorage.onLoadModel ]
+    Sub.batch [ Ports.onLoadModelFromLocalStorage LocalStorage.onLoadModel ]
