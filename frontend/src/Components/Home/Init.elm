@@ -7,6 +7,6 @@ import Components.Home.Model exposing (Model)
 -}
 init : Model
 init =
-    { data1 = ""
-    , data2 = ""
+    { dataOne = ""
+    , dataTwo = ""
     }

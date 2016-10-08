@@ -8,8 +8,8 @@ import Json.Decode as Decode exposing ((:=))
 random data (strings) to display the cacheing.
 -}
 type alias Model =
-    { data1 : String
-    , data2 : String
+    { dataOne : String
+    , dataTwo : String
     }
 
 
@@ -18,8 +18,8 @@ type alias Model =
 encoder : Model -> Encode.Value
 encoder model =
     Encode.object
-        [ ( "data1", Encode.string model.data1 )
-        , ( "data2", Encode.string model.data2 )
+        [ ( "dataOne", Encode.string model.dataOne )
+        , ( "dataTwo", Encode.string model.dataTwo )
         ]
 
 
@@ -28,5 +28,5 @@ encoder model =
 decoder : Decode.Decoder Model
 decoder =
     Decode.object2 Model
-        ("data1" := Decode.string)
-        ("data2" := Decode.string)
+        ("dataOne" := Decode.string)
+        ("dataTwo" := Decode.string)

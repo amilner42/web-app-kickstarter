@@ -1,6 +1,7 @@
 module Components.Home.Update exposing (update)
 
 import DefaultServices.Router as Router
+import DefaultServices.LocalStorage as LocalStorage
 import Components.Home.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
 import Models.Route as Route
@@ -24,3 +25,29 @@ update msg model =
                     { model | route = Route.HomeComponentProfile }
             in
                 ( newModel, Router.navigateTo newModel.route )
+
+        OnDataOneChange newDataOne ->
+            let
+                homeComponent =
+                    model.homeComponent
+
+                newModel =
+                    { model
+                        | homeComponent =
+                            { homeComponent | dataOne = newDataOne }
+                    }
+            in
+                ( newModel, LocalStorage.saveModel newModel )
+
+        OnDataTwoChange newDataTwo ->
+            let
+                homeComponent =
+                    model.homeComponent
+
+                newModel =
+                    { model
+                        | homeComponent =
+                            { homeComponent | dataTwo = newDataTwo }
+                    }
+            in
+                ( newModel, LocalStorage.saveModel newModel )

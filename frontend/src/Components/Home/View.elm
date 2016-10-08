@@ -1,9 +1,9 @@
 module Components.Home.View exposing (..)
 
 import Models.Route as Route
-import Html exposing (Html, div, text, button)
-import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
+import Html exposing (Html, div, text, button, input, h1)
+import Html.Attributes exposing (class, placeholder, value)
+import Html.Events exposing (onClick, onInput)
 import DefaultServices.Util as Util
 import Components.Model exposing (Model)
 import Components.Home.Messages exposing (Msg(..))
@@ -68,11 +68,31 @@ navbar model =
 -}
 profileView : Model -> Html Msg
 profileView model =
-    div [] [ text "The profile view!" ]
+    div []
+        [ h1
+            []
+            [ text "Profile View" ]
+        ]
 
 
 {-| The Main view.
 -}
 mainView : Model -> Html Msg
 mainView model =
-    div [] [ text "The main view!" ]
+    div []
+        [ h1
+            []
+            [ text "Main View" ]
+        , input
+            [ onInput OnDataOneChange
+            , placeholder "Random data 1"
+            , value model.homeComponent.dataOne
+            ]
+            []
+        , input
+            [ onInput OnDataTwoChange
+            , placeholder "Random data 2"
+            , value model.homeComponent.dataTwo
+            ]
+            []
+        ]
