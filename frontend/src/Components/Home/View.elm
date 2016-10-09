@@ -1,7 +1,7 @@
 module Components.Home.View exposing (..)
 
 import Models.Route as Route
-import Html exposing (Html, div, text, button, input, h1)
+import Html exposing (Html, div, text, button, input, h1, h3)
 import Html.Attributes exposing (class, placeholder, value)
 import Html.Events exposing (onClick, onInput)
 import DefaultServices.Util as Util
@@ -72,6 +72,12 @@ profileView model =
         [ h1
             []
             [ text "Profile View" ]
+        , h3
+            []
+            [ text <|
+                "Notice going back and forth (navigation) works between the"
+                    ++ " home view and the profile view."
+            ]
         ]
 
 
@@ -83,6 +89,12 @@ mainView model =
         [ h1
             []
             [ text "Main View" ]
+        , h3
+            []
+            [ text <|
+                "Check out cacheing by entering data and closing/reopening"
+                    ++ " browser"
+            ]
         , input
             [ onInput OnDataOneChange
             , placeholder "Random data 1"
