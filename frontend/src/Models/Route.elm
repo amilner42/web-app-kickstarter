@@ -7,7 +7,8 @@ import Json.Encode as Encode
 {-| All of the app routes.
 -}
 type Route
-    = HomeComponent
+    = HomeComponentProfile
+    | HomeComponentMain
     | WelcomeComponentLogin
     | WelcomeComponentRegister
 
@@ -19,8 +20,11 @@ encoder route =
     let
         routeString =
             case route of
-                HomeComponent ->
-                    "HomeComponent"
+                HomeComponentProfile ->
+                    "HomeComponentProfile"
+
+                HomeComponentMain ->
+                    "HomeComponentMain"
 
                 WelcomeComponentLogin ->
                     "WelcomeComponentLogin"
@@ -36,8 +40,11 @@ encoder route =
 stringToDecoder : String -> Decode.Decoder Route
 stringToDecoder encodedRouteString =
     case encodedRouteString of
-        "HomeComponent" ->
-            Decode.succeed HomeComponent
+        "HomeComponentProfile" ->
+            Decode.succeed HomeComponentProfile
+
+        "HomeComponentMain" ->
+            Decode.succeed HomeComponentMain
 
         "WelcomeComponentLogin" ->
             Decode.succeed WelcomeComponentLogin

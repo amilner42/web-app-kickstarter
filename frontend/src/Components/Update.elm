@@ -1,6 +1,7 @@
 module Components.Update exposing (update)
 
 import Navigation
+import Components.Home.Update as HomeUpdate
 import Components.Welcome.Update as WelcomeUpdate
 import Components.Welcome.Init as WelcomeInit
 import Components.Messages exposing (Msg(..))
@@ -65,9 +66,12 @@ update msg model =
                     ]
                 )
 
-        -- TODO
         HomeMessage subMsg ->
-            ( model, Cmd.none )
+            let
+                ( newModel, newSubMsg ) =
+                    HomeUpdate.update subMsg model
+            in
+                ( newModel, Cmd.map HomeMessage newSubMsg )
 
         WelcomeMessage subMsg ->
             let

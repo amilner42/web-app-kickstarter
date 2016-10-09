@@ -12,7 +12,8 @@ import Models.Route as Route
 matchers : UrlParser.Parser (Route.Route -> a) a
 matchers =
     UrlParser.oneOf
-        [ UrlParser.format Route.HomeComponent (s "")
+        [ UrlParser.format Route.HomeComponentMain (s "")
+        , UrlParser.format Route.HomeComponentProfile (s "profile")
         , UrlParser.format Route.WelcomeComponentRegister (s "welcome" </> s "register")
         , UrlParser.format Route.WelcomeComponentLogin (s "welcome" </> s "login")
         ]
@@ -39,8 +40,11 @@ parser =
 toUrl : Route.Route -> String
 toUrl route =
     case route of
-        Route.HomeComponent ->
+        Route.HomeComponentMain ->
             Config.baseUrl ++ "#"
+
+        Route.HomeComponentProfile ->
+            Config.baseUrl ++ "#profile"
 
         Route.WelcomeComponentLogin ->
             Config.baseUrl ++ "#welcome/login"

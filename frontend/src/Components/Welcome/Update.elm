@@ -95,7 +95,7 @@ update msg model =
         OnRegisterSuccess newUser ->
             let
                 newModel =
-                    { model | user = Just newUser, route = Route.HomeComponent }
+                    { model | user = Just newUser, route = Route.HomeComponentMain }
             in
                 ( newModel
                 , Cmd.batch
@@ -116,7 +116,7 @@ update msg model =
         OnLoginSuccess newUser ->
             let
                 newModel =
-                    { model | user = Just newUser, route = Route.HomeComponent }
+                    { model | user = Just newUser, route = Route.HomeComponentMain }
             in
                 ( newModel
                 , Cmd.batch
