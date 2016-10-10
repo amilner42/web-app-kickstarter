@@ -10,6 +10,12 @@ import { errorCodes, user, structures } from './types';
 import { isNullOrUndefined } from './util';
 import { InvalidModelError } from './errors';
 
+
+/**
+ * Passport default username field is "username", we use "email".
+ */
+const usernameField = "email";
+
 /**
  * Check if a password is correct for a user.
  *
@@ -45,7 +51,7 @@ const register = (email, password): Promise<user> => {
 /**
  * Standard login strategy, rejects with approprite error code if needed.
  */
-export const loginStrategy: Strategy = new Strategy((email, password, next) => {
+export const loginStrategy: Strategy = new Strategy({ usernameField }, (email, password, next) => {
 
   let retrievedUser: user; // to avoid multiple queries to db for the user.
 
@@ -138,7 +144,7 @@ export const loginStrategy: Strategy = new Strategy((email, password, next) => {
 /**
  * Standard sign-up strategy, rejects with approprite error code if needed.
  */
-export const signUpStrategy: Strategy = new Strategy((email, password, next) => {
+export const signUpStrategy: Strategy = new Strategy({ usernameField }, (email, password, next) => {
 
   /**
    * The user signup structure.

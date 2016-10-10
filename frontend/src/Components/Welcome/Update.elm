@@ -59,7 +59,7 @@ update msg model =
                     model.welcomeComponent.password == model.welcomeComponent.confirmPassword
 
                 user =
-                    { username = model.welcomeComponent.email
+                    { email = model.welcomeComponent.email
                     , password = model.welcomeComponent.password
                     }
 
@@ -107,7 +107,7 @@ update msg model =
         Login ->
             let
                 user =
-                    { username = model.welcomeComponent.email
+                    { email = model.welcomeComponent.email
                     , password = model.welcomeComponent.password
                     }
             in

@@ -1,4 +1,16 @@
-module Models.User exposing (User, decoder, encoder, toJsonString, fromJsonString)
+module Models.User
+    exposing
+        ( User
+        , encoder
+        , decoder
+        , cacheDecoder
+        , cacheEncoder
+        , toJsonString
+        , fromJsonString
+        , AuthUser
+        , authEncoder
+        , toAuthJsonString
+        )
 
 import Json.Decode as Decode exposing ((:=))
 import Json.Encode as Encode
@@ -13,7 +25,7 @@ type alias User =
     }
 
 
-{-| The decoder for a user.
+{-| The User `decoder`.
 -}
 decoder : Decode.Decoder User
 decoder =
@@ -22,13 +34,30 @@ decoder =
         (Decode.maybe ("password" := Decode.string))
 
 
-{-| The encoder for a user.
+{-| The User `cacheDecoder`.
+-}
+cacheDecoder : Decode.Decoder User
+cacheDecoder =
+    decoder
+
+
+{-| The user `encoder`.
 -}
 encoder : User -> Encode.Value
 encoder user =
     Encode.object
         [ ( "email", Encode.string user.email )
         , ( "password", justValueOrNull Encode.string user.password )
+        ]
+
+
+{-| The User `cacheEncoder`.
+-}
+cacheEncoder : User -> Encode.Value
+cacheEncoder user =
+    Encode.object
+        [ ( "email", Encode.string user.email )
+        , ( "password", Encode.null )
         ]
 
 
@@ -39,8 +68,47 @@ toJsonString userRecord =
     Encode.encode 0 (encoder userRecord)
 
 
-{-| Turns a JSON string into a user.
+{-| The User `toCacheJsonString`
+-}
+toCacheJsonString : User -> String
+toCacheJsonString userRecord =
+    Encode.encode 0 (cacheEncoder userRecord)
+
+
+{-| The User `fromJsonString`.
 -}
 fromJsonString : String -> Result String User
 fromJsonString userJsonString =
     Decode.decodeString decoder userJsonString
+
+
+{-| The User `fromCacheJsonString`.
+-}
+fromCacheJsonString : String -> Result String User
+fromCacheJsonString userJsonString =
+    Decode.decodeString cacheDecoder userJsonString
+
+
+{-| For authentication we only send an email and password.
+-}
+type alias AuthUser =
+    { email : String
+    , password : String
+    }
+
+
+{-| Encodes the user for the initial authentication request (login/register).
+-}
+authEncoder : AuthUser -> Encode.Value
+authEncoder authUser =
+    Encode.object
+        [ ( "email", Encode.string authUser.email )
+        , ( "password", Encode.string authUser.password )
+        ]
+
+
+{-| Converts an authUser to a string.
+-}
+toAuthJsonString : AuthUser -> String
+toAuthJsonString authUser =
+    Encode.encode 0 <| authEncoder <| authUser
