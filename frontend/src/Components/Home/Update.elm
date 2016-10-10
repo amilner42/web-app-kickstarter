@@ -37,7 +37,7 @@ update msg model =
                             { homeComponent | dataOne = newDataOne }
                     }
             in
-                ( newModel, LocalStorage.saveModel newModel )
+                ( newModel, Cmd.none )
 
         OnDataTwoChange newDataTwo ->
             let
@@ -50,4 +50,4 @@ update msg model =
                             { homeComponent | dataTwo = newDataTwo }
                     }
             in
-                ( newModel, LocalStorage.saveModel newModel )
+                ( newModel, Cmd.none )

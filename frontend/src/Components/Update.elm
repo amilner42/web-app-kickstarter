@@ -1,4 +1,4 @@
-module Components.Update exposing (update)
+module Components.Update exposing (update, updateCacheIf)
 
 import Navigation
 import Components.Home.Update as HomeUpdate
@@ -16,69 +16,72 @@ import Api
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        NoOp ->
-            ( model, Cmd.none )
+    updateCacheIf msg model True
 
-        LoadModelFromLocalStorage ->
-            ( model, LocalStorage.loadModel () )
 
-        OnLoadModelFromLocalStorageSuccess model ->
-            let
-                routeUrl =
-                    Router.toUrl model.route
-            in
-                ( model, Navigation.modifyUrl routeUrl )
+{-| Sometimes we don't want to save to the cache, for example when the website
+originally loads if we save to cache we end up loading what we saved (the
+default model) instead of what was in their before.
+-}
+updateCacheIf : Msg -> Model -> Bool -> ( Model, Cmd Msg )
+updateCacheIf msg model shouldCache =
+    let
+        ( newModel, newCmd ) =
+            case msg of
+                NoOp ->
+                    ( model, Cmd.none )
 
-        OnLoadModelFromLocalStorageFailure err ->
-            ( model, getUser () )
+                LoadModelFromLocalStorage ->
+                    ( model, LocalStorage.loadModel () )
 
-        GetUser ->
-            ( model, getUser () )
+                OnLoadModelFromLocalStorageSuccess newModel ->
+                    ( newModel, Router.navigateTo model.route )
 
-        OnGetUserSuccess user ->
-            let
-                newModel =
-                    { model | user = Just user }
+                OnLoadModelFromLocalStorageFailure err ->
+                    ( model, getUser () )
 
-                routeUrl =
-                    Router.toUrl newModel.route
-            in
+                GetUser ->
+                    ( model, getUser () )
+
+                OnGetUserSuccess user ->
+                    let
+                        newModel =
+                            { model | user = Just user }
+                    in
+                        ( newModel, Router.navigateTo newModel.route )
+
+                OnGetUserFailure newApiError ->
+                    let
+                        newModel =
+                            { model | route = Route.WelcomeComponentRegister }
+                    in
+                        ( model, Router.navigateTo newModel.route )
+
+                HomeMessage subMsg ->
+                    let
+                        ( newModel, newSubMsg ) =
+                            HomeUpdate.update subMsg model
+                    in
+                        ( newModel, Cmd.map HomeMessage newSubMsg )
+
+                WelcomeMessage subMsg ->
+                    let
+                        ( newModel, newSubMsg ) =
+                            WelcomeUpdate.update subMsg model
+                    in
+                        ( newModel, Cmd.map WelcomeMessage newSubMsg )
+    in
+        case shouldCache of
+            True ->
                 ( newModel
                 , Cmd.batch
-                    [ (Navigation.modifyUrl routeUrl)
-                    , (LocalStorage.saveModel newModel)
+                    [ newCmd
+                    , LocalStorage.saveModel newModel
                     ]
                 )
 
-        OnGetUserFailure newApiError ->
-            let
-                newModel =
-                    { model | route = Route.WelcomeComponentRegister }
-
-                routeUrl =
-                    Router.toUrl newModel.route
-            in
-                ( model
-                , Cmd.batch
-                    [ (Navigation.modifyUrl routeUrl)
-                    , (LocalStorage.saveModel newModel)
-                    ]
-                )
-
-        HomeMessage subMsg ->
-            let
-                ( newModel, newSubMsg ) =
-                    HomeUpdate.update subMsg model
-            in
-                ( newModel, Cmd.map HomeMessage newSubMsg )
-
-        WelcomeMessage subMsg ->
-            let
-                ( newModel, newSubMsg ) =
-                    WelcomeUpdate.update subMsg model
-            in
-                ( newModel, Cmd.map WelcomeMessage newSubMsg )
+            False ->
+                ( newModel, newCmd )
 
 
 {-| Gets the user from the API.

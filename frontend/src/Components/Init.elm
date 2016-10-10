@@ -6,7 +6,7 @@ import Components.Welcome.Init as WelcomeInit
 import Components.Home.Init as HomeInit
 import Components.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
-import Components.Update exposing (update)
+import Components.Update exposing (updateCacheIf)
 import Models.Route as Route
 
 
@@ -32,4 +32,4 @@ init routeResult =
             , welcomeComponent = WelcomeInit.init
             }
     in
-        update LoadModelFromLocalStorage defaultModel
+        updateCacheIf LoadModelFromLocalStorage defaultModel False
