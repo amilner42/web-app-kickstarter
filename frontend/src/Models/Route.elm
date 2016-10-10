@@ -1,4 +1,4 @@
-module Models.Route exposing (Route(..), encoder, stringToDecoder)
+module Models.Route exposing (Route(..), cacheEncoder, cacheDecoder)
 
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -13,10 +13,10 @@ type Route
     | WelcomeComponentRegister
 
 
-{-| Convert a Route to a string.
+{-| The Route `cacheEncoder`.
 -}
-encoder : Route -> Encode.Value
-encoder route =
+cacheEncoder : Route -> Encode.Value
+cacheEncoder route =
     let
         routeString =
             case route of
@@ -35,25 +35,29 @@ encoder route =
         Encode.string routeString
 
 
-{-| Decode route string to route.
+{-| The Route `cacheDecoder`.
 -}
-stringToDecoder : String -> Decode.Decoder Route
-stringToDecoder encodedRouteString =
-    case encodedRouteString of
-        "HomeComponentProfile" ->
-            Decode.succeed HomeComponentProfile
+cacheDecoder : Decode.Decoder Route
+cacheDecoder =
+    let
+        fromStringDecoder encodedRouteString =
+            case encodedRouteString of
+                "HomeComponentProfile" ->
+                    Decode.succeed HomeComponentProfile
 
-        "HomeComponentMain" ->
-            Decode.succeed HomeComponentMain
+                "HomeComponentMain" ->
+                    Decode.succeed HomeComponentMain
 
-        "WelcomeComponentLogin" ->
-            Decode.succeed WelcomeComponentLogin
+                "WelcomeComponentLogin" ->
+                    Decode.succeed WelcomeComponentLogin
 
-        "WelcomeComponentRegister" ->
-            Decode.succeed WelcomeComponentRegister
+                "WelcomeComponentRegister" ->
+                    Decode.succeed WelcomeComponentRegister
 
-        {- Technically string could be anything in local storage, `_` is a
-           wildcard.
-        -}
-        _ ->
-            Decode.fail <| encodedRouteString ++ " is not a valid route encoding!"
+                {- Technically string could be anything in local storage, `_` is a
+                   wildcard.
+                -}
+                _ ->
+                    Decode.fail <| encodedRouteString ++ " is not a valid route encoding!"
+    in
+        Decode.string `Decode.andThen` fromStringDecoder

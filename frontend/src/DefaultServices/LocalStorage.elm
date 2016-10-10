@@ -1,7 +1,7 @@
 module DefaultServices.LocalStorage exposing (saveModel, onLoadModel, loadModel)
 
 import Ports
-import Components.Model exposing (Model, encoder, fromJsonString)
+import Components.Model exposing (Model, cacheEncoder, fromCacheJsonString)
 import Components.Messages exposing (Msg(..))
 
 
@@ -49,14 +49,14 @@ import Components.Messages exposing (Msg(..))
 -}
 saveModel : Model -> Cmd msg
 saveModel model =
-    Ports.saveModelToLocalStorage <| encoder <| model
+    Ports.saveModelToLocalStorage <| cacheEncoder <| model
 
 
 {-| Will be used for the port subscription.
 -}
 onLoadModel : String -> Msg
 onLoadModel modelAsStringFromStorage =
-    case fromJsonString modelAsStringFromStorage of
+    case fromCacheJsonString modelAsStringFromStorage of
         Ok model ->
             OnLoadModelFromLocalStorageSuccess model
 

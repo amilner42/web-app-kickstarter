@@ -1,4 +1,4 @@
-module Components.Home.Model exposing (Model, encoder, decoder)
+module Components.Home.Model exposing (Model, cacheEncoder, cacheDecoder)
 
 import Json.Encode as Encode
 import Json.Decode as Decode exposing ((:=))
@@ -13,20 +13,20 @@ type alias Model =
     }
 
 
-{-| Home Component encoder.
+{-| Home Component `cacheEncoder`.
 -}
-encoder : Model -> Encode.Value
-encoder model =
+cacheEncoder : Model -> Encode.Value
+cacheEncoder model =
     Encode.object
         [ ( "dataOne", Encode.string model.dataOne )
         , ( "dataTwo", Encode.string model.dataTwo )
         ]
 
 
-{-| Home Component decoder.
+{-| Home Component `cacheDecoder`.
 -}
-decoder : Decode.Decoder Model
-decoder =
+cacheDecoder : Decode.Decoder Model
+cacheDecoder =
     Decode.object2 Model
         ("dataOne" := Decode.string)
         ("dataTwo" := Decode.string)

@@ -1,4 +1,4 @@
-module Components.Model exposing (Model, decoder, encoder, toJsonString, fromJsonString)
+module Components.Model exposing (Model, cacheDecoder, cacheEncoder, toCacheJsonString, fromCacheJsonString)
 
 import Json.Decode as Decode exposing ((:=))
 import Json.Encode as Encode
@@ -19,38 +19,38 @@ type alias Model =
     }
 
 
-{-| Base Component decoder.
+{-| Base Component `cacheDecoder`.
 -}
-decoder : Decode.Decoder Model
-decoder =
+cacheDecoder : Decode.Decoder Model
+cacheDecoder =
     Decode.object4 Model
-        ("user" := (Decode.maybe (User.decoder)))
-        ("route" := Decode.string `Decode.andThen` Route.stringToDecoder)
-        ("homeComponent" := (HomeModel.decoder))
-        ("welcomeComponent" := (WelcomeModel.decoder))
+        ("user" := (Decode.maybe (User.cacheDecoder)))
+        ("route" := Route.cacheDecoder)
+        ("homeComponent" := (HomeModel.cacheDecoder))
+        ("welcomeComponent" := (WelcomeModel.cacheDecoder))
 
 
-{-| Base Component encoder.
+{-| Base Component `cacheEncoder`.
 -}
-encoder : Model -> Encode.Value
-encoder model =
+cacheEncoder : Model -> Encode.Value
+cacheEncoder model =
     Encode.object
-        [ ( "user", justValueOrNull User.encoder model.user )
-        , ( "route", Route.encoder model.route )
-        , ( "homeComponent", HomeModel.encoder model.homeComponent )
-        , ( "welcomeComponent", WelcomeModel.encoder model.welcomeComponent )
+        [ ( "user", justValueOrNull User.cacheEncoder model.user )
+        , ( "route", Route.cacheEncoder model.route )
+        , ( "homeComponent", HomeModel.cacheEncoder model.homeComponent )
+        , ( "welcomeComponent", WelcomeModel.cacheEncoder model.welcomeComponent )
         ]
 
 
-{-| Base Component `toJsonString`.
+{-| Base Component `toCacheJsonString`.
 -}
-toJsonString : Model -> String
-toJsonString model =
-    Encode.encode 0 (encoder model)
+toCacheJsonString : Model -> String
+toCacheJsonString model =
+    Encode.encode 0 (cacheEncoder model)
 
 
-{-| Base Component `fromJsonString`.
+{-| Base Component `fromCacheJsonString`.
 -}
-fromJsonString : String -> Result String Model
-fromJsonString modelJsonString =
-    Decode.decodeString decoder modelJsonString
+fromCacheJsonString : String -> Result String Model
+fromCacheJsonString modelJsonString =
+    Decode.decodeString cacheDecoder modelJsonString

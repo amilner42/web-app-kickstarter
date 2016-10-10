@@ -1,4 +1,4 @@
-module Components.Welcome.Model exposing (Model, encoder, decoder)
+module Components.Welcome.Model exposing (Model, cacheEncoder, cacheDecoder)
 
 import Http
 import Json.Encode as Encode
@@ -17,10 +17,10 @@ type alias Model =
     }
 
 
-{-| Welcome Component encoder.
+{-| Welcome Component `cacheEncoder`.
 -}
-encoder : Model -> Encode.Value
-encoder model =
+cacheEncoder : Model -> Encode.Value
+cacheEncoder model =
     Encode.object
         [ ( "email", Encode.string model.email )
           -- we don't want to save the password to localStorage
@@ -31,10 +31,10 @@ encoder model =
         ]
 
 
-{-| Welcome Component decoder.
+{-| Welcome Component `cacheDecoder`.
 -}
-decoder : Decode.Decoder Model
-decoder =
+cacheDecoder : Decode.Decoder Model
+cacheDecoder =
     Decode.object4 Model
         ("email" := Decode.string)
         ("password" := Decode.string)
