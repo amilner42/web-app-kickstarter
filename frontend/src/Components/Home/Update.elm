@@ -3,8 +3,12 @@ module Components.Home.Update exposing (update)
 import DefaultServices.Router as Router
 import DefaultServices.LocalStorage as LocalStorage
 import Components.Home.Messages exposing (Msg(..))
+import Components.Home.Init as HomeInit
+import Components.Welcome.Init as WelcomeInit
 import Components.Model exposing (Model)
 import Models.Route as Route
+import Api
+import DefaultModel exposing (defaultModel)
 
 
 {-| Home Component Update.
@@ -51,3 +55,22 @@ update msg model =
                     }
             in
                 ( newModel, Cmd.none )
+
+        LogOut ->
+            ( model, Api.getLogOut OnLogOutFailure OnLogOutSuccess )
+
+        OnLogOutFailure apiError ->
+            let
+                homeComponent =
+                    model.homeComponent
+
+                newModel =
+                    { model
+                        | homeComponent =
+                            { homeComponent | logOutError = Just apiError }
+                    }
+            in
+                ( newModel, Cmd.none )
+
+        OnLogOutSuccess basicResponse ->
+            ( defaultModel, Cmd.none )

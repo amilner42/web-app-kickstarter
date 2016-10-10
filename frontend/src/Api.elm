@@ -1,10 +1,13 @@
-module Api exposing (getAccount, postLogin, postRegister)
+module Api exposing (getAccount, postLogin, postRegister, getLogOut)
 
+import Json.Encode as Encode
+import Json.Decode as Decode exposing ((:=))
 import Http
 import Models.ApiError as ApiError
 import DefaultServices.Http as HttpService
 import Config exposing (apiBaseUrl)
 import Models.User as User
+import Models.BasicResponse as BasicResponse
 import Components.Messages exposing (Msg)
 
 
@@ -13,6 +16,14 @@ import Components.Messages exposing (Msg)
 getAccount : (ApiError.ApiError -> b) -> (User.User -> b) -> Cmd b
 getAccount =
     HttpService.get (apiBaseUrl ++ "account") User.decoder
+
+
+{-| Queries the API to log the user out, which should send a response to delete
+the cookies.
+-}
+getLogOut : (ApiError.ApiError -> b) -> (BasicResponse.BasicResponse -> b) -> Cmd b
+getLogOut =
+    HttpService.get (apiBaseUrl ++ "logOut") BasicResponse.decoder
 
 
 {-| Logs user in and returns the user, unless invalid credentials.

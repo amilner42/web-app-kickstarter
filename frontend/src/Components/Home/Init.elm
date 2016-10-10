@@ -9,4 +9,5 @@ init : Model
 init =
     { dataOne = ""
     , dataTwo = ""
+    , logOutError = Nothing
     }

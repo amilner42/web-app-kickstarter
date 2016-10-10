@@ -8,6 +8,7 @@ import Components.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
 import Components.Update exposing (updateCacheIf)
 import Models.Route as Route
+import DefaultModel exposing (defaultModel)
 
 
 {-| Base Component Init.
@@ -24,12 +25,8 @@ init routeResult =
            update calls other thing and causes runtime probelms with localStorage.
            TODO report to github elm issues
         -}
-        defaultModel : Model
-        defaultModel =
-            { user = Nothing
-            , route = route
-            , homeComponent = HomeInit.init
-            , welcomeComponent = WelcomeInit.init
-            }
+        defaultModelWithRoute : Model
+        defaultModelWithRoute =
+            { defaultModel | route = route }
     in
-        updateCacheIf LoadModelFromLocalStorage defaultModel False
+        updateCacheIf LoadModelFromLocalStorage defaultModelWithRoute False
