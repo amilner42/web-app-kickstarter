@@ -51,7 +51,7 @@ update msg model =
                             { welcomeComponent | email = newEmail }
                     }
             in
-                ( wipeError newModel, LocalStorage.saveModel newModel )
+                ( wipeError newModel, Cmd.none )
 
         Register ->
             let
@@ -97,12 +97,7 @@ update msg model =
                 newModel =
                     { model | user = Just newUser, route = Route.HomeComponentMain }
             in
-                ( newModel
-                , Cmd.batch
-                    [ LocalStorage.saveModel newModel
-                    , Router.navigateTo newModel.route
-                    ]
-                )
+                ( newModel, Router.navigateTo newModel.route )
 
         Login ->
             let
@@ -118,12 +113,7 @@ update msg model =
                 newModel =
                     { model | user = Just newUser, route = Route.HomeComponentMain }
             in
-                ( newModel
-                , Cmd.batch
-                    [ LocalStorage.saveModel newModel
-                    , Router.navigateTo newModel.route
-                    ]
-                )
+                ( newModel, Router.navigateTo newModel.route )
 
         OnLoginFailure newApiError ->
             let
