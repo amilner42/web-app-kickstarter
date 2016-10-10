@@ -100,5 +100,23 @@ export const routes: appRoutes = {
       res.status(200).json(userModel.stripSensitiveDataForResponse(req.user));
       return;
     }
+  },
+
+  '/logOut': {
+    /**
+     * Logs the user out and clears the session cookie.
+     */
+    get: (req, res) => {
+      // req.logout();
+      // http://stackoverflow.com/questions/13758207/why-is-passportjs-in-node-not-removing-session-on-logout
+      req.session.destroy(function (err) {
+        if(err) {
+          console.log("Err removing session, ", err);
+        }
+        res.clearCookie('connect.sid');
+        res.status(200).json({message: "Successfully logged out"});
+        return;
+      });
+    }
   }
 }

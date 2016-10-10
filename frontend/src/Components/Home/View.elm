@@ -2,7 +2,7 @@ module Components.Home.View exposing (..)
 
 import Models.Route as Route
 import Html exposing (Html, div, text, button, input, h1, h3)
-import Html.Attributes exposing (class, placeholder, value)
+import Html.Attributes exposing (class, placeholder, value, hidden)
 import Html.Events exposing (onClick, onInput)
 import DefaultServices.Util as Util
 import Components.Model exposing (Model)
@@ -78,6 +78,12 @@ profileView model =
                 "Notice going back and forth (navigation) works between the"
                     ++ " home view and the profile view."
             ]
+        , button
+            [ onClick LogOut ]
+            [ text "Log out" ]
+        , div
+            [ hidden <| Util.isNothing model.homeComponent.logOutError ]
+            [ text "Cannot log out right now, try again shortly." ]
         ]
 
 
