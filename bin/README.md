@@ -11,6 +11,7 @@ tooling - no magic here.
 | build.sh             | Builds the backend into `backend/lib` and the frontend into `frontend/dist`. The frontend is minimized. |
 | install.sh           | Installs all dependencies/typings for the project, to be used after a `git clone` |
 | watch.sh             | Builds the project and watches for changes to all files on frontend and backend |
+| dev.sh               | Builds the project and watches for changes as well as running the app on localhost:3000. |
 | test.backend.sh      | Builds the backend and runs all the tests (`backend/tests`) with mocha |
 
 ### File Structure
