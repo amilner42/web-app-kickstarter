@@ -1,7 +1,9 @@
-module Models.Route exposing (Route(..), cacheEncoder, cacheDecoder)
+module Models.Route exposing (Route(..), cacheEncoder, cacheDecoder, urlParsers, toUrl)
 
 import Json.Decode as Decode
 import Json.Encode as Encode
+import Config
+import UrlParser exposing (s, (</>))
 
 
 {-| All of the app routes.
@@ -61,3 +63,31 @@ cacheDecoder =
                     Decode.fail <| encodedRouteString ++ " is not a valid route encoding!"
     in
         Decode.string `Decode.andThen` fromStringDecoder
+
+
+{-| The `urlParser`s needed by the `Router` to parse the route from the url.
+-}
+urlParsers =
+    [ UrlParser.format HomeComponentMain (s "")
+    , UrlParser.format HomeComponentProfile (s "profile")
+    , UrlParser.format WelcomeComponentRegister (s "welcome" </> s "register")
+    , UrlParser.format WelcomeComponentLogin (s "welcome" </> s "login")
+    ]
+
+
+{-| Converts a route to a url.
+-}
+toUrl : Route -> String
+toUrl route =
+    case route of
+        HomeComponentMain ->
+            Config.baseUrl ++ "#"
+
+        HomeComponentProfile ->
+            Config.baseUrl ++ "#profile"
+
+        WelcomeComponentLogin ->
+            Config.baseUrl ++ "#welcome/login"
+
+        WelcomeComponentRegister ->
+            Config.baseUrl ++ "#welcome/register"

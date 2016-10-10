@@ -2,8 +2,8 @@ module DefaultServices.Router exposing (..)
 
 import String
 import Navigation
-import UrlParser exposing (s, (</>))
 import Config
+import UrlParser
 import Models.Route as Route
 
 
@@ -11,12 +11,7 @@ import Models.Route as Route
 -}
 matchers : UrlParser.Parser (Route.Route -> a) a
 matchers =
-    UrlParser.oneOf
-        [ UrlParser.format Route.HomeComponentMain (s "")
-        , UrlParser.format Route.HomeComponentProfile (s "profile")
-        , UrlParser.format Route.WelcomeComponentRegister (s "welcome" </> s "register")
-        , UrlParser.format Route.WelcomeComponentLogin (s "welcome" </> s "login")
-        ]
+    UrlParser.oneOf Route.urlParsers
 
 
 {-| The Parser, currently intakes routes prefixed by hash.
@@ -35,26 +30,8 @@ parser =
     Navigation.makeParser hashParser
 
 
-{-| Gets the url for a route.
--}
-toUrl : Route.Route -> String
-toUrl route =
-    case route of
-        Route.HomeComponentMain ->
-            Config.baseUrl ++ "#"
-
-        Route.HomeComponentProfile ->
-            Config.baseUrl ++ "#profile"
-
-        Route.WelcomeComponentLogin ->
-            Config.baseUrl ++ "#welcome/login"
-
-        Route.WelcomeComponentRegister ->
-            Config.baseUrl ++ "#welcome/register"
-
-
 {-| Navigates to a given route.
 -}
 navigateTo : Route.Route -> Cmd msg
 navigateTo route =
-    Navigation.newUrl <| toUrl <| route
+    Navigation.newUrl <| Route.toUrl <| route
