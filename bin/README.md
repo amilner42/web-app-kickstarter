@@ -13,6 +13,7 @@ tooling - no magic here.
 | watch.sh             | Builds the project and watches for changes to all files on frontend and backend |
 | dev.sh               | Builds the project and watches for changes as well as running the app on localhost:3000. |
 | test.backend.sh      | Builds the backend and runs all the tests (`backend/tests`) with mocha |
+| setup-remote.ubuntu1404.sh | Installs the local dependencies on an Ubuntu 14.04, tested and works with Amazon EC2 Ubuntu 14.04 instance |
 
 ### File Structure
 
