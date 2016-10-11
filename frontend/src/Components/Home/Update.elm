@@ -73,4 +73,4 @@ update msg model =
                 ( newModel, Cmd.none )
 
         OnLogOutSuccess basicResponse ->
-            ( defaultModel, Cmd.none )
+            ( defaultModel, Router.navigateTo Route.WelcomeComponentLogin )
