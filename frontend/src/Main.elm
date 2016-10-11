@@ -21,23 +21,7 @@ main =
     Navigation.program Router.parser
         { init = init
         , update = update
-        , urlUpdate = urlUpdate
+        , urlUpdate = Router.urlUpdate
         , subscriptions = subscriptions
         , view = view
         }
-
-
-{-| Updates the model `route` field when the route is updated.
--}
-urlUpdate : Result String Route.Route -> Model -> ( Model, Cmd Msg )
-urlUpdate routeResult model =
-    case routeResult of
-        Ok route ->
-            let
-                newModel =
-                    { model | route = route }
-            in
-                ( newModel, LocalStorage.saveModel newModel )
-
-        Err err ->
-            ( model, Navigation.back 1 )
