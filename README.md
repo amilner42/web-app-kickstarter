@@ -27,17 +27,13 @@ Elm for better **simple** software engineering.
 
 ### Local Dependencies
 
-The project only has 4 local dependencies, `node` and `npm`, `mongodb` and
-`elm`.
+The project only has 3 local dependencies, `node` and `npm`, and `mongodb`.
   - node ~ V6.0.0
   - npm ~ V3.10.3
   - monodb ~ V3.2.9
-  - elm ~ v0.17
 
 You don't _need_ these versions, but it's more likely to work properly if at
-least the major versions are correct. For elm, do to it's wild nature you will
-need exactly v0.17 (the latest), 0.18 is on the way and I will attempt to keep
-up to date with Elm upgrades.
+least the major versions are correct.
 
 ### Set Up
 

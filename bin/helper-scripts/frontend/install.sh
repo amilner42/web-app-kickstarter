@@ -14,7 +14,7 @@ echo "========================================================"
 echo "STARTING TASK: Install frontend elm dependencies"
 echo "========================================================"
 cd frontend;
-elm package install;
+"$FRONTEND_NODE_MODULES_BIN"/elm-package install -y;
 cd -;
 echo "========================================================"
 echo "COMPLETE TASK"
