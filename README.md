@@ -9,6 +9,13 @@ Elm, leaving us with meen-stack. While trying to build the `frontend`, an
 [example app](https://github.com/sporto/elm-tutorial-app/) created by @sporto
 was of great use to me. So huge thanks to both of them!
 
+### Examples
+
+If you happen to use this kickstarter to develop an open source app, feel free to
+add it to this list!
+
+- [Less Money More Happy](https://github.com/amilner42/less-money-more-happy)
+
 ### Quick Rant
 
 Ahh where to begin...I realized there were fundamental problems with Angular,
