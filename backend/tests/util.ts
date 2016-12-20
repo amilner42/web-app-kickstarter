@@ -2,7 +2,6 @@
 
 import Bluebird from 'bluebird';
 
-import { BaseError } from '../src/errors';
 import { errorCodes } from '../src/types';
 
 
@@ -37,7 +36,11 @@ export const assertPromiseDoesntError = (promise: Promise<any> | Bluebird<any>, 
  *      with promises even though they are, hence I have to cast it to avoid
  *      errors.
  */
-export const assertPromiseDoesError = (promise: Promise<any> | Bluebird<any>, done: mochaDone) => {
+export const assertPromiseDoesError = (
+    promise: Promise<any> | Bluebird<any>,
+    done: mochaDone)
+    : void => {
+
   (promise as Promise<any>)
   .then((result) => {
     done("Promise should have errored");
@@ -51,13 +54,16 @@ export const assertPromiseDoesError = (promise: Promise<any> | Bluebird<any>, do
  * Similar to `assertPromiseDoesError` but also checks that the `errorCode` is
  * what we were expecting.
  */
-export const assertPromiseErrorsWithCode = (promise: Promise<any> | Bluebird<any>,
-    errorCode: errorCodes, done: mochaDone) => {
+export const assertPromiseErrorsWithCode = (
+    promise: Promise<any> | Bluebird<any>,
+    errorCode: errorCodes, done: mochaDone)
+    : void => {
+
   (promise as Promise<any>)
   .then((result) => {
     done("Promise should have errored");
   })
-  .catch((error: BaseError) => {
+  .catch((error: { errorCode: errorCodes }) => {
     if(error.errorCode == errorCode) {
       done();
     } else {
