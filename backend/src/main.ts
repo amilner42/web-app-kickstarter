@@ -1,7 +1,6 @@
 /// <reference path="../typings_manual/index.d.ts" />
 
 import 'babel-polyfill';
-import './global_augmentations';
 
 import { server } from './server';
 import { APP_CONFIG } from '../app-config';
