@@ -1,5 +1,4 @@
-/// Module for setting up the express server, most imporantly handling things
-/// like middleware setup and passport.
+/// Module for setting up the express server (all middleware).
 
 import bodyParser from 'body-parser';
 import express, { Express } from 'express';
@@ -20,9 +19,14 @@ const MONGO_STORE = sessionStore(expressSession);
 /**
  * Returns an express server with all the middleware setup.
  *
- * This function uses global app config from `app-config.ts`.
+ * WARNING: Express middleware order matters, changing the order of your
+ *          middleware can cause subtle bugs, make sure you know what you are
+ *          doing when you add/change the order of things.
+ *
+ * NOTE: This function uses global app config from `app-config.ts`.
  */
 const createExpressServer = () => {
+  // The Express server.
   const server = express();
 
   /**
@@ -55,11 +59,11 @@ const createExpressServer = () => {
     server.use(passport.session());
   };
 
-  // The frontend gets transpiled into `frontend/dist`.
-  server.use(express.static('./frontend/dist'));
   // Parse requests as JSON, available on `req.body`.
   server.use(bodyParser.json());
-  // TODO DOC
+
+  // TODO do we even want to allow cross domain requests.
+  // Allow cross domain requests.
   server.use(function allowCrossDomain(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -67,6 +71,7 @@ const createExpressServer = () => {
     // intercept OPTIONS method
     ('OPTIONS' === req.method) ? res.send(200) : next();
   });
+
   // Use `expressSession` to handle storing the cookies which we send to the
   // frontend
   server.use(expressSession({
@@ -77,9 +82,15 @@ const createExpressServer = () => {
     cookie : {
       httpOnly: !APP_CONFIG.app.isHttps,
       maxAge: APP_CONFIG.app.secondsBeforeReloginNeeded
-    }
+    },
+    name: APP_CONFIG.app.expressSessionCookieName
   }));
 
+  // This should be after `server.use(expressSession...`, or too many sessions
+  // may be created!
+  server.use(express.static('./frontend/dist'));
+
+  // Set up passport middleware.
   setUpPassport();
 
   // Authenticate all routes for API (/api) that require auth.

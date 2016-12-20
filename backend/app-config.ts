@@ -8,11 +8,12 @@ export const APP_CONFIG = {
     "baseUrl": "https://example.com", // TODO UPDATE
     "secondsBeforeReloginNeeded": 1000 * 60 * 60 * 24 * 365 * 10,
     "expressSessionSecretKey": "changeThisSecretKey", // TODO UPDATE
+    "expressSessionCookieName": "meenSession", // TODO UPDATE
     "isHttps": false,
     "port": 3000,
     "apiSuffix": "/api"
   },
   "db": {
-    "url": "mongodb://localhost:27017/dbName>" // TODO UPDATE
+    "url": "mongodb://localhost:27017/meenKickstarter" // TODO UPDATE
   }
 }
