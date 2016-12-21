@@ -13,7 +13,7 @@ module Models.Route
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Config
-import UrlParser exposing (s, (</>))
+import UrlParser exposing (s, (</>), oneOf, map, Parser)
 
 
 {-| All of the app routes.
@@ -95,17 +95,19 @@ cacheDecoder =
                 _ ->
                     Decode.fail <| encodedRouteString ++ " is not a valid route encoding!"
     in
-        Decode.string `Decode.andThen` fromStringDecoder
+        Decode.andThen fromStringDecoder Decode.string
 
 
 {-| The `urlParser`s needed by the `Router` to parse the route from the url.
 -}
+urlParsers : Parser (Route -> a) a
 urlParsers =
-    [ UrlParser.format HomeComponentMain (s "")
-    , UrlParser.format HomeComponentProfile (s "profile")
-    , UrlParser.format WelcomeComponentRegister (s "welcome" </> s "register")
-    , UrlParser.format WelcomeComponentLogin (s "welcome" </> s "login")
-    ]
+    oneOf
+        [ map HomeComponentMain (s "")
+        , map HomeComponentProfile (s "profile")
+        , map WelcomeComponentRegister (s "welcome" </> s "register")
+        , map WelcomeComponentLogin (s "welcome" </> s "login")
+        ]
 
 
 {-| Converts a route to a url.

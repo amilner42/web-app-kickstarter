@@ -1,8 +1,8 @@
-module Models.ApiError exposing (ApiError(..), getErrorCodeFromBackendError, humanReadable)
+module Models.ApiError exposing (ApiError(..), decoder, humanReadable)
 
 import Http
 import Json.Encode as Encode
-import Json.Decode as Decode exposing ((:=))
+import Json.Decode as Decode exposing (field)
 
 
 {- COPIED from the backend, needs to stay up to date with the backend!
@@ -16,9 +16,7 @@ import Json.Decode as Decode exposing ((:=))
      invalidMongoID,
      invalidEmail,
      invalidPassword,
-     modelHasInvalidTypeStructure,     // This implies that the API was queried direclty with an incorrectly formed object.
      internalError,                    // For errors that are not handleable
-     modelUnionTypeHasMultipleErrors,
      passwordDoesNotMatchConfirmPassword
    }
 -}
@@ -38,9 +36,7 @@ type ApiError
     | InvalidMongoID
     | InvalidEmail
     | InvalidPassword
-    | ModelHasInvalidTypeStructure
     | InternalError
-    | ModelUnionTypeHasMultipleErrors
     | PasswordDoesNotMatchConfirmPassword
 
 
@@ -93,14 +89,8 @@ humanReadable apiError =
         InvalidPassword ->
             "That password is not strong enough!"
 
-        ModelHasInvalidTypeStructure ->
-            "Model has invalid type structure!"
-
         InternalError ->
             "Internal error...try again later!"
-
-        ModelUnionTypeHasMultipleErrors ->
-            "Model union type has multiple errors"
 
         PasswordDoesNotMatchConfirmPassword ->
             "Passwords do not match!"
@@ -136,46 +126,26 @@ fromErrorCode errorCode =
             InvalidPassword
 
         9 ->
-            ModelHasInvalidTypeStructure
-
-        10 ->
             InternalError
 
-        11 ->
-            ModelUnionTypeHasMultipleErrors
-
-        12 ->
+        10 ->
             PasswordDoesNotMatchConfirmPassword
 
         _ ->
             InternalError
 
 
-{-| Gets the error code from an error
+{-| Decodes the API error from the backend error.
 -}
-getErrorCodeFromBackendError : Http.Value -> ApiError
-getErrorCodeFromBackendError response =
-    case response of
-        Http.Text string ->
-            let
-                backendErrorResult =
-                    Decode.decodeString decodeBackendError string
-            in
-                case backendErrorResult of
-                    Err error ->
-                        UnexpectedPayload
+decoder : Decode.Decoder ApiError
+decoder =
+    let
+        backendDecoder =
+            Decode.map2 BackendError
+                (field "message" Decode.string)
+                (field "errorCode" Decode.int)
 
-                    Ok backendError ->
-                        fromErrorCode backendError.errorCode
-
-        Http.Blob blob ->
-            UnexpectedPayload
-
-
-{-| Decodes the API error from the backend `errorCodes` enum (top of file).
--}
-decodeBackendError : Decode.Decoder BackendError
-decodeBackendError =
-    Decode.object2 BackendError
-        ("message" := Decode.string)
-        ("errorCode" := Decode.int)
+        backendErrorToApiError { errorCode } =
+            fromErrorCode errorCode
+    in
+        Decode.map backendErrorToApiError backendDecoder

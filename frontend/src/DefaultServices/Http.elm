@@ -13,55 +13,40 @@ import Models.ApiError as ApiError
 -}
 
 
-{-| Private, just to put headers in one place.
+{-| In case of an http error, extracts the ApiError, otherwise extracts the
+body.
 -}
-headers =
-    { contentType =
-        { json = ( "Content-Type", "application/json" )
-        }
-    }
-
-
-{-| Private, for turning a raw error into an ApiError, then having the
-onApiError handle it.
--}
-onRawError : (ApiError.ApiError -> msg) -> Http.RawError -> msg
-onRawError onApiError rawError =
+handleHttpResult : (ApiError.ApiError -> b) -> (a -> b) -> Result Http.Error a -> b
+handleHttpResult onApiError onApiSuccess httpResult =
     let
-        apiError =
-            case rawError of
-                Http.RawTimeout ->
+        convertToApiError httpError =
+            case httpError of
+                Http.BadUrl _ ->
+                    ApiError.InternalError
+
+                Http.NetworkError ->
+                    ApiError.RawNetworkError
+
+                Http.Timeout ->
                     ApiError.RawTimeout
 
-                Http.RawNetworkError ->
-                    ApiError.RawNetworkError
+                Http.BadStatus { body } ->
+                    case Decode.decodeString ApiError.decoder body of
+                        Ok apiError ->
+                            apiError
+
+                        Err errorMessage ->
+                            ApiError.InternalError
+
+                Http.BadPayload _ _ ->
+                    ApiError.UnexpectedPayload
     in
-        onApiError apiError
+        case httpResult of
+            Ok expectedResult ->
+                onApiSuccess expectedResult
 
-
-{-| Private, for turning a raw success into a message, keeping in mind that a
-raw success does not mean a 2xx, it just means that there was a response.
--}
-onRawSuccess : (ApiError.ApiError -> msg) -> (decodedValue -> msg) -> Decode.Decoder decodedValue -> Http.Response -> msg
-onRawSuccess onApiError onApiSuccess decoder response =
-    if 200 <= response.status && response.status < 300 then
-        case response.value of
-            Http.Text string ->
-                case (Decode.decodeString decoder string) of
-                    Err error ->
-                        onApiError ApiError.UnexpectedPayload
-
-                    Ok decodedResponse ->
-                        onApiSuccess decodedResponse
-
-            Http.Blob blob ->
-                onApiError ApiError.UnexpectedPayload
-    else
-        let
-            apiError =
-                ApiError.getErrorCodeFromBackendError response.value
-        in
-            onApiError apiError
+            Err httpError ->
+                onApiError (convertToApiError httpError)
 
 
 {-| A HTTP get request.
@@ -69,44 +54,18 @@ onRawSuccess onApiError onApiSuccess decoder response =
 get : String -> Decode.Decoder a -> (ApiError.ApiError -> b) -> (a -> b) -> Cmd b
 get url decoder onApiError onApiSuccess =
     let
-        request =
-            { verb = "GET"
-            , headers = []
-            , url = url
-            , body = Http.empty
-            }
-
-        sendRequest =
-            Http.send Http.defaultSettings request
-
-        handleRawError =
-            onRawError onApiError
-
-        handleRawSuccess =
-            onRawSuccess onApiError onApiSuccess decoder
+        httpRequest =
+            Http.get url decoder
     in
-        Task.perform handleRawError handleRawSuccess sendRequest
+        Http.send (handleHttpResult onApiError onApiSuccess) httpRequest
 
 
 {-| A HTTP post request, adds a JSON header.
 -}
-post : String -> Decode.Decoder a -> String -> (ApiError.ApiError -> b) -> (a -> b) -> Cmd b
+post : String -> Decode.Decoder a -> Encode.Value -> (ApiError.ApiError -> b) -> (a -> b) -> Cmd b
 post url decoder body onApiError onApiSuccess =
     let
-        request =
-            { verb = "POST"
-            , headers = [ headers.contentType.json ]
-            , url = url
-            , body = Http.string body
-            }
-
-        sendRequest =
-            Http.send Http.defaultSettings request
-
-        handleRawError =
-            onRawError onApiError
-
-        handleRawSuccess =
-            onRawSuccess onApiError onApiSuccess decoder
+        httpRequest =
+            Http.post url (Http.jsonBody body) decoder
     in
-        Task.perform handleRawError handleRawSuccess sendRequest
+        Http.send (handleHttpResult onApiError onApiSuccess) httpRequest

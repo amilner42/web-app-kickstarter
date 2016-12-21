@@ -1,7 +1,6 @@
 module Components.View exposing (view)
 
 import Html exposing (div, text)
-import Html.App
 import Html.Attributes exposing (class)
 import Components.Model exposing (Model)
 import Components.Messages exposing (Msg(..))

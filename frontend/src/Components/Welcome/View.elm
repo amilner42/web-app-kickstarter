@@ -1,7 +1,7 @@
 module Components.Welcome.View exposing (view)
 
 import Html exposing (Html, div, text, button, h1, input, form, a)
-import Html.Attributes exposing (class, placeholder, type', value, hidden, disabled)
+import Html.Attributes exposing (class, placeholder, type_, value, hidden, disabled)
 import Html.Events exposing (onClick, onInput)
 import Components.Model exposing (Model)
 import Components.Welcome.Messages exposing (Msg(..))
