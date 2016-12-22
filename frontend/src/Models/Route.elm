@@ -13,7 +13,7 @@ module Models.Route
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Config
-import UrlParser exposing (s, (</>), oneOf, map, Parser)
+import UrlParser exposing (s, (</>), oneOf, map, Parser, top)
 
 
 {-| All of the app routes.
@@ -30,7 +30,7 @@ type Route
 matchers : Parser (Route -> a) a
 matchers =
     oneOf
-        [ map HomeComponentMain (s "")
+        [ map HomeComponentMain (top)
         , map HomeComponentProfile (s "profile")
         , map WelcomeComponentRegister (s "welcome" </> s "register")
         , map WelcomeComponentLogin (s "welcome" </> s "login")

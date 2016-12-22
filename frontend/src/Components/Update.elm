@@ -107,8 +107,8 @@ need to specify `routesNotNeedingAuth`, `defaultUnauthRoute`, and
 routes that don't exist (just goes `back` to the route they were on before).
 -}
 handleLocationChange : Maybe Route.Route -> Model -> ( Model, Cmd msg )
-handleLocationChange routeResult model =
-    case routeResult of
+handleLocationChange maybeRoute model =
+    case maybeRoute of
         Nothing ->
             ( model, Navigation.back 1 )
 
