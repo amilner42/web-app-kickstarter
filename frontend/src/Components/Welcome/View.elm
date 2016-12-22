@@ -6,7 +6,6 @@ import Html.Events exposing (onClick, onInput)
 import Components.Model exposing (Model)
 import Components.Welcome.Messages exposing (Msg(..))
 import DefaultServices.Util as Util
-import DefaultServices.Router as Router
 import Models.Route as Route
 import Models.ApiError as ApiError
 
@@ -91,7 +90,7 @@ loginView model =
                 , input
                     [ class <| inputErrorClassIf <| hightlightPassword
                     , placeholder "Password"
-                    , type' "password"
+                    , type_ "password"
                     , onInput OnPasswordInput
                     , value model.welcomeComponent.password
                     ]
@@ -159,7 +158,7 @@ registerView model =
                 , input
                     [ class <| inputErrorClassIf <| hightlightPassword
                     , placeholder "Password"
-                    , type' "password"
+                    , type_ "password"
                     , onInput OnPasswordInput
                     , value model.welcomeComponent.password
                     ]
@@ -167,7 +166,7 @@ registerView model =
                 , input
                     [ class <| inputErrorClassIf <| hightlightPassword
                     , placeholder "Confirm Password"
-                    , type' "password"
+                    , type_ "password"
                     , onInput OnConfirmPasswordInput
                     , value model.welcomeComponent.confirmPassword
                     ]

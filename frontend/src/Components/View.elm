@@ -24,10 +24,10 @@ view model =
                     True
 
         welcomeView =
-            Html.App.map WelcomeMessage (WelcomeView.view model)
+            Html.map WelcomeMessage (WelcomeView.view model)
 
         homeView =
-            Html.App.map HomeMessage (HomeView.view model)
+            Html.map HomeMessage (HomeView.view model)
 
         componentViewForRoute =
             case loggedIn of

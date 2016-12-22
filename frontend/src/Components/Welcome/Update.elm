@@ -3,10 +3,10 @@ module Components.Welcome.Update exposing (update)
 import Components.Model exposing (Model)
 import Components.Welcome.Messages exposing (Msg(..))
 import DefaultServices.LocalStorage as LocalStorage
-import DefaultServices.Router as Router
 import Models.Route as Route
 import Models.ApiError as ApiError
 import Api
+import Router
 
 
 {-| Welcome Component Update.

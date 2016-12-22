@@ -3,7 +3,7 @@ module Models.Route
         ( Route(..)
         , cacheEncoder
         , cacheDecoder
-        , urlParsers
+        , matchers
         , toUrl
         , routesNotNeedingAuth
         , defaultAuthRoute
@@ -23,6 +23,18 @@ type Route
     | HomeComponentMain
     | WelcomeComponentLogin
     | WelcomeComponentRegister
+
+
+{-| For parsing a location (url) into a route.
+-}
+matchers : Parser (Route -> a) a
+matchers =
+    oneOf
+        [ map HomeComponentMain (s "")
+        , map HomeComponentProfile (s "profile")
+        , map WelcomeComponentRegister (s "welcome" </> s "register")
+        , map WelcomeComponentLogin (s "welcome" </> s "login")
+        ]
 
 
 {-| All the routes that don't require authentication. By default it will be
@@ -46,6 +58,24 @@ defaultAuthRoute =
 defaultUnauthRoute : Route
 defaultUnauthRoute =
     WelcomeComponentRegister
+
+
+{-| Converts a route to a url.
+-}
+toUrl : Route -> String
+toUrl route =
+    case route of
+        HomeComponentMain ->
+            Config.baseUrl ++ "#"
+
+        HomeComponentProfile ->
+            Config.baseUrl ++ "#profile"
+
+        WelcomeComponentLogin ->
+            Config.baseUrl ++ "#welcome/login"
+
+        WelcomeComponentRegister ->
+            Config.baseUrl ++ "#welcome/register"
 
 
 {-| The Route `cacheEncoder`.
@@ -96,33 +126,3 @@ cacheDecoder =
                     Decode.fail <| encodedRouteString ++ " is not a valid route encoding!"
     in
         Decode.andThen fromStringDecoder Decode.string
-
-
-{-| The `urlParser`s needed by the `Router` to parse the route from the url.
--}
-urlParsers : Parser (Route -> a) a
-urlParsers =
-    oneOf
-        [ map HomeComponentMain (s "")
-        , map HomeComponentProfile (s "profile")
-        , map WelcomeComponentRegister (s "welcome" </> s "register")
-        , map WelcomeComponentLogin (s "welcome" </> s "login")
-        ]
-
-
-{-| Converts a route to a url.
--}
-toUrl : Route -> String
-toUrl route =
-    case route of
-        HomeComponentMain ->
-            Config.baseUrl ++ "#"
-
-        HomeComponentProfile ->
-            Config.baseUrl ++ "#profile"
-
-        WelcomeComponentLogin ->
-            Config.baseUrl ++ "#welcome/login"
-
-        WelcomeComponentRegister ->
-            Config.baseUrl ++ "#welcome/register"

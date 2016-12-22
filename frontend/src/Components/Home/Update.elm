@@ -1,6 +1,5 @@
 module Components.Home.Update exposing (update)
 
-import DefaultServices.Router as Router
 import DefaultServices.LocalStorage as LocalStorage
 import Components.Home.Messages exposing (Msg(..))
 import Components.Home.Init as HomeInit
@@ -8,6 +7,7 @@ import Components.Welcome.Init as WelcomeInit
 import Components.Model exposing (Model)
 import Models.Route as Route
 import Api
+import Router
 import DefaultModel exposing (defaultModel)
 
 
