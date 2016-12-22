@@ -1,7 +1,7 @@
 module Components.Home.Model exposing (Model, cacheEncoder, cacheDecoder)
 
 import Json.Encode as Encode
-import Json.Decode as Decode exposing ((:=))
+import Json.Decode as Decode exposing (field)
 import Models.ApiError as ApiError
 
 
@@ -30,7 +30,7 @@ cacheEncoder model =
 -}
 cacheDecoder : Decode.Decoder Model
 cacheDecoder =
-    Decode.object3 Model
-        ("dataOne" := Decode.string)
-        ("dataTwo" := Decode.string)
-        ("logOutError" := Decode.null Nothing)
+    Decode.map3 Model
+        (field "dataOne" Decode.string)
+        (field "dataTwo" Decode.string)
+        (field "logOutError" (Decode.null Nothing))

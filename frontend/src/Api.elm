@@ -1,7 +1,7 @@
 module Api exposing (getAccount, postLogin, postRegister, getLogOut)
 
 import Json.Encode as Encode
-import Json.Decode as Decode exposing ((:=))
+import Json.Decode as Decode exposing (field)
 import Http
 import Models.ApiError as ApiError
 import DefaultServices.Http as HttpService
@@ -30,11 +30,11 @@ getLogOut =
 -}
 postLogin : User.AuthUser -> (ApiError.ApiError -> b) -> (User.User -> b) -> Cmd b
 postLogin user =
-    HttpService.post (apiBaseUrl ++ "login") User.decoder (User.toAuthJsonString user)
+    HttpService.post (apiBaseUrl ++ "login") User.decoder (User.authEncoder user)
 
 
 {-| Registers the user and returns the user, unless invalid new credentials.
 -}
 postRegister : User.AuthUser -> (ApiError.ApiError -> b) -> (User.User -> b) -> Cmd b
 postRegister user =
-    HttpService.post (apiBaseUrl ++ "register") User.decoder (User.toAuthJsonString user)
+    HttpService.post (apiBaseUrl ++ "register") User.decoder (User.authEncoder user)

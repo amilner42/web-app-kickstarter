@@ -56,8 +56,6 @@ export enum errorCodes {
   invalidMongoID,
   invalidEmail,
   invalidPassword,
-  modelHasInvalidTypeStructure,     // This implies that the API was queried direclty with an incorrectly formed object.
   internalError,                    // For errors that are not handleable
-  modelUnionTypeHasMultipleErrors,
   passwordDoesNotMatchConfirmPassword
 }

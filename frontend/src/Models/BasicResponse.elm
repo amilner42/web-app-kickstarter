@@ -1,7 +1,7 @@
 module Models.BasicResponse exposing (BasicResponse, decoder)
 
 import Json.Encode as Encode
-import Json.Decode as Decode exposing ((:=))
+import Json.Decode as Decode exposing (field)
 
 
 {-| To avoid worrying about handling empty responses, we use a basic object
@@ -15,5 +15,5 @@ type alias BasicResponse =
 -}
 decoder : Decode.Decoder BasicResponse
 decoder =
-    Decode.object1 BasicResponse
-        ("message" := Decode.string)
+    Decode.map BasicResponse
+        (field "message" Decode.string)

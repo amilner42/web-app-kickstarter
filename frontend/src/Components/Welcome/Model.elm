@@ -2,7 +2,7 @@ module Components.Welcome.Model exposing (Model, cacheEncoder, cacheDecoder)
 
 import Http
 import Json.Encode as Encode
-import Json.Decode as Decode exposing ((:=))
+import Json.Decode as Decode exposing (field)
 import DefaultServices.Util as Util
 import Models.ApiError as ApiError
 
@@ -35,9 +35,9 @@ cacheEncoder model =
 -}
 cacheDecoder : Decode.Decoder Model
 cacheDecoder =
-    Decode.object4 Model
-        ("email" := Decode.string)
-        ("password" := Decode.string)
-        ("confirmPassword" := Decode.string)
+    Decode.map4 Model
+        (field "email" Decode.string)
+        (field "password" Decode.string)
+        (field "confirmPassword" Decode.string)
         -- we always save null to localStorage
-        ("errorCode" := Decode.null Nothing)
+        (field "errorCode" (Decode.null Nothing))

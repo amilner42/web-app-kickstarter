@@ -1,6 +1,7 @@
 module Components.Messages exposing (..)
 
 import Http
+import Navigation
 import Models.User exposing (User)
 import Models.ApiError as ApiError
 import Components.Model exposing (Model)
@@ -12,6 +13,7 @@ import Components.Welcome.Messages as WelcomeMessages
 -}
 type Msg
     = NoOp
+    | OnLocationChange Navigation.Location
     | LoadModelFromLocalStorage
     | OnLoadModelFromLocalStorageSuccess Model
     | OnLoadModelFromLocalStorageFailure String

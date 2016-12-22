@@ -5,14 +5,11 @@ module Models.User
         , decoder
         , cacheDecoder
         , cacheEncoder
-        , toJsonString
-        , fromJsonString
         , AuthUser
         , authEncoder
-        , toAuthJsonString
         )
 
-import Json.Decode as Decode exposing ((:=))
+import Json.Decode as Decode exposing (field)
 import Json.Encode as Encode
 import DefaultServices.Util exposing (justValueOrNull)
 
@@ -29,9 +26,9 @@ type alias User =
 -}
 decoder : Decode.Decoder User
 decoder =
-    Decode.object2 User
-        ("email" := Decode.string)
-        (Decode.maybe ("password" := Decode.string))
+    Decode.map2 User
+        (field "email" Decode.string)
+        (Decode.maybe (field "password" Decode.string))
 
 
 {-| The User `cacheDecoder`.
@@ -61,34 +58,6 @@ cacheEncoder user =
         ]
 
 
-{-| Turns a user into a JSON string.
--}
-toJsonString : User -> String
-toJsonString userRecord =
-    Encode.encode 0 (encoder userRecord)
-
-
-{-| The User `toCacheJsonString`
--}
-toCacheJsonString : User -> String
-toCacheJsonString userRecord =
-    Encode.encode 0 (cacheEncoder userRecord)
-
-
-{-| The User `fromJsonString`.
--}
-fromJsonString : String -> Result String User
-fromJsonString userJsonString =
-    Decode.decodeString decoder userJsonString
-
-
-{-| The User `fromCacheJsonString`.
--}
-fromCacheJsonString : String -> Result String User
-fromCacheJsonString userJsonString =
-    Decode.decodeString cacheDecoder userJsonString
-
-
 {-| For authentication we only send an email and password.
 -}
 type alias AuthUser =
@@ -105,10 +74,3 @@ authEncoder authUser =
         [ ( "email", Encode.string authUser.email )
         , ( "password", Encode.string authUser.password )
         ]
-
-
-{-| Converts an authUser to a string.
--}
-toAuthJsonString : AuthUser -> String
-toAuthJsonString authUser =
-    Encode.encode 0 <| authEncoder <| authUser

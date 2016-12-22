@@ -1,6 +1,6 @@
 module Components.Model exposing (Model, cacheDecoder, cacheEncoder, toCacheJsonString, fromCacheJsonString)
 
-import Json.Decode as Decode exposing ((:=))
+import Json.Decode as Decode exposing (field)
 import Json.Encode as Encode
 import Components.Home.Model as HomeModel
 import Components.Welcome.Model as WelcomeModel
@@ -23,11 +23,11 @@ type alias Model =
 -}
 cacheDecoder : Decode.Decoder Model
 cacheDecoder =
-    Decode.object4 Model
-        ("user" := (Decode.maybe (User.cacheDecoder)))
-        ("route" := Route.cacheDecoder)
-        ("homeComponent" := (HomeModel.cacheDecoder))
-        ("welcomeComponent" := (WelcomeModel.cacheDecoder))
+    Decode.map4 Model
+        (field "user" (Decode.maybe (User.cacheDecoder)))
+        (field "route" Route.cacheDecoder)
+        (field "homeComponent" (HomeModel.cacheDecoder))
+        (field "welcomeComponent" (WelcomeModel.cacheDecoder))
 
 
 {-| Base Component `cacheEncoder`.
