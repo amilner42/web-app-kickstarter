@@ -1,5 +1,6 @@
 module DefaultServices.Util exposing (..)
 
+import Json.Decode as Decode
 import Json.Encode as Encode
 import Html exposing (Html, div)
 import Html.Attributes exposing (class)
@@ -93,3 +94,17 @@ withClassesIf baseClasses additionalClasses boolean =
 
         False ->
             baseClasses
+
+
+{-| Turn a string into a record using a decoder.
+-}
+fromJsonString : Decode.Decoder a -> String -> Result String a
+fromJsonString decoder encodedString =
+    Decode.decodeString decoder encodedString
+
+
+{-| Turn a record into a string using an encoder.
+-}
+toJsonString : (a -> Encode.Value) -> a -> String
+toJsonString encoder record =
+    Encode.encode 0 (encoder record)

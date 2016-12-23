@@ -1,8 +1,9 @@
 module DefaultServices.LocalStorage exposing (saveModel, onLoadModel, loadModel)
 
 import Ports
-import Components.Model exposing (Model, cacheEncoder, fromCacheJsonString)
+import Components.Model exposing (Model, cacheEncoder, cacheDecoder)
 import Components.Messages exposing (Msg(..))
+import DefaultServices.Util as Util
 
 
 {-
@@ -56,7 +57,7 @@ saveModel model =
 -}
 onLoadModel : String -> Msg
 onLoadModel modelAsStringFromStorage =
-    case fromCacheJsonString modelAsStringFromStorage of
+    case (Util.fromJsonString cacheDecoder modelAsStringFromStorage) of
         Ok model ->
             OnLoadModelFromLocalStorageSuccess model
 

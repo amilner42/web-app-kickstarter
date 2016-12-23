@@ -1,4 +1,4 @@
-module Components.Model exposing (Model, cacheDecoder, cacheEncoder, toCacheJsonString, fromCacheJsonString)
+module Components.Model exposing (Model, cacheDecoder, cacheEncoder)
 
 import Json.Decode as Decode exposing (field)
 import Json.Encode as Encode
@@ -40,17 +40,3 @@ cacheEncoder model =
         , ( "homeComponent", HomeModel.cacheEncoder model.homeComponent )
         , ( "welcomeComponent", WelcomeModel.cacheEncoder model.welcomeComponent )
         ]
-
-
-{-| Base Component `toCacheJsonString`.
--}
-toCacheJsonString : Model -> String
-toCacheJsonString model =
-    Encode.encode 0 (cacheEncoder model)
-
-
-{-| Base Component `fromCacheJsonString`.
--}
-fromCacheJsonString : String -> Result String Model
-fromCacheJsonString modelJsonString =
-    Decode.decodeString cacheDecoder modelJsonString

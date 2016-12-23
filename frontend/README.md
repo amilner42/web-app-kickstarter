@@ -47,7 +47,6 @@ app-specific. Some useful default services are:
 - Http (does the annoying part of handling http errors)
 - Util (put all random functions that are useful in this file, "utilities")
 - LocalStorage (handles interacting with localStorage)
-- Router (handles routing)
 
 ##### Models
 
@@ -57,14 +56,10 @@ things like a `User` or a `Route`. Often these models will be sent/received
 from the API so they will often have the functions:
 - `encoder`
 - `decoder`
-- `fromJsonString`
-- `toJsonString`
 
 Note that there are two types of encoders/decoders you will see:
 - `encoder` / `cacheEncoder`
 - `decoder` / `cacheDecoder`
-- `fromJsonString` / `fromCacheJsonString`
-- `toCacheJsonString` / `toCacheJsonStrng`
 
 The reason you see a duplicate of everything with a `cache` mode is because
 there are two situations where we encode our data:
