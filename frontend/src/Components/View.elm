@@ -52,7 +52,9 @@ view model =
                         Route.HomeComponentProfile ->
                             homeView
     in
-        Util.cssComponentNamespace
-            "base"
-            Nothing
-            componentViewForRoute
+        div
+            [ class "base-component-wrapper" ]
+            [ div
+                [ class "base-component" ]
+                [ componentViewForRoute ]
+            ]

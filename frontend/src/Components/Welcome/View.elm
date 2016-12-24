@@ -1,7 +1,7 @@
 module Components.Welcome.View exposing (view)
 
 import Html exposing (Html, div, text, button, h1, input, form, a)
-import Html.Attributes exposing (class, placeholder, type_, value, hidden, disabled)
+import Html.Attributes exposing (class, placeholder, type_, value, hidden, disabled, classList)
 import Html.Events exposing (onClick, onInput)
 import Components.Model exposing (Model)
 import Components.Welcome.Messages exposing (Msg(..))
@@ -14,10 +14,16 @@ import Models.ApiError as ApiError
 -}
 view : Model -> Html Msg
 view model =
-    Util.cssComponentNamespace
-        "welcome"
-        Nothing
-        (div [] [ displayViewForRoute model ])
+    div
+        [ class "welcome-component-wrapper" ]
+        [ div
+            [ class "welcome-component" ]
+            [ div
+                []
+                [ displayViewForRoute model
+                ]
+            ]
+        ]
 
 
 {-| Creates an error box with an appropriate message if there is an error,
@@ -40,13 +46,6 @@ errorBox maybeApiError =
             , hidden <| Util.isNothing <| maybeApiError
             ]
             [ text <| humanReadable <| maybeApiError ]
-
-
-{-| If hightlight error returns the css class for input errors.
--}
-inputErrorClassIf : Bool -> String
-inputErrorClassIf highlightError =
-    Util.withClassesIf "" "input-error-highlight" highlightError
 
 
 {-| The welcome login view
@@ -81,14 +80,14 @@ loginView model =
             , div
                 [ class "welcome-form" ]
                 [ input
-                    [ class <| inputErrorClassIf <| highlightEmail
+                    [ classList [ ( "input-error-highlight", highlightEmail ) ]
                     , placeholder "Email"
                     , onInput OnEmailInput
                     , value model.welcomeComponent.email
                     ]
                     []
                 , input
-                    [ class <| inputErrorClassIf <| hightlightPassword
+                    [ classList [ ( "input-error-highlight", hightlightPassword ) ]
                     , placeholder "Password"
                     , type_ "password"
                     , onInput OnPasswordInput
@@ -149,14 +148,14 @@ registerView model =
             , div
                 [ class "welcome-form" ]
                 [ input
-                    [ class <| inputErrorClassIf <| highlightEmail
+                    [ classList [ ( "input-error-highlight", highlightEmail ) ]
                     , placeholder "Email"
                     , onInput OnEmailInput
                     , value model.welcomeComponent.email
                     ]
                     []
                 , input
-                    [ class <| inputErrorClassIf <| hightlightPassword
+                    [ classList [ ( "input-error-highlight", hightlightPassword ) ]
                     , placeholder "Password"
                     , type_ "password"
                     , onInput OnPasswordInput
@@ -164,7 +163,7 @@ registerView model =
                     ]
                     []
                 , input
-                    [ class <| inputErrorClassIf <| hightlightPassword
+                    [ classList [ ( "input-error-highlight", hightlightPassword ) ]
                     , placeholder "Confirm Password"
                     , type_ "password"
                     , onInput OnConfirmPasswordInput

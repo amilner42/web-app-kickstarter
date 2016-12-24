@@ -2,7 +2,7 @@ module Components.Home.View exposing (..)
 
 import Models.Route as Route
 import Html exposing (Html, div, text, button, input, h1, h3)
-import Html.Attributes exposing (class, placeholder, value, hidden)
+import Html.Attributes exposing (class, classList, placeholder, value, hidden)
 import Html.Events exposing (onClick, onInput)
 import DefaultServices.Util as Util
 import Components.Model exposing (Model)
@@ -13,14 +13,16 @@ import Components.Home.Messages exposing (Msg(..))
 -}
 view : Model -> Html Msg
 view model =
-    Util.cssComponentNamespace
-        "home"
-        Nothing
-        (div []
-            [ navbar model
-            , displayViewForRoute model
+    div
+        [ class "home-component-wrapper" ]
+        [ div
+            [ class "home-component" ]
+            [ div []
+                [ navbar model
+                , displayViewForRoute model
+                ]
             ]
-        )
+        ]
 
 
 {-| Displays the correct view based on the model.
@@ -52,12 +54,18 @@ navbar model =
     in
         div [ class "nav" ]
             [ div
-                [ class <| Util.withClassesIf "nav-btn left" "selected" mainViewSelected
+                [ classList
+                    [ ( "nav-btn left", True )
+                    , ( "selected", mainViewSelected )
+                    ]
                 , onClick GoToMainView
                 ]
                 [ text "Home" ]
             , div
-                [ class <| Util.withClassesIf "nav-btn right" "selected" profileViewSelected
+                [ classList
+                    [ ( "nav-btn right", True )
+                    , ( "selected", profileViewSelected )
+                    ]
                 , onClick GoToProfileView
                 ]
                 [ text "Profile" ]
