@@ -10,51 +10,59 @@ import DefaultServices.Util as Util
 import Models.Route as Route
 
 
-{-| Base Component View.
+{-| Loads the correct view depending on the route we are on.
+
+NOTE: The way we structure the routing we don't need to do ANY checking here
+to see if the route being loaded is correct (eg. maybe their loading a route
+that needs auth but they're not logged in) because that logic is already
+handled in `handleLocationChange`. At the point this function is called, the
+user has already changed their route, we've already approved that the route
+change is good and updated the model, and now we just need to render it.
+-}
+viewForRoute : Model -> Html.Html Msg
+viewForRoute model =
+    let
+        renderedWelcomeView =
+            welcomeView model
+
+        renderedHomeView =
+            homeView model
+    in
+        case model.route of
+            Route.WelcomeComponentRegister ->
+                renderedWelcomeView
+
+            Route.WelcomeComponentLogin ->
+                renderedWelcomeView
+
+            Route.HomeComponentMain ->
+                renderedHomeView
+
+            Route.HomeComponentProfile ->
+                renderedHomeView
+
+
+{-| The welcome view.
+-}
+welcomeView : Model -> Html.Html Msg
+welcomeView model =
+    Html.map WelcomeMessage (WelcomeView.view model)
+
+
+{-| The home view.
+-}
+homeView : Model -> Html.Html Msg
+homeView model =
+    Html.map HomeMessage (HomeView.view model)
+
+
+{-| Base component view.
 -}
 view : Model -> Html.Html Msg
 view model =
-    let
-        loggedIn =
-            case model.user of
-                Nothing ->
-                    False
-
-                Just user ->
-                    True
-
-        welcomeView =
-            Html.map WelcomeMessage (WelcomeView.view model)
-
-        homeView =
-            Html.map HomeMessage (HomeView.view model)
-
-        componentViewForRoute =
-            case loggedIn of
-                False ->
-                    welcomeView
-
-                True ->
-                    {- For now this case is not needed, but for future if the
-                       user is loggedIn we want them to be able to go straight
-                       to their page.
-                    -}
-                    case model.route of
-                        Route.WelcomeComponentRegister ->
-                            homeView
-
-                        Route.WelcomeComponentLogin ->
-                            homeView
-
-                        Route.HomeComponentMain ->
-                            homeView
-
-                        Route.HomeComponentProfile ->
-                            homeView
-    in
-        div
-            [ class "base-component-wrapper" ]
-            [ div
-                [ class "base-component" ]
-                [ componentViewForRoute ]
-            ]
+    div
+        [ class "base-component-wrapper" ]
+        [ div
+            [ class "base-component" ]
+            [ viewForRoute model ]
+        ]
