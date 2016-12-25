@@ -82,22 +82,7 @@ toUrl route =
 -}
 cacheEncoder : Route -> Encode.Value
 cacheEncoder route =
-    let
-        routeString =
-            case route of
-                HomeComponentProfile ->
-                    "HomeComponentProfile"
-
-                HomeComponentMain ->
-                    "HomeComponentMain"
-
-                WelcomeComponentLogin ->
-                    "WelcomeComponentLogin"
-
-                WelcomeComponentRegister ->
-                    "WelcomeComponentRegister"
-    in
-        Encode.string routeString
+    Encode.string (toString route)
 
 
 {-| The Route `cacheDecoder`.
