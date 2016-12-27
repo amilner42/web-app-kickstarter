@@ -1,11 +1,11 @@
 module Components.Model exposing (Model, Shared, cacheDecoder, cacheEncoder)
 
-import Json.Decode as Decode exposing (field)
-import Json.Encode as Encode
 import Components.Home.Model as HomeModel
 import Components.Welcome.Model as WelcomeModel
-import Models.Route as Route
 import DefaultServices.Util exposing (justValueOrNull)
+import Json.Decode as Decode exposing (field)
+import Json.Encode as Encode
+import Models.Route as Route
 import Models.User as User
 
 

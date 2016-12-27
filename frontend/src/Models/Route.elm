@@ -10,9 +10,9 @@ module Models.Route
         , defaultUnauthRoute
         )
 
+import Config
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Config
 import UrlParser exposing (Parser, s, (</>), oneOf, map, top)
 
 

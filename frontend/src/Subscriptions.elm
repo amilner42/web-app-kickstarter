@@ -1,9 +1,9 @@
 module Subscriptions exposing (subscriptions)
 
-import Ports
-import DefaultServices.LocalStorage as LocalStorage
-import Components.Model exposing (Model)
 import Components.Messages exposing (Msg)
+import Components.Model exposing (Model)
+import DefaultServices.LocalStorage as LocalStorage
+import Ports
 
 
 {-| All the application subscriptions.

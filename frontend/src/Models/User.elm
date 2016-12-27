@@ -9,9 +9,9 @@ module Models.User
         , authEncoder
         )
 
+import DefaultServices.Util exposing (justValueOrNull)
 import Json.Decode as Decode exposing (field)
 import Json.Encode as Encode
-import DefaultServices.Util exposing (justValueOrNull)
 
 
 {-| The User type.

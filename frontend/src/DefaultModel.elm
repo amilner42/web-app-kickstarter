@@ -1,9 +1,9 @@
 module DefaultModel exposing (defaultModel, defaultShared)
 
-import Models.Route as Route
-import Components.Model as Model
 import Components.Home.Init as HomeInit
+import Components.Model as Model
 import Components.Welcome.Init as WelcomeInit
+import Models.Route as Route
 
 
 {-| The default model (`Components/Model.elm`) for the application.

@@ -1,23 +1,14 @@
 module Components.Welcome.View exposing (view)
 
-import Html exposing (Html, div, text, button, h1, input, a)
-import Html.Attributes
-    exposing
-        ( class
-        , placeholder
-        , type_
-        , value
-        , hidden
-        , disabled
-        , classList
-        )
-import Html.Events exposing (onClick, onInput)
 import Components.Model exposing (Shared)
-import Components.Welcome.Model exposing (Model)
 import Components.Welcome.Messages exposing (Msg(..))
+import Components.Welcome.Model exposing (Model)
 import DefaultServices.Util as Util
-import Models.Route as Route
+import Html exposing (Html, div, text, button, h1, input, a)
+import Html.Attributes exposing (class, placeholder, type_, value, hidden, disabled, classList)
+import Html.Events exposing (onClick, onInput)
 import Models.ApiError as ApiError
+import Models.Route as Route
 
 
 {-| Welcome Component View.

@@ -1,15 +1,15 @@
 module Components.Update exposing (update, updateCacheIf)
 
-import Navigation
+import Api
 import Components.Home.Update as HomeUpdate
-import Components.Welcome.Update as WelcomeUpdate
 import Components.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
-import Models.Route as Route
+import Components.Welcome.Update as WelcomeUpdate
 import DefaultServices.LocalStorage as LocalStorage
 import DefaultServices.Util as Util
+import Models.Route as Route
+import Navigation
 import Router
-import Api
 
 
 {-| Base Component Update.

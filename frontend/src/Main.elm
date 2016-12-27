@@ -1,11 +1,11 @@
 port module Main exposing (..)
 
-import Navigation
 import Components.Init exposing (init)
 import Components.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
-import Components.View exposing (view)
 import Components.Update exposing (update)
+import Components.View exposing (view)
+import Navigation
 import Subscriptions exposing (subscriptions)
 
 

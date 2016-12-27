@@ -1,10 +1,10 @@
 module Api exposing (getAccount, postLogin, postRegister, getLogOut)
 
-import Models.ApiError as ApiError
-import DefaultServices.Http as HttpService
 import Config exposing (apiBaseUrl)
-import Models.User as User
+import DefaultServices.Http as HttpService
+import Models.ApiError as ApiError
 import Models.BasicResponse as BasicResponse
+import Models.User as User
 
 
 {-| Gets the users account, or an error if unauthenticated.

@@ -3,8 +3,8 @@ module Components.Init exposing (init)
 import Components.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
 import Components.Update exposing (updateCacheIf)
-import Models.Route as Route
 import DefaultModel exposing (defaultModel, defaultShared)
+import Models.Route as Route
 import Navigation
 import Router
 

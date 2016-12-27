@@ -1,13 +1,13 @@
 module Components.Home.Update exposing (update)
 
-import Components.Home.Messages exposing (Msg(..))
+import Api
 import Components.Home.Init as HomeInit
+import Components.Home.Messages exposing (Msg(..))
 import Components.Home.Model exposing (Model)
 import Components.Model exposing (Shared)
-import Models.Route as Route
-import Api
-import Router
 import DefaultModel exposing (defaultShared)
+import Models.Route as Route
+import Router
 
 
 {-| Home Component Update.

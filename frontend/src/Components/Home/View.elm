@@ -1,13 +1,13 @@
 module Components.Home.View exposing (..)
 
-import Models.Route as Route
+import Components.Home.Messages exposing (Msg(..))
+import Components.Home.Model exposing (Model)
+import Components.Model exposing (Shared)
+import DefaultServices.Util as Util
 import Html exposing (Html, div, text, button, input, h1, h3)
 import Html.Attributes exposing (class, classList, placeholder, value, hidden)
 import Html.Events exposing (onClick, onInput)
-import DefaultServices.Util as Util
-import Components.Model exposing (Shared)
-import Components.Home.Messages exposing (Msg(..))
-import Components.Home.Model exposing (Model)
+import Models.Route as Route
 
 
 {-| Home Component View.

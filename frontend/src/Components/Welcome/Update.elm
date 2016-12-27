@@ -1,11 +1,11 @@
 module Components.Welcome.Update exposing (update)
 
+import Api
 import Components.Model exposing (Shared)
 import Components.Welcome.Messages exposing (Msg(..))
 import Components.Welcome.Model exposing (Model)
-import Models.Route as Route
 import Models.ApiError as ApiError
-import Api
+import Models.Route as Route
 import Router
 
 
