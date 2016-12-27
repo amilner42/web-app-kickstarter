@@ -1,26 +1,27 @@
 module Components.Welcome.View exposing (view)
 
-import Html exposing (Html, div, text, button, h1, input, form, a)
+import Components.Model exposing (Shared)
+import Components.Welcome.Messages exposing (Msg(..))
+import Components.Welcome.Model exposing (Model)
+import DefaultServices.Util as Util
+import Html exposing (Html, div, text, button, h1, input, a)
 import Html.Attributes exposing (class, placeholder, type_, value, hidden, disabled, classList)
 import Html.Events exposing (onClick, onInput)
-import Components.Model exposing (Model)
-import Components.Welcome.Messages exposing (Msg(..))
-import DefaultServices.Util as Util
-import Models.Route as Route
 import Models.ApiError as ApiError
+import Models.Route as Route
 
 
-{-| The welcome View.
+{-| Welcome Component View.
 -}
-view : Model -> Html Msg
-view model =
+view : Model -> Shared -> Html Msg
+view model shared =
     div
         [ class "welcome-component-wrapper" ]
         [ div
             [ class "welcome-component" ]
             [ div
                 []
-                [ displayViewForRoute model
+                [ displayViewForRoute model shared
                 ]
             ]
         ]
@@ -54,7 +55,7 @@ loginView : Model -> Html Msg
 loginView model =
     let
         currentError =
-            model.welcomeComponent.apiError
+            model.apiError
 
         highlightEmail =
             currentError == Just ApiError.NoAccountExistsForEmail
@@ -65,8 +66,8 @@ loginView model =
         incompleteForm =
             List.member
                 ""
-                [ model.welcomeComponent.email
-                , model.welcomeComponent.password
+                [ model.email
+                , model.password
                 ]
 
         invalidForm =
@@ -83,7 +84,7 @@ loginView model =
                     [ classList [ ( "input-error-highlight", highlightEmail ) ]
                     , placeholder "Email"
                     , onInput OnEmailInput
-                    , value model.welcomeComponent.email
+                    , value model.email
                     ]
                     []
                 , input
@@ -91,7 +92,7 @@ loginView model =
                     , placeholder "Password"
                     , type_ "password"
                     , onInput OnPasswordInput
-                    , value model.welcomeComponent.password
+                    , value model.password
                     ]
                     []
                 , errorBox currentError
@@ -113,7 +114,7 @@ registerView : Model -> Html Msg
 registerView model =
     let
         currentError =
-            model.welcomeComponent.apiError
+            model.apiError
 
         highlightEmail =
             List.member
@@ -132,9 +133,9 @@ registerView model =
         incompleteForm =
             List.member
                 ""
-                [ model.welcomeComponent.email
-                , model.welcomeComponent.password
-                , model.welcomeComponent.confirmPassword
+                [ model.email
+                , model.password
+                , model.confirmPassword
                 ]
 
         invalidForm =
@@ -151,7 +152,7 @@ registerView model =
                     [ classList [ ( "input-error-highlight", highlightEmail ) ]
                     , placeholder "Email"
                     , onInput OnEmailInput
-                    , value model.welcomeComponent.email
+                    , value model.email
                     ]
                     []
                 , input
@@ -159,7 +160,7 @@ registerView model =
                     , placeholder "Password"
                     , type_ "password"
                     , onInput OnPasswordInput
-                    , value model.welcomeComponent.password
+                    , value model.password
                     ]
                     []
                 , input
@@ -167,7 +168,7 @@ registerView model =
                     , placeholder "Confirm Password"
                     , type_ "password"
                     , onInput OnConfirmPasswordInput
-                    , value model.welcomeComponent.confirmPassword
+                    , value model.confirmPassword
                     ]
                     []
                 , errorBox currentError
@@ -185,19 +186,15 @@ registerView model =
 
 {-| Displays the welcome sub-view based on the sub-route (login or register)
 -}
-displayViewForRoute : Model -> Html Msg
-displayViewForRoute model =
-    let
-        route =
-            model.route
-    in
-        case route of
-            Route.WelcomeComponentLogin ->
-                loginView model
+displayViewForRoute : Model -> Shared -> Html Msg
+displayViewForRoute model shared =
+    case shared.route of
+        Route.WelcomeComponentLogin ->
+            loginView model
 
-            Route.WelcomeComponentRegister ->
-                registerView model
+        Route.WelcomeComponentRegister ->
+            registerView model
 
-            _ ->
-                -- TODO think about this case, although it should never happen.
-                loginView model
+        _ ->
+            -- TODO think about this case, although it should never happen.
+            loginView model

@@ -1,12 +1,11 @@
 module Components.Messages exposing (..)
 
-import Http
-import Navigation
-import Models.User exposing (User)
-import Models.ApiError as ApiError
-import Components.Model exposing (Model)
 import Components.Home.Messages as HomeMessages
+import Components.Model exposing (Model)
 import Components.Welcome.Messages as WelcomeMessages
+import Models.ApiError as ApiError
+import Models.User exposing (User)
+import Navigation
 
 
 {-| Base Component Msg.

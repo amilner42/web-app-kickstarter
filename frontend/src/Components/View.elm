@@ -1,12 +1,13 @@
 module Components.View exposing (view)
 
-import Html exposing (div, text)
-import Html.Attributes exposing (class)
-import Components.Model exposing (Model)
-import Components.Messages exposing (Msg(..))
+import Components.Home.Model as HomeModel
 import Components.Home.View as HomeView
+import Components.Messages exposing (Msg(..))
+import Components.Model exposing (Model, Shared)
+import Components.Welcome.Model as WelcomeModel
 import Components.Welcome.View as WelcomeView
-import DefaultServices.Util as Util
+import Html exposing (div)
+import Html.Attributes exposing (class)
 import Models.Route as Route
 
 
@@ -23,12 +24,12 @@ viewForRoute : Model -> Html.Html Msg
 viewForRoute model =
     let
         renderedWelcomeView =
-            welcomeView model
+            welcomeView model.welcomeComponent model.shared
 
         renderedHomeView =
-            homeView model
+            homeView model.homeComponent model.shared
     in
-        case model.route of
+        case model.shared.route of
             Route.WelcomeComponentRegister ->
                 renderedWelcomeView
 
@@ -44,16 +45,16 @@ viewForRoute model =
 
 {-| The welcome view.
 -}
-welcomeView : Model -> Html.Html Msg
-welcomeView model =
-    Html.map WelcomeMessage (WelcomeView.view model)
+welcomeView : WelcomeModel.Model -> Shared -> Html.Html Msg
+welcomeView welcomeModel shared =
+    Html.map WelcomeMessage (WelcomeView.view welcomeModel shared)
 
 
 {-| The home view.
 -}
-homeView : Model -> Html.Html Msg
-homeView model =
-    Html.map HomeMessage (HomeView.view model)
+homeView : HomeModel.Model -> Shared -> Html.Html Msg
+homeView homeModel shared =
+    Html.map HomeMessage (HomeView.view homeModel shared)
 
 
 {-| Base component view.

@@ -1,9 +1,7 @@
 module Components.Welcome.Model exposing (Model, cacheEncoder, cacheDecoder)
 
-import Http
-import Json.Encode as Encode
 import Json.Decode as Decode exposing (field)
-import DefaultServices.Util as Util
+import Json.Encode as Encode
 import Models.ApiError as ApiError
 
 

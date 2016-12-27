@@ -1,6 +1,5 @@
 module Models.BasicResponse exposing (BasicResponse, decoder)
 
-import Json.Encode as Encode
 import Json.Decode as Decode exposing (field)
 
 

@@ -1,25 +1,26 @@
 module Components.Home.View exposing (..)
 
-import Models.Route as Route
+import Components.Home.Messages exposing (Msg(..))
+import Components.Home.Model exposing (Model)
+import Components.Model exposing (Shared)
+import DefaultServices.Util as Util
 import Html exposing (Html, div, text, button, input, h1, h3)
 import Html.Attributes exposing (class, classList, placeholder, value, hidden)
 import Html.Events exposing (onClick, onInput)
-import DefaultServices.Util as Util
-import Components.Model exposing (Model)
-import Components.Home.Messages exposing (Msg(..))
+import Models.Route as Route
 
 
 {-| Home Component View.
 -}
-view : Model -> Html Msg
-view model =
+view : Model -> Shared -> Html Msg
+view model shared =
     div
         [ class "home-component-wrapper" ]
         [ div
             [ class "home-component" ]
             [ div []
-                [ navbar model
-                , displayViewForRoute model
+                [ navbar shared
+                , displayViewForRoute model shared
                 ]
             ]
         ]
@@ -27,9 +28,9 @@ view model =
 
 {-| Displays the correct view based on the model.
 -}
-displayViewForRoute : Model -> Html Msg
-displayViewForRoute model =
-    case model.route of
+displayViewForRoute : Model -> Shared -> Html Msg
+displayViewForRoute model shared =
+    case shared.route of
         Route.HomeComponentMain ->
             mainView model
 
@@ -43,14 +44,14 @@ displayViewForRoute model =
 
 {-| Horizontal navbar to go above the views.
 -}
-navbar : Model -> Html Msg
-navbar model =
+navbar : Shared -> Html Msg
+navbar shared =
     let
         profileViewSelected =
-            model.route == Route.HomeComponentProfile
+            shared.route == Route.HomeComponentProfile
 
         mainViewSelected =
-            model.route == Route.HomeComponentMain
+            shared.route == Route.HomeComponentMain
     in
         div [ class "nav" ]
             [ div
@@ -90,7 +91,7 @@ profileView model =
             [ onClick LogOut ]
             [ text "Log out" ]
         , div
-            [ hidden <| Util.isNothing model.homeComponent.logOutError ]
+            [ hidden <| Util.isNothing model.logOutError ]
             [ text "Cannot log out right now, try again shortly." ]
         ]
 
@@ -112,13 +113,13 @@ mainView model =
         , input
             [ onInput OnDataOneChange
             , placeholder "Random data 1"
-            , value model.homeComponent.dataOne
+            , value model.dataOne
             ]
             []
         , input
             [ onInput OnDataTwoChange
             , placeholder "Random data 2"
-            , value model.homeComponent.dataTwo
+            , value model.dataTwo
             ]
             []
         ]

@@ -1,9 +1,8 @@
 module DefaultServices.Util exposing (..)
 
+import Html exposing (Html)
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Html exposing (Html, div)
-import Html.Attributes exposing (class)
 
 
 {-| Useful for encoding, turns maybes into nulls / there actual value.

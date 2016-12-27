@@ -1,8 +1,8 @@
 module Router exposing (navigateTo, parseLocation)
 
+import Models.Route as Route
 import Navigation
 import UrlParser
-import Models.Route as Route
 
 
 {-| Navigates to a given route.

@@ -10,10 +10,10 @@ module Models.Route
         , defaultUnauthRoute
         )
 
+import Config
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Config
-import UrlParser exposing (s, (</>), oneOf, map, Parser, top)
+import UrlParser exposing (Parser, s, (</>), oneOf, map, top)
 
 
 {-| All of the app routes.
