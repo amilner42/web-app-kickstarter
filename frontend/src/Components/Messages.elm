@@ -1,6 +1,5 @@
 module Components.Messages exposing (..)
 
-import Http
 import Navigation
 import Models.User exposing (User)
 import Models.ApiError as ApiError

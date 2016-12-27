@@ -3,7 +3,6 @@ module Components.Welcome.Update exposing (update)
 import Components.Model exposing (Shared)
 import Components.Welcome.Messages exposing (Msg(..))
 import Components.Welcome.Model exposing (Model)
-import DefaultServices.LocalStorage as LocalStorage
 import Models.Route as Route
 import Models.ApiError as ApiError
 import Api

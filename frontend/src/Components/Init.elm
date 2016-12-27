@@ -1,8 +1,5 @@
 module Components.Init exposing (init)
 
-import DefaultServices.Util as Util
-import Components.Welcome.Init as WelcomeInit
-import Components.Home.Init as HomeInit
 import Components.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
 import Components.Update exposing (updateCacheIf)
@@ -10,7 +7,6 @@ import Models.Route as Route
 import DefaultModel exposing (defaultModel, defaultShared)
 import Navigation
 import Router
-import Maybe
 
 
 {-| Base Component Init.

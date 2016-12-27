@@ -3,7 +3,6 @@ module Components.Update exposing (update, updateCacheIf)
 import Navigation
 import Components.Home.Update as HomeUpdate
 import Components.Welcome.Update as WelcomeUpdate
-import Components.Welcome.Init as WelcomeInit
 import Components.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
 import Models.Route as Route

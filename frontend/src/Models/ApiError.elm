@@ -1,7 +1,5 @@
 module Models.ApiError exposing (ApiError(..), decoder, humanReadable)
 
-import Http
-import Json.Encode as Encode
 import Json.Decode as Decode exposing (field)
 
 

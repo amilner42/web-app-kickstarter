@@ -7,7 +7,7 @@ import Components.Model exposing (Shared)
 import Models.Route as Route
 import Api
 import Router
-import DefaultModel exposing (defaultModel, defaultShared)
+import DefaultModel exposing (defaultShared)
 
 
 {-| Home Component Update.
