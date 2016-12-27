@@ -1,76 +1,66 @@
 module Components.Home.Update exposing (update)
 
-import DefaultServices.LocalStorage as LocalStorage
 import Components.Home.Messages exposing (Msg(..))
 import Components.Home.Init as HomeInit
-import Components.Welcome.Init as WelcomeInit
-import Components.Model exposing (Model)
+import Components.Home.Model exposing (Model)
+import Components.Model exposing (Shared)
 import Models.Route as Route
 import Api
 import Router
-import DefaultModel exposing (defaultModel)
+import DefaultModel exposing (defaultModel, defaultShared)
 
 
 {-| Home Component Update.
 -}
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : Msg -> Model -> Shared -> ( Model, Shared, Cmd Msg )
+update msg model shared =
     case msg of
         GoToMainView ->
             let
-                newModel =
-                    { model | route = Route.HomeComponentMain }
+                newShared =
+                    { shared | route = Route.HomeComponentMain }
             in
-                ( newModel, Router.navigateTo newModel.route )
+                ( model, newShared, Router.navigateTo newShared.route )
 
         GoToProfileView ->
             let
-                newModel =
-                    { model | route = Route.HomeComponentProfile }
+                newShared =
+                    { shared | route = Route.HomeComponentProfile }
             in
-                ( newModel, Router.navigateTo newModel.route )
+                ( model, newShared, Router.navigateTo newShared.route )
 
         OnDataOneChange newDataOne ->
             let
-                homeComponent =
-                    model.homeComponent
-
                 newModel =
                     { model
-                        | homeComponent =
-                            { homeComponent | dataOne = newDataOne }
+                        | dataOne = newDataOne
                     }
             in
-                ( newModel, Cmd.none )
+                ( newModel, shared, Cmd.none )
 
         OnDataTwoChange newDataTwo ->
             let
-                homeComponent =
-                    model.homeComponent
-
                 newModel =
                     { model
-                        | homeComponent =
-                            { homeComponent | dataTwo = newDataTwo }
+                        | dataTwo = newDataTwo
                     }
             in
-                ( newModel, Cmd.none )
+                ( newModel, shared, Cmd.none )
 
         LogOut ->
-            ( model, Api.getLogOut OnLogOutFailure OnLogOutSuccess )
+            ( model, shared, Api.getLogOut OnLogOutFailure OnLogOutSuccess )
 
         OnLogOutFailure apiError ->
             let
-                homeComponent =
-                    model.homeComponent
-
                 newModel =
                     { model
-                        | homeComponent =
-                            { homeComponent | logOutError = Just apiError }
+                        | logOutError = Just apiError
                     }
             in
-                ( newModel, Cmd.none )
+                ( newModel, shared, Cmd.none )
 
         OnLogOutSuccess basicResponse ->
-            ( defaultModel, Router.navigateTo Route.WelcomeComponentLogin )
+            ( HomeInit.init
+            , defaultShared
+            , Router.navigateTo Route.WelcomeComponentLogin
+            )

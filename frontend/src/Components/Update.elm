@@ -27,6 +27,9 @@ default model) instead of what was in their before.
 updateCacheIf : Msg -> Model -> Bool -> ( Model, Cmd Msg )
 updateCacheIf msg model shouldCache =
     let
+        shared =
+            model.shared
+
         ( newModel, newCmd ) =
             case msg of
                 NoOp ->
@@ -43,7 +46,7 @@ updateCacheIf msg model shouldCache =
                     ( model, LocalStorage.loadModel () )
 
                 OnLoadModelFromLocalStorageSuccess newModel ->
-                    ( newModel, Router.navigateTo model.route )
+                    ( newModel, Router.navigateTo shared.route )
 
                 OnLoadModelFromLocalStorageFailure err ->
                     ( model, getUser () )
@@ -54,28 +57,53 @@ updateCacheIf msg model shouldCache =
                 OnGetUserSuccess user ->
                     let
                         newModel =
-                            { model | user = Just user }
+                            { model
+                                | shared = { shared | user = Just user }
+                            }
                     in
-                        ( newModel, Router.navigateTo newModel.route )
+                        ( newModel, Router.navigateTo shared.route )
 
                 OnGetUserFailure newApiError ->
                     let
                         newModel =
-                            { model | route = Route.WelcomeComponentRegister }
+                            { model
+                                | shared =
+                                    { shared
+                                        | route = Route.WelcomeComponentRegister
+                                    }
+                            }
                     in
-                        ( model, Router.navigateTo newModel.route )
+                        ( newModel, Router.navigateTo newModel.shared.route )
 
                 HomeMessage subMsg ->
                     let
-                        ( newModel, newSubMsg ) =
-                            HomeUpdate.update subMsg model
+                        ( newHomeModel, newShared, newSubMsg ) =
+                            HomeUpdate.update
+                                subMsg
+                                model.homeComponent
+                                model.shared
+
+                        newModel =
+                            { model
+                                | homeComponent = newHomeModel
+                                , shared = newShared
+                            }
                     in
                         ( newModel, Cmd.map HomeMessage newSubMsg )
 
                 WelcomeMessage subMsg ->
                     let
-                        ( newModel, newSubMsg ) =
-                            WelcomeUpdate.update subMsg model
+                        ( newWelcomeModel, newShared, newSubMsg ) =
+                            WelcomeUpdate.update
+                                subMsg
+                                model.welcomeComponent
+                                model.shared
+
+                        newModel =
+                            { model
+                                | welcomeComponent = newWelcomeModel
+                                , shared = newShared
+                            }
                     in
                         ( newModel, Cmd.map WelcomeMessage newSubMsg )
     in
@@ -114,14 +142,19 @@ handleLocationChange maybeRoute model =
 
         Just route ->
             let
+                shared =
+                    model.shared
+
                 loggedIn =
-                    Util.isNotNothing model.user
+                    Util.isNotNothing shared.user
 
                 routeNeedsAuth =
                     not <| List.member route Route.routesNotNeedingAuth
 
                 modelWithRoute route =
-                    { model | route = route }
+                    { model
+                        | shared = { shared | route = route }
+                    }
             in
                 case loggedIn of
                     False ->
@@ -142,7 +175,7 @@ handleLocationChange maybeRoute model =
 
                                     newCmd =
                                         Cmd.batch
-                                            [ Router.navigateTo newModel.route
+                                            [ Router.navigateTo newModel.shared.route
                                             , LocalStorage.saveModel newModel
                                             ]
                                 in
@@ -158,7 +191,7 @@ handleLocationChange maybeRoute model =
 
                                     newCmd =
                                         Cmd.batch
-                                            [ Router.navigateTo newModel.route
+                                            [ Router.navigateTo newModel.shared.route
                                             , LocalStorage.saveModel newModel
                                             ]
                                 in

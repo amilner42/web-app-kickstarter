@@ -7,7 +7,7 @@ import Components.Messages exposing (Msg(..))
 import Components.Model exposing (Model)
 import Components.Update exposing (updateCacheIf)
 import Models.Route as Route
-import DefaultModel exposing (defaultModel)
+import DefaultModel exposing (defaultModel, defaultShared)
 import Navigation
 import Router
 import Maybe
@@ -25,6 +25,11 @@ init location =
 
         defaultModelWithRoute : Model
         defaultModelWithRoute =
-            { defaultModel | route = route }
+            { defaultModel
+                | shared =
+                    { defaultShared
+                        | route = route
+                    }
+            }
     in
         updateCacheIf LoadModelFromLocalStorage defaultModelWithRoute False

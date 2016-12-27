@@ -1,4 +1,4 @@
-module Components.Model exposing (Model, cacheDecoder, cacheEncoder)
+module Components.Model exposing (Model, Shared, cacheDecoder, cacheEncoder)
 
 import Json.Decode as Decode exposing (field)
 import Json.Encode as Encode
@@ -10,12 +10,23 @@ import Models.User as User
 
 
 {-| Base Component Model.
+
+The base component will have nested inside it the state of every individual
+component as well as `shared`, which will be passed to all components so they
+can share data.
 -}
 type alias Model =
-    { user : Maybe (User.User)
-    , route : Route.Route
+    { shared : Shared
     , homeComponent : HomeModel.Model
     , welcomeComponent : WelcomeModel.Model
+    }
+
+
+{-| All data shared between components.
+-}
+type alias Shared =
+    { user : Maybe (User.User)
+    , route : Route.Route
     }
 
 
@@ -23,9 +34,8 @@ type alias Model =
 -}
 cacheDecoder : Decode.Decoder Model
 cacheDecoder =
-    Decode.map4 Model
-        (field "user" (Decode.maybe (User.cacheDecoder)))
-        (field "route" Route.cacheDecoder)
+    Decode.map3 Model
+        (field "shared" sharedCacheDecoder)
         (field "homeComponent" (HomeModel.cacheDecoder))
         (field "welcomeComponent" (WelcomeModel.cacheDecoder))
 
@@ -35,8 +45,26 @@ cacheDecoder =
 cacheEncoder : Model -> Encode.Value
 cacheEncoder model =
     Encode.object
-        [ ( "user", justValueOrNull User.cacheEncoder model.user )
-        , ( "route", Route.cacheEncoder model.route )
+        [ ( "shared", sharedCacheEncoder model.shared )
         , ( "homeComponent", HomeModel.cacheEncoder model.homeComponent )
         , ( "welcomeComponent", WelcomeModel.cacheEncoder model.welcomeComponent )
+        ]
+
+
+{-| Shared `cacheDecoder`.
+-}
+sharedCacheDecoder : Decode.Decoder Shared
+sharedCacheDecoder =
+    Decode.map2 Shared
+        (field "user" (Decode.maybe (User.cacheDecoder)))
+        (field "route" Route.cacheDecoder)
+
+
+{-| Shared `cacheEncoder`.
+-}
+sharedCacheEncoder : Shared -> Encode.Value
+sharedCacheEncoder shared =
+    Encode.object
+        [ ( "user", justValueOrNull User.cacheEncoder shared.user )
+        , ( "route", Route.cacheEncoder shared.route )
         ]
