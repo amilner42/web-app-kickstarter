@@ -14,10 +14,11 @@ the problem domain leads to more folders and sub-folders).
 
 ##### Models
 
-All models used in the application (eg. User, think things that we send/recieve
-to/from the frontend). Each model should be of type `Model<typeOfModel>` - this
-will force you to add the basic helpful methods such as
-`stripSensitiveDataForResponse`.
+All models used in the application as well as models designed for endpoints.
+
+All models use `kleen` to do the runtime validation, kleen is a very simple
+runtime validation library that can be found
+[here](https://amilner42.github.io/kleen/).
 
 ##### Top Level Files
 
@@ -25,12 +26,6 @@ will force you to add the basic helpful methods such as
   - This module allows for connection to the database by using the `collection`
     function, eg. to get the user collection you would `collection('user')` and
     add a `.then` because as per usual it's async.
-- errors.ts
-  - While relatively empty for now, this is where you will define the error
-    hierarchy used in your application. For now just a few errors are defined.
-- global_augmentations.ts
-  - Should you choose to augment the global namespace, then you will put the
-    augmentations in this file.
 - main.ts
   - The main file, you will run this to run the full application.
 - passport-local-auth-strategies.ts
@@ -54,21 +49,7 @@ will force you to add the basic helpful methods such as
     should be put in this file.
 - validifier.ts
   - Validifier is a module which contains validation helpers (such as
-    `validEmail`), most importantly it contains a semi-complex validation helper
-    called `validModel`. This function allows you to check the validity of
-    incoming data by passing the data and a JSON object representing the model
-    to the `validModel`, for which it will check that the incoming data does
-    match the shape of the JSON object. Additionally you can attach async/sync
-    validation at any parts of the object, this validation needs not check the
-    type as that is done automatically prior to calling the restriction, but
-    rather the restriction can enforce non-type related restrictions such as
-    an email needing to be unique for sign up. This module is very powerful in
-    that it allows you to write complex validation code in a maintainable simple
-    way. To see an example of this, take a look at
-    `passport-local-auth-strategies`, this module uses validation to make sure
-    the user is ready for registration/login.
-  - I will be adding an explanation in `docs/` that goes in more details and
-    explains exactly how to use the `validModel` function.
+    `validEmail`).
 
 ##### Outside Src Directory
 
@@ -98,6 +79,13 @@ limited experience that these are objectively good styles to follow.
      - If you see a `const ...` you may think it's module-private, only to find it's exported at the bottom :/
   - `const ...` declarations at the top of the module, followed by `export const`
     - Makes it clear what's public and what's private, no surprises :)
+  - `type`s at the top of the file followed by actual code, follow the same idea
+    where first put private types (`const`) followed by external types
+    (`export const`). The full order is:
+     1. Private types
+     2. Public types
+     3. Private Code
+     4. Public code
   - Every module should have `/// Module for ...` at the top with a brief explanation of the module.
     - Makes it simple for developers joining your team to get the big picture.
   - Docs, docs everywhere :)
