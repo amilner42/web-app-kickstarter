@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/util.js"],"names":["isNullOrUndefined","thing","undefined"],"mappings":";;;;;AAAO,IAAMA,gDAAoB,SAApBA,iBAAoB,CAACC,KAAD,EAAW;AACxC,WAAQA,SAAS,IAAT,IAAiBA,SAASC,SAAlC;AACH,CAFM","file":"util.js","sourcesContent":["export const isNullOrUndefined = (thing) => {\n    return (thing == null || thing == undefined);\n};\n"]}
