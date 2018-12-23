@@ -1,165 +1,239 @@
-port module Main exposing (Model, Msg(..), add1, init, main, toJs, update, view)
+module Main exposing (main)
 
-import Browser
+import Api exposing (Cred)
+import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http exposing (Error(..))
 import Json.Decode as Decode
+import Page
+import Pages.Blank as Blank
+import Pages.Home as Home
+import Pages.Login as Login
+import Pages.NotFound as NotFound
+import Pages.Register as Register
+import Route exposing (Route)
+import Session exposing (Session)
+import Url exposing (Url)
+import Viewer exposing (Viewer)
 
 
--- ---------------------------
--- PORTS
--- ---------------------------
-
-
-port toJs : String -> Cmd msg
-
-
-
--- ---------------------------
 -- MODEL
--- ---------------------------
 
 
-type alias Model =
-    { counter : Int
-    , serverMessage : String
-    }
+type Model
+    = Redirect Session
+    | NotFound Session
+    | Home Home.Model
+    | Login Login.Model
+    | Register Register.Model
 
 
-init : Int -> ( Model, Cmd Msg )
-init flags =
-    ( { counter = flags, serverMessage = "" }, Cmd.none )
+init : Maybe Viewer -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init maybeViewer url navKey =
+    changeRouteTo
+        (Route.fromUrl url)
+        (Redirect (Session.fromViewer navKey maybeViewer))
 
 
 
--- ---------------------------
+-- VIEW
+
+
+view : Model -> Document Msg
+view model =
+    let
+        viewPage page toMsg config =
+            let
+                { title, body } =
+                    Page.view (Session.viewer (toSession model)) page config
+            in
+            { title = title
+            , body = List.map (Html.map toMsg) body
+            }
+    in
+    case model of
+        Redirect _ ->
+            viewPage Page.Other (\_ -> Ignored) Blank.view
+
+        NotFound _ ->
+            viewPage Page.Other (\_ -> Ignored) NotFound.view
+
+        Home home ->
+            viewPage Page.Home GotHomeMsg (Home.view home)
+
+        Login login ->
+            viewPage Page.Other GotLoginMsg (Login.view login)
+
+        Register register ->
+            viewPage Page.Other GotRegisterMsg (Register.view register)
+
+
+
 -- UPDATE
--- ---------------------------
 
 
 type Msg
-    = Inc
-    | Set Int
-    | TestServer
-    | OnServerResponse (Result Http.Error String)
+    = Ignored
+    | ChangedRoute (Maybe Route)
+    | ChangedUrl Url
+    | ClickedLink Browser.UrlRequest
+    | GotHomeMsg Home.Msg
+    | GotLoginMsg Login.Msg
+    | GotRegisterMsg Register.Msg
+    | GotSession Session
+
+
+toSession : Model -> Session
+toSession page =
+    case page of
+        Redirect session ->
+            session
+
+        NotFound session ->
+            session
+
+        Home home ->
+            Home.toSession home
+
+        Login login ->
+            Login.toSession login
+
+        Register register ->
+            Register.toSession register
+
+
+changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo maybeRoute model =
+    let
+        session =
+            toSession model
+    in
+    case maybeRoute of
+        Nothing ->
+            ( NotFound session, Cmd.none )
+
+        Just Route.Root ->
+            ( model, Route.replaceUrl (Session.navKey session) Route.Home )
+
+        Just Route.Logout ->
+            ( model, Api.logout )
+
+        Just Route.Home ->
+            Home.init session
+                |> updateWith Home GotHomeMsg model
+
+        Just Route.Login ->
+            Login.init session
+                |> updateWith Login GotLoginMsg model
+
+        Just Route.Register ->
+            Register.init session
+                |> updateWith Register GotRegisterMsg model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update message model =
-    case message of
-        Inc ->
-            ( add1 model, toJs "Hello Js" )
+update msg model =
+    case ( msg, model ) of
+        ( Ignored, _ ) ->
+            ( model, Cmd.none )
 
-        Set m ->
-            ( { model | counter = m }, toJs "Hello Js" )
+        ( ClickedLink urlRequest, _ ) ->
+            case urlRequest of
+                Browser.Internal url ->
+                    case url.fragment of
+                        Nothing ->
+                            -- If we got a link that didn't include a fragment,
+                            -- it's from one of those (href "") attributes that
+                            -- we have to include to make the RealWorld CSS work.
+                            --
+                            -- In an application doing path routing instead of
+                            -- fragment-based routing, this entire
+                            -- `case url.fragment of` expression this comment
+                            -- is inside would be unnecessary.
+                            ( model, Cmd.none )
 
-        TestServer ->
-            let
-                expect =
-                    Http.expectJson OnServerResponse (Decode.field "result" Decode.string)
-            in
-            ( model
-            , Http.get { url = "/test", expect = expect }
+                        Just _ ->
+                            ( model
+                            , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                            )
+
+                Browser.External href ->
+                    ( model
+                    , Nav.load href
+                    )
+
+        ( ChangedUrl url, _ ) ->
+            changeRouteTo (Route.fromUrl url) model
+
+        ( ChangedRoute route, _ ) ->
+            changeRouteTo route model
+
+        ( GotLoginMsg subMsg, Login login ) ->
+            Login.update subMsg login
+                |> updateWith Login GotLoginMsg model
+
+        ( GotRegisterMsg subMsg, Register register ) ->
+            Register.update subMsg register
+                |> updateWith Register GotRegisterMsg model
+
+        ( GotHomeMsg subMsg, Home home ) ->
+            Home.update subMsg home
+                |> updateWith Home GotHomeMsg model
+
+        ( GotSession session, Redirect _ ) ->
+            ( Redirect session
+            , Route.replaceUrl (Session.navKey session) Route.Home
             )
 
-        OnServerResponse res ->
-            case res of
-                Ok r ->
-                    ( { model | serverMessage = r }, Cmd.none )
-
-                Err err ->
-                    ( { model | serverMessage = "Error: " ++ httpErrorToString err }, Cmd.none )
+        ( _, _ ) ->
+            -- Disregard messages that arrived for the wrong page.
+            ( model, Cmd.none )
 
 
-httpErrorToString : Http.Error -> String
-httpErrorToString err =
-    case err of
-        BadUrl _ ->
-            "BadUrl"
-
-        Timeout ->
-            "Timeout"
-
-        NetworkError ->
-            "NetworkError"
-
-        BadStatus _ ->
-            "BadStatus"
-
-        BadBody s ->
-            "BadBody: " ++ s
-
-
-{-| increments the counter
-
-    add1 5 --> 6
-
--}
-add1 : Model -> Model
-add1 model =
-    { model | counter = model.counter + 1 }
+updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith toModel toMsg model ( subModel, subCmd ) =
+    ( toModel subModel
+    , Cmd.map toMsg subCmd
+    )
 
 
 
--- ---------------------------
--- VIEW
--- ---------------------------
+-- SUBSCRIPTIONS
 
 
-view : Model -> Html Msg
-view model =
-    div [ class "container" ]
-        [ header []
-            [ -- img [ src "/images/logo.png" ] []
-              span [ class "logo" ] []
-            , h1 [] [ text "Elm 0.19 Webpack Starter, with hot-reloading" ]
-            ]
-        , p [] [ text "Click on the button below to increment the state." ]
-        , div [ class "pure-g" ]
-            [ div [ class "pure-u-1-3" ]
-                [ button
-                    [ class "pure-button pure-button-primary"
-                    , onClick Inc
-                    ]
-                    [ text "+ 1" ]
-                , text <| String.fromInt model.counter
-                ]
-            , div [ class "pure-u-1-3" ] []
-            , div [ class "pure-u-1-3" ]
-                [ button
-                    [ class "pure-button pure-button-primary"
-                    , onClick TestServer
-                    ]
-                    [ text "ping dev server" ]
-                , text model.serverMessage
-                ]
-            ]
-        , p [] [ text "Then make a change to the source code and see how the state is retained after you recompile." ]
-        , p []
-            [ text "And now don't forget to add a star to the Github repo "
-            , a [ href "https://github.com/simonh1000/elm-webpack-starter" ] [ text "elm-webpack-starter" ]
-            ]
-        ]
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    case model of
+        NotFound _ ->
+            Sub.none
+
+        Redirect _ ->
+            Session.changes GotSession (Session.navKey (toSession model))
+
+        Home home ->
+            Sub.map GotHomeMsg (Home.subscriptions home)
+
+        Login login ->
+            Sub.map GotLoginMsg (Login.subscriptions login)
+
+        Register register ->
+            Sub.map GotRegisterMsg (Register.subscriptions register)
 
 
 
--- ---------------------------
 -- MAIN
--- ---------------------------
 
 
-main : Program Int Model Msg
+main : Program Decode.Value Model Msg
 main =
-    Browser.document
+    Api.application Viewer.decoder
         { init = init
+        , onUrlChange = ChangedUrl
+        , onUrlRequest = ClickedLink
+        , subscriptions = subscriptions
         , update = update
-        , view =
-            \m ->
-                { title = "Elm 0.19 starter"
-                , body = [ view m ]
-                }
-        , subscriptions = \_ -> Sub.none
+        , view = view
         }
