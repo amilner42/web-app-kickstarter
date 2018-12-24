@@ -1,4 +1,4 @@
-module Pages.NotFound exposing (view)
+module Page.NotFound exposing (view)
 
 import Asset
 import Html exposing (Html, div, h1, img, main_, text)

@@ -1,4 +1,4 @@
-module Pages.Blank exposing (view)
+module Page.Blank exposing (view)
 
 import Html exposing (Html)
 

@@ -9,11 +9,11 @@ import Html.Events exposing (..)
 import Http exposing (Error(..))
 import Json.Decode as Decode
 import Page
-import Pages.Blank as Blank
-import Pages.Home as Home
-import Pages.Login as Login
-import Pages.NotFound as NotFound
-import Pages.Register as Register
+import Page.Blank as Blank
+import Page.Home as Home
+import Page.Login as Login
+import Page.NotFound as NotFound
+import Page.Register as Register
 import Route exposing (Route)
 import Session exposing (Session)
 import Url exposing (Url)
