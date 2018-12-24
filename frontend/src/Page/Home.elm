@@ -38,7 +38,7 @@ init session =
 
 view : Model -> { title : String, content : Html Msg }
 view model =
-    { title = "Conduit"
+    { title = "Home"
     , content =
         div [ class "home-page" ]
             [ text "Home Page" ]

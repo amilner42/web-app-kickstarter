@@ -53,10 +53,13 @@ unwrap (Endpoint str) =
 
 url : List String -> List QueryParameter -> Endpoint
 url paths queryParams =
-    -- NOTE: Url.Builder takes care of percent-encoding special URL characters.
-    -- See https://package.elm-lang.org/packages/elm/url/latest/Url#percentEncode
-    Url.Builder.crossOrigin "https://conduit.productionready.io"
-        ("api" :: paths)
+    let
+        -- Webpack will set this to the API base URL according to prod/dev mode
+        apiBaseUrl =
+            "__WEBPACK_CONSTANT_API_BASE_URL__"
+    in
+    Url.Builder.crossOrigin apiBaseUrl
+        paths
         queryParams
         |> Endpoint
 

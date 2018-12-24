@@ -28,7 +28,7 @@ The caller provides the current user, so we can display in either
 -}
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
 view maybeViewer page { title, content } =
-    { title = title ++ " - Conduit"
+    { title = title
     , body = viewHeader page maybeViewer :: content :: [ viewFooter ]
     }
 
@@ -38,7 +38,7 @@ viewHeader page maybeViewer =
     nav [ class "navbar navbar-light" ]
         [ div [ class "container" ]
             [ a [ class "navbar-brand", Route.href Route.Home ]
-                [ text "conduit" ]
+                [ text "Home" ]
             , ul [ class "nav navbar-nav pull-xs-right" ] <|
                 navbarLink page Route.Home [ text "Home" ]
                     :: viewMenu page maybeViewer
@@ -66,7 +66,7 @@ viewFooter : Html msg
 viewFooter =
     footer []
         [ div [ class "container" ]
-            [ a [ class "logo-font", href "/" ] [ text "conduit" ]
+            [ a [ class "logo-font", href "/" ] [ text "Home" ]
             , span [ class "attribution" ]
                 [ text "An interactive learning project from "
                 , a [ href "https://thinkster.io" ] [ text "Thinkster" ]

@@ -6,6 +6,7 @@ const elmMinify = require("elm-minify");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const StringReplacePlugin = require("string-replace-webpack-plugin");
 
 // to extract the css as a separate file
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -29,7 +30,8 @@ var common = {
             template: "src/index.html",
             // inject details of output file at end of body
             inject: "body"
-        })
+        }),
+        new StringReplacePlugin()
     ],
     resolve: {
         modules: [path.join(__dirname, "src"), "node_modules"],
@@ -91,6 +93,19 @@ if (MODE === "development") {
             rules: [
                 {
                     test: /\.elm$/,
+                    loader: StringReplacePlugin.replace({
+                        replacements: [
+                            {
+                                pattern: /__WEBPACK_CONSTANT_API_BASE_URL__/g,
+                                replacement: function (match, p1, offset, string) {
+                                   return "http://localhost:3001/api";
+                                }
+                           }
+                       ]
+                   })
+                },
+                {
+                    test: /\.elm$/,
                     exclude: [/elm-stuff/, /node_modules/],
                     use: [
                         { loader: "elm-hot-webpack-loader" },
@@ -148,6 +163,19 @@ if (MODE === "production") {
         ],
         module: {
             rules: [
+                {
+                    test: /\.elm$/,
+                    loader: StringReplacePlugin.replace({
+                        replacements: [
+                            {
+                                pattern: /__WEBPACK_CONSTANT_API_BASE_URL__/g,
+                                replacement: function (match, p1, offset, string) {
+                                   return "TODO PRODUCTION API BASE URL";
+                                }
+                           }
+                       ]
+                   })
+                },
                 {
                     test: /\.elm$/,
                     exclude: [/elm-stuff/, /node_modules/],
