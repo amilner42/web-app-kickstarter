@@ -11,6 +11,7 @@ import Json.Decode.Pipeline exposing (optional)
 import Json.Encode as Encode
 import Route exposing (Route)
 import Session exposing (Session)
+import Util
 import Viewer exposing (Viewer)
 
 
@@ -58,73 +59,47 @@ view : Model -> { title : String, content : Html Msg }
 view model =
     { title = "Register"
     , content =
-        div [ class "cred-page" ]
-            [ div [ class "container page" ]
-                [ div [ class "row" ]
-                    [ div [ class "col-md-6 offset-md-3 col-xs-12" ]
-                        [ h1 [ class "text-xs-center" ] [ text "Sign up" ]
-                        , p [ class "text-xs-center" ]
-                            [ a [ Route.href Route.Login ]
-                                [ text "Have an account?" ]
-                            ]
-                        , ul [ class "error-messages" ]
-                            (List.map viewProblem model.problems)
-                        , viewForm model.form
+        section
+            [ class "section is-medium" ]
+            [ div
+                [ class "container" ]
+                [ div
+                    [ class "columns is-centered" ]
+                    [ div [ class "column is-half" ]
+                        [ h1 [ class "title" ] [ text "Sign Up" ]
+                        , Util.divFieldControl <|
+                            input
+                                [ class "input"
+                                , placeholder "Username"
+                                , onInput EnteredUsername
+                                , value model.form.username
+                                ]
+                                []
+                        , Util.divFieldControl <|
+                            input
+                                [ class "input"
+                                , placeholder "Email"
+                                , onInput EnteredEmail
+                                , value model.form.email
+                                ]
+                                []
+                        , Util.divFieldControl <|
+                            input
+                                [ class "input"
+                                , placeholder "Password"
+                                , type_ "password"
+                                , onInput EnteredPassword
+                                , value model.form.password
+                                ]
+                                []
+                        , button
+                            [ class "button button is-success is-fullwidth is-large" ]
+                            [ text "Sign up" ]
                         ]
                     ]
                 ]
             ]
     }
-
-
-viewForm : Form -> Html Msg
-viewForm form =
-    Html.form [ onSubmit SubmittedForm ]
-        [ fieldset [ class "form-group" ]
-            [ input
-                [ class "form-control form-control-lg"
-                , placeholder "Username"
-                , onInput EnteredUsername
-                , value form.username
-                ]
-                []
-            ]
-        , fieldset [ class "form-group" ]
-            [ input
-                [ class "form-control form-control-lg"
-                , placeholder "Email"
-                , onInput EnteredEmail
-                , value form.email
-                ]
-                []
-            ]
-        , fieldset [ class "form-group" ]
-            [ input
-                [ class "form-control form-control-lg"
-                , type_ "password"
-                , placeholder "Password"
-                , onInput EnteredPassword
-                , value form.password
-                ]
-                []
-            ]
-        , button [ class "btn btn-lg btn-primary pull-xs-right" ]
-            [ text "Sign up" ]
-        ]
-
-
-viewProblem : Problem -> Html msg
-viewProblem problem =
-    let
-        errorMessage =
-            case problem of
-                InvalidEntry _ str ->
-                    str
-
-                ServerError str ->
-                    str
-    in
-    li [] [ text errorMessage ]
 
 
 

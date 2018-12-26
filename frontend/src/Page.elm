@@ -57,8 +57,8 @@ viewHeader activePage maybeViewer =
                         case maybeViewer of
                             Nothing ->
                                 [ a
-                                    [ class "button is-primary", Route.href Route.Register ]
-                                    [ strong [] [ text "Sign up" ] ]
+                                    [ class "button is-light", Route.href Route.Register ]
+                                    [ text "Sign up" ]
                                 , a
                                     [ class "button is-light", Route.href Route.Login ]
                                     [ text "Log in" ]
