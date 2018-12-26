@@ -279,17 +279,3 @@ decodeErrors error =
 
         err ->
             [ "Server error" ]
-
-
-
--- LOCALSTORAGE KEYS
-
-
-cacheStorageKey : String
-cacheStorageKey =
-    "cache"
-
-
-credStorageKey : String
-credStorageKey =
-    "cred"

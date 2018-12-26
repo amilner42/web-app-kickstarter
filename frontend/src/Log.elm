@@ -1,7 +1,7 @@
 module Log exposing (error)
 
 {-| This is a placeholder API for how we might do logging through
-some service like <http://rollbar.com> (which is what we use at work).
+some service like <http://rollbar.com>.
 
 Whenever you see Log.error used in this code base, it means
 "Something unexpected happened. This is where we would log an

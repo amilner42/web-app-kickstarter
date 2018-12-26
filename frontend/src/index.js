@@ -7,6 +7,8 @@ var storageKey = "store";
 var flags = localStorage.getItem(storageKey);
 var app = Elm.Main.init({flags: flags});
 
+/** PORTS and SUBSCRIPTIONS */
+
 // Save `val` to localStorage
 app.ports.storeCache.subscribe(function(val) {
   if (val === null) {

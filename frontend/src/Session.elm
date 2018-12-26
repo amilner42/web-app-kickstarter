@@ -62,9 +62,6 @@ changes toMsg key =
 
 fromViewer : Nav.Key -> Maybe Viewer -> Session
 fromViewer key maybeViewer =
-    -- It's stored in localStorage as a JSON String;
-    -- first decode the Value as a String, then
-    -- decode that String as JSON.
     case maybeViewer of
         Just viewerVal ->
             LoggedIn key viewerVal

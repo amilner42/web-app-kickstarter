@@ -33,7 +33,7 @@ username (Viewer val) =
     Api.username val
 
 
-{-| Passwords must be at least this many characters long!
+{-| Passwords must be at least this many characters long.
 -}
 minPasswordChars : Int
 minPasswordChars =
