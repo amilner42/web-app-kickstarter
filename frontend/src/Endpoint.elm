@@ -1,4 +1,4 @@
-module Api.Endpoint exposing (Endpoint, login, request, users)
+module Endpoint exposing (Endpoint, login, request, users)
 
 {-| This module hides creates the opaque Endpoint type and keeps all endpoints within this file so this file serves
 as the single source of truth for all app API endpoints.

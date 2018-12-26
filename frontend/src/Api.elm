@@ -3,9 +3,9 @@ port module Api exposing (Cred, addServerError, application, decodeErrors, delet
 {-| This module is responsible for communicating to the app API.
 -}
 
-import Api.Endpoint as Endpoint exposing (Endpoint)
 import Browser
 import Browser.Navigation as Nav
+import Endpoint exposing (Endpoint)
 import Http exposing (Body, Expect)
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string)
 import Json.Decode.Pipeline as Pipeline exposing (optional, required)

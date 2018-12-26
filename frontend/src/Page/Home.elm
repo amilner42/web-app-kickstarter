@@ -4,7 +4,7 @@ module Page.Home exposing (Model, Msg, init, subscriptions, toSession, update, v
 -}
 
 import Api exposing (Cred)
-import Api.Endpoint as Endpoint
+import Endpoint
 import Html exposing (..)
 import Html.Attributes exposing (attribute, class, classList, href, id, placeholder)
 import Html.Events exposing (onClick)
