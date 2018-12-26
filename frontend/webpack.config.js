@@ -152,7 +152,8 @@ if (MODE === "production") {
             // Copy static assets
             new CopyWebpackPlugin([
                 {
-                    from: "src/assets"
+                    from: "src/assets",
+                    to: "assets/"
                 }
             ]),
             new MiniCssExtractPlugin({
