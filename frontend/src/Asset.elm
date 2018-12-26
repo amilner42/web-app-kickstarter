@@ -1,4 +1,4 @@
-module Asset exposing (Image, error, loading, src)
+module Asset exposing (Image, error, loading, logo, src)
 
 {-| Assets, such as images, videos, and audio. (We only have images for now.)
 
@@ -27,6 +27,11 @@ error =
 loading : Image
 loading =
     image "loading.svg"
+
+
+logo : Image
+logo =
+    image "logo.png"
 
 
 image : String -> Image

@@ -1,6 +1,6 @@
 'use strict';
 
-require("./styles.scss");
+require("./styles/styles.scss");
 
 const {Elm} = require('./Main');
 var storageKey = "store";

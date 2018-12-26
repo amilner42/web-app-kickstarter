@@ -40,7 +40,7 @@ view : Model -> { title : String, content : Html Msg }
 view model =
     { title = "Home"
     , content =
-        div [ class "home-page" ]
+        div [ class "title home-page" ]
             [ text "Home Page" ]
     }
 

@@ -1,8 +1,9 @@
 module Page exposing (Page(..), view, viewErrors)
 
 import Api exposing (Cred)
+import Asset
 import Browser exposing (Document)
-import Html exposing (Html, a, button, div, footer, i, img, li, nav, p, span, text, ul)
+import Html exposing (Html, a, button, div, i, img, li, nav, p, span, strong, text, ul)
 import Html.Attributes exposing (class, classList, href)
 import Html.Events exposing (onClick)
 import Route exposing (Route)
@@ -20,7 +21,7 @@ type Page
     | Register
 
 
-{-| Take a page's Html and frames it with a header and footer.
+{-| Take a page's Html and frames it with a header.
 
 The caller provides the current user, so we can display in either
 "signed in" (rendering username) or "signed out" mode.
@@ -29,58 +30,49 @@ The caller provides the current user, so we can display in either
 view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
 view maybeViewer page { title, content } =
     { title = title
-    , body = viewHeader page maybeViewer :: content :: [ viewFooter ]
+    , body = viewHeader page maybeViewer :: [ content ]
     }
 
 
 viewHeader : Page -> Maybe Viewer -> Html msg
-viewHeader page maybeViewer =
-    nav [ class "navbar navbar-light" ]
-        [ div [ class "container" ]
-            [ a [ class "navbar-brand", Route.href Route.Home ]
-                [ text "Home" ]
-            , ul [ class "nav navbar-nav pull-xs-right" ] <|
-                navbarLink page Route.Home [ text "Home" ]
-                    :: viewMenu page maybeViewer
+viewHeader activePage maybeViewer =
+    nav [ class "navbar is-dark" ]
+        [ div
+            [ class "navbar-brand" ]
+            [ a
+                [ class "navbar-item", href "https://elm-lang.org/" ]
+                [ img [ Asset.src Asset.logo ] [] ]
+            , div [ class "navbar-burger" ] [ span [] [], span [] [], span [] [] ]
             ]
-        ]
+        , div [ classList [ ( "navbar-menu", True ) ] ]
+            [ div
+                [ class "navbar-start" ]
+                [ a [ class "navbar-item", Route.href Route.Home ] [ text "Home" ]
+                ]
+            , div
+                [ class "navbar-end" ]
+                [ div
+                    [ class "navbar-item" ]
+                    [ div [ class "buttons" ] <|
+                        case maybeViewer of
+                            Nothing ->
+                                [ a
+                                    [ class "button is-primary", Route.href Route.Register ]
+                                    [ strong [] [ text "Sign up" ] ]
+                                , a
+                                    [ class "button is-light", Route.href Route.Login ]
+                                    [ text "Log in" ]
+                                ]
 
-
-viewMenu : Page -> Maybe Viewer -> List (Html msg)
-viewMenu page maybeViewer =
-    let
-        linkTo =
-            navbarLink page
-    in
-    case maybeViewer of
-        Just viewer ->
-            [ linkTo Route.Logout [ text "Sign out" ] ]
-
-        Nothing ->
-            [ linkTo Route.Login [ text "Sign in" ]
-            , linkTo Route.Register [ text "Sign up" ]
-            ]
-
-
-viewFooter : Html msg
-viewFooter =
-    footer []
-        [ div [ class "container" ]
-            [ a [ class "logo-font", href "/" ] [ text "Home" ]
-            , span [ class "attribution" ]
-                [ text "An interactive learning project from "
-                , a [ href "https://thinkster.io" ] [ text "Thinkster" ]
-                , text ". Code & design licensed under MIT."
+                            Just viewer ->
+                                [ a
+                                    [ class "nav-item", Route.href Route.Logout ]
+                                    [ text "Log out" ]
+                                ]
+                    ]
                 ]
             ]
         ]
-
-
-navbarLink : Page -> Route -> List (Html msg) -> Html msg
-navbarLink page route linkContent =
-    li
-        [ classList [ ( "nav-item", True ), ( "active", isActive page route ) ] ]
-        [ a [ class "nav-link", Route.href route ] linkContent ]
 
 
 isActive : Page -> Route -> Bool
