@@ -1,18 +1,27 @@
-# MEEN Kickstarter
+# Kickstarter
+##### Develop Modern Web Applications
 
 ### Introduction
 
-TODO DOC
+The web moves fast. It's hard to keep up. This project provides a kickstarter for
+developing modern web applications. The kickstarter here will allow you to launch
+into developing your application and avoid dealing with common annoyances such as
+setting up your build pipeline and doing standard user authentication.
+
+As new technology emerges that catches my attention and seems to be worth the upgrade
+I may switch and update this kickstarter accordingly. Therefore, all technology
+in this kickstarter is liable to be swapped.
+
+Currently this kickstarter is composed of (IN PROGRESS):
+  - Mongo      [ NoSQL database ]
+  - Elixir     [ General purpose programming language ]
+  - Phoenix    [ Framework for web-apps on Elixir ]
+  - Elm        [ Language for creating frontend web-clients ]
+
 
 ### Local Dependencies
 
-The project only has 3 local dependencies, `node` and `npm`, and `mongodb`.
-  - node ~ V11.2.0
-  - npm ~ V6.4.1
-  - monodb ~ V4
-
-You don't _need_ these versions, but it's more likely to work properly if at
-least the major versions are correct.
+TODO
 
 ### Set Up
 
@@ -31,15 +40,6 @@ Let's keep it simple...
 As well, the [frontend README](/frontend/README.md) and the
 [backend README](/backend/README.md) each have a segment on their file
 structure.
-
-### Versioning
-
-As this is a kickstarter and not a library, it seems unclear how I would go
-about using [semantic versioning](http://semver.org/) (also I don't expect
-anyone to ever update the kickstarter mid-project). So for now I will be simply
-upgrading the version (eg. 2 to 3) when I think enough new stuff is in the
-new version that it's worth upgrading (maybe I'll try and have a change-log...
-we'll see...).
 
 ### License
 
