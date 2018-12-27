@@ -1,19 +1,17 @@
 {
-  "name": "conduit-node",
-  "version": "1.0.0",
-  "description": "conduit on node",
+  "name": "TODO-STARTER",
+  "version": "0.0.1",
+  "description": "TODO-STARTER",
   "main": "app.js",
   "scripts": {
-    "mongo:start": "docker run --name realworld-mongo -p 27017:27017 mongo & sleep 5",
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
     "test": "newman run ./tests/api-tests.postman.json -e ./tests/env-api-tests.postman.json",
-    "stop": "lsof -ti :3000 | xargs kill",
-    "mongo:stop": "docker stop realworld-mongo && docker rm realworld-mongo"
+    "stop": "lsof -ti :3001 | xargs kill"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gothinkster/productionready-node-api.git"
+    "url": "git+https://github.com/amilner42/meen-kickstarter"
   },
   "license": "ISC",
   "dependencies": {

@@ -15,6 +15,7 @@ in this kickstarter is liable to be swapped.
 Currently this kickstarter is composed of:
   - Mongo
   - Javascript on Node
+  - Mongoose
   - Express
   - Elm
 
