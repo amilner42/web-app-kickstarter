@@ -12,12 +12,11 @@ As new technology emerges that catches my attention and seems to be worth the up
 I may switch and update this kickstarter accordingly. Therefore, all technology
 in this kickstarter is liable to be swapped.
 
-Currently this kickstarter is composed of (IN PROGRESS):
-  - Mongo      [ NoSQL database ]
-  - Elixir     [ General purpose programming language ]
-  - Phoenix    [ Framework for web-apps on Elixir ]
-  - Elm        [ Language for creating frontend web-clients ]
-
+Currently this kickstarter is composed of:
+  - Mongo
+  - Javascript on Node
+  - Express
+  - Elm
 
 ### Local Dependencies
 
