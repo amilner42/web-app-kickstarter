@@ -17,7 +17,6 @@
   "dependencies": {
     "body-parser": "1.15.0",
     "cors": "2.7.1",
-    "ejs": "2.4.1",
     "errorhandler": "1.4.3",
     "express": "4.13.4",
     "express-jwt": "3.3.0",
@@ -29,10 +28,7 @@
     "mongoose-unique-validator": "1.0.2",
     "morgan": "1.7.0",
     "passport": "0.3.2",
-    "passport-local": "1.0.0",
-    "request": "2.69.0",
-    "slug": "0.9.1",
-    "underscore": "1.8.3"
+    "passport-local": "1.0.0"
   },
   "devDependencies": {
     "newman": "^3.8.2",
