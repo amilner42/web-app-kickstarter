@@ -50,14 +50,14 @@ view model =
 
 
 type Msg
-    = NoOp
+    = GotSession Session.Session
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
+        GotSession session ->
+            ( { model | session = session }, Cmd.none )
 
 
 
@@ -66,8 +66,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    -- TODO Session.changes GotSession (Session.navKey model.session)
-    Sub.none
+    Session.changes GotSession (Session.navKey model.session)
 
 
 

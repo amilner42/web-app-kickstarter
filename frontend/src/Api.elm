@@ -236,7 +236,7 @@ delete url cred body expect =
 login : Http.Body -> (Result.Result Http.Error a -> msg) -> Decode.Decoder (Cred -> a) -> Cmd.Cmd msg
 login body handleResult decoder =
     post Endpoint.login Nothing body <|
-        Http.expectJson handleResult (decoderFromCred decoder)
+        Http.expectJson handleResult (Decode.field "user" <| decoderFromCred decoder)
 
 
 {-| Register a user.
@@ -244,7 +244,7 @@ login body handleResult decoder =
 register : Http.Body -> (Result.Result Http.Error a -> msg) -> Decode.Decoder (Cred -> a) -> Cmd.Cmd msg
 register body handleResult decoder =
     post Endpoint.users Nothing body <|
-        Http.expectJson handleResult (decoderFromCred decoder)
+        Http.expectJson handleResult (Decode.field "user" <| decoderFromCred decoder)
 
 
 {-| Helper method that will decode the credentials for you so you don't have to do that every time you

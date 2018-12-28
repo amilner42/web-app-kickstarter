@@ -66,7 +66,7 @@ viewHeader activePage maybeViewer =
 
                             Just viewer ->
                                 [ a
-                                    [ class "nav-item", Route.href Route.Logout ]
+                                    [ class "button is-light", Route.href Route.Logout ]
                                     [ text "Log out" ]
                                 ]
                     ]
