@@ -9,7 +9,6 @@ import Html exposing (..)
 import Html.Attributes exposing (attribute, class, classList, href, id, placeholder)
 import Html.Events exposing (onClick)
 import Http
-import Loading
 import Log
 import Page
 import Session exposing (Session)
@@ -40,8 +39,21 @@ view : Model -> { title : String, content : Html Msg }
 view model =
     { title = "Home"
     , content =
-        div [ class "title home-page" ]
-            [ text "Home Page" ]
+        section
+            [ class "section is-medium" ]
+            [ div
+                [ class "container" ]
+                [ div
+                    [ class "columns is-centered" ]
+                    [ div
+                        [ class "column is-half" ]
+                        [ h1
+                            [ class "title has-text-centered" ]
+                            [ text "Home Page" ]
+                        ]
+                    ]
+                ]
+            ]
     }
 
 

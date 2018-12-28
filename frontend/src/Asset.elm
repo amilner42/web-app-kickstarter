@@ -1,4 +1,4 @@
-module Asset exposing (Image, elmLogo, error, githubLogo, loading, src)
+module Asset exposing (Image, elmLogo, githubLogo, src)
 
 {-| Assets, such as images, videos, and audio. (We only have images for now.)
 
@@ -17,16 +17,6 @@ type Image
 
 
 -- IMAGES
-
-
-error : Image
-error =
-    image "error.jpg"
-
-
-loading : Image
-loading =
-    image "loading.svg"
 
 
 elmLogo : Image
