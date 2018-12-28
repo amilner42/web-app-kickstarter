@@ -36,12 +36,12 @@ view maybeViewer page { title, content } =
 
 viewHeader : Page -> Maybe Viewer -> Html msg
 viewHeader activePage maybeViewer =
-    nav [ class "navbar is-dark" ]
+    nav [ class "navbar is-light" ]
         [ div
             [ class "navbar-brand" ]
             [ a
-                [ class "navbar-item", href "https://elm-lang.org/" ]
-                [ img [ Asset.src Asset.logo ] [] ]
+                [ class "navbar-item", href "https://github.com/amilner42/meen-kickstarter" ]
+                [ img [ Asset.src Asset.githubLogo ] [] ]
             , div [ class "navbar-burger" ] [ span [] [], span [] [], span [] [] ]
             ]
         , div [ classList [ ( "navbar-menu", True ) ] ]
