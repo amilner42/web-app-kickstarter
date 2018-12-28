@@ -93,7 +93,9 @@ view model =
                                 ]
                                 []
                         , button
-                            [ class "button button is-success is-fullwidth is-large" ]
+                            [ class "button button is-success is-fullwidth is-large"
+                            , onClick SubmittedForm
+                            ]
                             [ text "Sign up" ]
                         ]
                     ]

@@ -70,7 +70,7 @@ url paths queryParams =
 
 login : Endpoint
 login =
-    url [ "login" ] []
+    url [ "users", "login" ] []
 
 
 users : Endpoint
