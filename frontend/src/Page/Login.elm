@@ -6,6 +6,7 @@ module Page.Login exposing (Model, Msg, init, subscriptions, toSession, update, 
 import Api.Api as Api
 import Api.Core as Core exposing (Cred)
 import Browser.Navigation as Nav
+import Bulma
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -13,7 +14,6 @@ import Http
 import Json.Encode as Encode
 import Route exposing (Route)
 import Session exposing (Session)
-import Util
 import Viewer exposing (Viewer)
 
 
@@ -61,24 +61,62 @@ view model =
                 [ div
                     [ class "columns is-centered" ]
                     [ div [ class "column is-half" ]
-                        [ h1 [ class "title" ] [ text "Log In" ]
-                        , Util.divFieldControl <|
-                            input
-                                [ class "input"
-                                , placeholder "Email"
-                                , onInput EnteredEmail
-                                , value model.form.email
-                                ]
-                                []
-                        , Util.divFieldControl <|
-                            input
-                                [ class "input"
-                                , placeholder "password"
-                                , type_ "password"
-                                , onInput EnteredPassword
-                                , value model.form.password
-                                ]
-                                []
+                        [ h1 [ class "title has-text-centered" ] [ text "Log In" ]
+                        , p
+                            [ class "title is-size-7 has-text-danger has-text-centered" ]
+                            (Core.getFormErrors
+                                model.formError
+                                (\serverError -> serverError.emailOrPassword)
+                                (always [])
+                                |> List.map text
+                            )
+                        , Bulma.formControl
+                            (\hasError ->
+                                input
+                                    [ classList [ ( "input", True ), ( "is-danger", hasError ) ]
+                                    , placeholder "Email"
+                                    , onInput EnteredEmail
+                                    , value model.form.email
+                                    ]
+                                    []
+                            )
+                            (case model.formError of
+                                Core.NoError ->
+                                    []
+
+                                Core.ClientError clientError ->
+                                    clientError.email
+
+                                Core.HttpError (Core.BadStatus _ httpError) ->
+                                    []
+
+                                Core.HttpError _ ->
+                                    []
+                            )
+                        , Bulma.formControl
+                            (\hasError ->
+                                input
+                                    [ classList [ ( "input", True ), ( "is-danger", hasError ) ]
+                                    , placeholder "password"
+                                    , type_ "password"
+                                    , onInput EnteredPassword
+                                    , value model.form.password
+                                    ]
+                                    []
+                            )
+                            (case model.formError of
+                                Core.NoError ->
+                                    []
+
+                                Core.ClientError clientError ->
+                                    clientError.password
+
+                                Core.HttpError (Core.BadStatus _ httpError) ->
+                                    []
+
+                                Core.HttpError _ ->
+                                    []
+                            )
                         , button
                             [ class "button is-success is-fullwidth is-large"
                             , onClick SubmittedForm

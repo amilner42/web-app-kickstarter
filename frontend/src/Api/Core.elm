@@ -1,4 +1,4 @@
-port module Api.Core exposing (Cred, FormError(..), HttpError(..), application, delete, expectJson, expectJsonWithCred, get, logout, post, put, storeCredWith, username, viewerChanges)
+port module Api.Core exposing (Cred, FormError(..), HttpError(..), application, delete, expectJson, expectJsonWithCred, get, getFormErrors, logout, post, put, storeCredWith, username, viewerChanges)
 
 {-| This module provides a few core API-related responsibilities:
 
@@ -179,12 +179,53 @@ type HttpError errorBody
     | BadStatus Int errorBody
 
 
+
+-- FORM ERROR HELPERS
+
+
 {-| A form can have errors or get errors prior to the http request in the client or after from the server.
 -}
 type FormError serverError clientError
     = NoError
     | HttpError (HttpError serverError)
     | ClientError clientError
+
+
+{-| Get all errors which apply to the entire form.
+
+Ignore field-specific errors in the map functions.
+
+-}
+getFormErrors : FormError serverError clientError -> (serverError -> List String) -> (clientError -> List String) -> List String
+getFormErrors fe serverErrorToList clientErrorToList =
+    let
+        internalError =
+            [ "sorry, there is an internal error right now" ]
+    in
+    case fe of
+        NoError ->
+            []
+
+        ClientError clientError ->
+            clientErrorToList clientError
+
+        HttpError (BadUrl _) ->
+            internalError
+
+        HttpError Timeout ->
+            [ "sorry, the request timed out" ]
+
+        HttpError NetworkError ->
+            [ "there appears to be a network connection issue" ]
+
+        HttpError (BadSuccessBody _) ->
+            internalError
+
+        HttpError (BadErrorBody _) ->
+            internalError
+
+        HttpError (BadStatus _ serverError) ->
+            serverErrorToList serverError
 
 
 {-| Similar to `Http.expectJson` but this uses our custom `HttpError` which has a body on the server error response

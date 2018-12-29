@@ -3,6 +3,7 @@ module Page.Register exposing (Model, Msg, init, subscriptions, toSession, updat
 import Api.Api as Api
 import Api.Core as Core exposing (Cred)
 import Browser.Navigation as Nav
+import Bulma
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -12,7 +13,6 @@ import Json.Decode.Pipeline exposing (optional)
 import Json.Encode as Encode
 import Route exposing (Route)
 import Session exposing (Session)
-import Util
 import Viewer exposing (Viewer)
 
 
@@ -62,32 +62,85 @@ view model =
                 [ div
                     [ class "columns is-centered" ]
                     [ div [ class "column is-half" ]
-                        [ h1 [ class "title" ] [ text "Sign Up" ]
-                        , Util.divFieldControl <|
-                            input
-                                [ class "input"
-                                , placeholder "Username"
-                                , onInput EnteredUsername
-                                , value model.form.username
-                                ]
-                                []
-                        , Util.divFieldControl <|
-                            input
-                                [ class "input"
-                                , placeholder "Email"
-                                , onInput EnteredEmail
-                                , value model.form.email
-                                ]
-                                []
-                        , Util.divFieldControl <|
-                            input
-                                [ class "input"
-                                , placeholder "Password"
-                                , type_ "password"
-                                , onInput EnteredPassword
-                                , value model.form.password
-                                ]
-                                []
+                        [ h1 [ class "title has-text-centered" ] [ text "Sign Up" ]
+                        , p
+                            [ class "title is-size-7 has-text-danger has-text-centered" ]
+                            (Core.getFormErrors
+                                model.formError
+                                (always [])
+                                (always [])
+                                |> List.map text
+                            )
+                        , Bulma.formControl
+                            (\hasError ->
+                                input
+                                    [ classList [ ( "input", True ), ( "is-danger", hasError ) ]
+                                    , placeholder "Username"
+                                    , onInput EnteredUsername
+                                    , value model.form.username
+                                    ]
+                                    []
+                            )
+                            (case model.formError of
+                                Core.NoError ->
+                                    []
+
+                                Core.ClientError clientError ->
+                                    clientError.username
+
+                                Core.HttpError (Core.BadStatus _ httpError) ->
+                                    httpError.username
+
+                                Core.HttpError _ ->
+                                    []
+                            )
+                        , Bulma.formControl
+                            (\hasError ->
+                                input
+                                    [ classList [ ( "input", True ), ( "is-danger", hasError ) ]
+                                    , placeholder "Email"
+                                    , onInput EnteredEmail
+                                    , value model.form.email
+                                    ]
+                                    []
+                            )
+                            (case model.formError of
+                                Core.NoError ->
+                                    []
+
+                                Core.ClientError clientError ->
+                                    clientError.email
+
+                                Core.HttpError (Core.BadStatus _ httpError) ->
+                                    httpError.email
+
+                                Core.HttpError _ ->
+                                    []
+                            )
+                        , Bulma.formControl
+                            (\hasError ->
+                                input
+                                    [ classList [ ( "input", True ), ( "is-danger", hasError ) ]
+                                    , placeholder "Password"
+                                    , type_ "password"
+                                    , onInput EnteredPassword
+                                    , value model.form.password
+                                    ]
+                                    []
+                            )
+                            (case model.formError of
+                                Core.NoError ->
+                                    []
+
+                                Core.ClientError clientError ->
+                                    clientError.password
+
+                                Core.HttpError (Core.BadStatus _ httpError) ->
+                                    httpError.password
+
+                                Core.HttpError _ ->
+                                    []
+                            )
                         , button
                             [ class "button button is-success is-fullwidth is-large"
                             , onClick SubmittedForm
