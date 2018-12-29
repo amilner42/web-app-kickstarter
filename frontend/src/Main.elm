@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Api exposing (Cred)
+import Api.Core as Core exposing (Cred)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html exposing (..)
@@ -119,7 +119,7 @@ changeRouteTo maybeRoute model =
             ( model, Route.replaceUrl (Session.navKey session) Route.Home )
 
         Just Route.Logout ->
-            ( model, Api.logout )
+            ( model, Core.logout )
 
         Just Route.Home ->
             Home.init session
@@ -229,7 +229,7 @@ subscriptions model =
 
 main : Program Decode.Value Model Msg
 main =
-    Api.application Viewer.decoder
+    Core.application Viewer.decoder
         { init = init
         , onUrlChange = ChangedUrl
         , onUrlRequest = ClickedLink

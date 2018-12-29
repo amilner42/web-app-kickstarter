@@ -5,7 +5,7 @@ username along with Cred so it's impossible to have a Viewer if
 you aren't logged in.
 -}
 
-import Api exposing (Cred)
+import Api.Core as Core exposing (Cred)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (custom, required)
 import Json.Encode as Encode exposing (Value)
@@ -30,7 +30,7 @@ cred (Viewer val) =
 
 username : Viewer -> Username
 username (Viewer val) =
-    Api.username val
+    Core.username val
 
 
 {-| Passwords must be at least this many characters long.
@@ -51,4 +51,4 @@ decoder =
 
 store : Viewer -> Cmd msg
 store (Viewer credVal) =
-    Api.storeCredWith credVal
+    Core.storeCredWith credVal

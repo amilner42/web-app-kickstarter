@@ -1,6 +1,6 @@
 module Page exposing (Page(..), view, viewErrors)
 
-import Api exposing (Cred)
+import Api.Core exposing (Cred)
 import Asset
 import Browser exposing (Document)
 import Html exposing (Html, a, button, div, i, img, li, nav, p, span, strong, text, ul)

@@ -3,14 +3,13 @@ module Page.Login exposing (Model, Msg, init, subscriptions, toSession, update, 
 {-| The login page.
 -}
 
-import Api exposing (Cred)
+import Api.Api as Api
+import Api.Core as Core exposing (Cred)
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
-import Json.Decode as Decode exposing (Decoder, decodeString, field, string)
-import Json.Decode.Pipeline exposing (optional)
 import Json.Encode as Encode
 import Route exposing (Route)
 import Session exposing (Session)
@@ -23,17 +22,9 @@ import Viewer exposing (Viewer)
 
 type alias Model =
     { session : Session
-    , problems : List Problem
     , form : Form
+    , formError : Core.FormError Api.LoginError ClientError
     }
-
-
-{-| Recording validation problems on a per-field basis facilitates displaying
-them inline next to the field where the error occurred.
--}
-type Problem
-    = InvalidEntry ValidatedField String
-    | ServerError String
 
 
 type alias Form =
@@ -45,7 +36,7 @@ type alias Form =
 init : Session -> ( Model, Cmd msg )
 init session =
     ( { session = session
-      , problems = []
+      , formError = Core.NoError
       , form =
             { email = ""
             , password = ""
@@ -108,7 +99,7 @@ type Msg
     = SubmittedForm
     | EnteredEmail String
     | EnteredPassword String
-    | CompletedLogin (Result Http.Error Viewer)
+    | CompletedLogin (Result (Core.HttpError Api.LoginError) Viewer)
     | GotSession Session
 
 
@@ -118,12 +109,12 @@ update msg model =
         SubmittedForm ->
             case validate model.form of
                 Ok validForm ->
-                    ( { model | problems = [] }
+                    ( { model | formError = Core.NoError }
                     , login validForm CompletedLogin
                     )
 
-                Err problems ->
-                    ( { model | problems = problems }
+                Err loginError ->
+                    ( { model | formError = Core.ClientError loginError }
                     , Cmd.none
                     )
 
@@ -133,13 +124,8 @@ update msg model =
         EnteredPassword password ->
             updateForm (\form -> { form | password = password }) model
 
-        CompletedLogin (Err error) ->
-            let
-                serverErrors =
-                    Api.decodeErrors error
-                        |> List.map ServerError
-            in
-            ( { model | problems = List.append model.problems serverErrors }
+        CompletedLogin (Err httpLoginError) ->
+            ( { model | formError = Core.HttpError <| httpLoginError }
             , Cmd.none
             )
 
@@ -182,55 +168,34 @@ type TrimmedForm
     = Trimmed Form
 
 
-{-| When adding a variant here, add it to `fieldsToValidate` too!
+{-| Trim the form and validate its fields. If there are errors, report them.
 -}
-type ValidatedField
-    = Email
-    | Password
-
-
-fieldsToValidate : List ValidatedField
-fieldsToValidate =
-    [ Email
-    , Password
-    ]
-
-
-{-| Trim the form and validate its fields. If there are problems, report them!
--}
-validate : Form -> Result (List Problem) TrimmedForm
+validate : Form -> Result ClientError TrimmedForm
 validate form =
     let
         trimmedForm =
             trimFields form
-    in
-    case List.concatMap (validateField trimmedForm) fieldsToValidate of
-        [] ->
-            Ok trimmedForm
 
-        problems ->
-            Err problems
-
-
-validateField : TrimmedForm -> ValidatedField -> List Problem
-validateField (Trimmed form) field =
-    List.map (InvalidEntry field) <|
-        case field of
-            Email ->
+        loginError =
+            { email =
                 if String.isEmpty form.email then
-                    [ "email can't be blank." ]
+                    [ "email can't be blank" ]
                 else
                     []
-
-            Password ->
+            , password =
                 if String.isEmpty form.password then
-                    [ "password can't be blank." ]
+                    [ "password can't be blank" ]
                 else
                     []
+            }
+    in
+    if hasClientError loginError then
+        Err loginError
+    else
+        Ok trimmedForm
 
 
-{-| Don't trim while the user is typing! That would be super annoying.
-Instead, trim only on submit.
+{-| Trim fields prior to submission.
 -}
 trimFields : Form -> TrimmedForm
 trimFields form =
@@ -244,20 +209,25 @@ trimFields form =
 -- HTTP
 
 
-login : TrimmedForm -> (Result.Result Http.Error Viewer.Viewer -> msg) -> Cmd.Cmd msg
-login (Trimmed form) handleResult =
-    let
-        user =
-            Encode.object
-                [ ( "email", Encode.string form.email )
-                , ( "password", Encode.string form.password )
-                ]
+emptyClientError : ClientError
+emptyClientError =
+    ClientError [] []
 
-        body =
-            Encode.object [ ( "user", user ) ]
-                |> Http.jsonBody
-    in
-    Api.login body handleResult Viewer.decoder
+
+hasClientError : ClientError -> Bool
+hasClientError =
+    (/=) emptyClientError
+
+
+type alias ClientError =
+    { email : List String
+    , password : List String
+    }
+
+
+login : TrimmedForm -> (Result.Result (Core.HttpError Api.LoginError) Viewer.Viewer -> msg) -> Cmd.Cmd msg
+login (Trimmed form) =
+    Api.login { email = form.email, password = form.password }
 
 
 
