@@ -19,6 +19,14 @@ Currently this kickstarter is composed of:
   - Express
   - Elm
 
+### KickStarter Snapshots
+
+![Sign Up Page](/preview/sign-up-page.jpg)
+
+![Sign Up Error](/preview/sign-up-page-error.jpg)
+
+![Home Page](/preview/logged-in.jpg)
+
 ### Local Dependencies
 
 - Mongo ~ 3.x
