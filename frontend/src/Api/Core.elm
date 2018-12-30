@@ -303,8 +303,8 @@ expectJsonWithCred toMsg successDecoder errorDecoder =
 -- HTTP METHODS
 
 
-get : Endpoint -> Maybe Cred -> Http.Expect a -> Cmd.Cmd a
-get url maybeCred expect =
+get : Endpoint -> Maybe Float -> Maybe Cred -> Http.Expect a -> Cmd.Cmd a
+get url timeout maybeCred expect =
     Endpoint.request
         { method = "GET"
         , url = url
@@ -317,30 +317,26 @@ get url maybeCred expect =
                 Nothing ->
                     []
         , body = Http.emptyBody
-
-        -- TODO nothing?
-        , timeout = Nothing
-        , tracker = Nothing
+        , timeout = timeout
+        , tracker = Nothing -- TODO
         }
 
 
-put : Endpoint -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
-put url cred body expect =
+put : Endpoint -> Maybe Float -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
+put url timeout cred body expect =
     Endpoint.request
         { method = "PUT"
         , url = url
         , expect = expect
         , headers = [ credHeader cred ]
         , body = body
-
-        -- TODO nothing?
-        , timeout = Nothing
-        , tracker = Nothing
+        , timeout = timeout
+        , tracker = Nothing -- TODO
         }
 
 
-post : Endpoint -> Maybe Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
-post url maybeCred body expect =
+post : Endpoint -> Maybe Float -> Maybe Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
+post url timeout maybeCred body expect =
     Endpoint.request
         { method = "POST"
         , url = url
@@ -353,23 +349,19 @@ post url maybeCred body expect =
                 Nothing ->
                     []
         , body = body
-
-        -- TODO nothing?
-        , timeout = Nothing
-        , tracker = Nothing
+        , timeout = timeout
+        , tracker = Nothing -- TODO
         }
 
 
-delete : Endpoint -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
-delete url cred body expect =
+delete : Endpoint -> Maybe Float -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
+delete url timeout cred body expect =
     Endpoint.request
         { method = "DELETE"
         , url = url
         , expect = expect
         , headers = [ credHeader cred ]
         , body = body
-
-        -- TODO nothing?
-        , timeout = Nothing
-        , tracker = Nothing
+        , timeout = timeout
+        , tracker = Nothing -- TODO
         }

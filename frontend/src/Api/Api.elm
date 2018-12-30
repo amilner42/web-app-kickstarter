@@ -54,6 +54,7 @@ login { email, password } handleResult =
     in
     Core.post
         Endpoint.login
+        (Just (seconds 10))
         Nothing
         body
         (Core.expectJsonWithCred handleResult Viewer.decoder decodeLoginError)
@@ -102,6 +103,7 @@ register { username, email, password } handleResult =
     in
     Core.post
         Endpoint.users
+        (Just (seconds 10))
         Nothing
         body
         (Core.expectJsonWithCred handleResult Viewer.decoder decodeRegisterError)
@@ -109,6 +111,13 @@ register { username, email, password } handleResult =
 
 
 -- INTERNAL HELPERS
+
+
+{-| Convert seconds to milliseconds.
+-}
+seconds : Float -> Float
+seconds =
+    (*) 1000
 
 
 {-| Decode a single string error into a list with 1 string error.
