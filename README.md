@@ -27,6 +27,10 @@ Currently this kickstarter is composed of:
 
 ![Home Page](/preview/logged-in.jpg)
 
+![Mobile Navbar Collapsed](/preview/mobile-navbar-collapsed.jpg)
+
+![Mobile Navbar Expanded](/preview/mobile-navbar-expanded.jpg)
+
 ### Local Dependencies
 
 - Mongo ~ 3.x
