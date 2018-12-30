@@ -5,16 +5,9 @@ module Page.Home exposing (Model, Msg, init, subscriptions, toSession, update, v
 
 import Api.Core exposing (Cred)
 import Html exposing (..)
-import Html.Attributes exposing (attribute, class, classList, href, id, placeholder)
-import Html.Events exposing (onClick)
-import Http
-import Log
-import Page
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Session exposing (Session)
-import Task exposing (Task)
-import Time
-import Url.Builder
-import Username exposing (Username)
 
 
 -- MODEL

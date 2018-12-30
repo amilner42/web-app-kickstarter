@@ -14,32 +14,49 @@ in this kickstarter is liable to be swapped.
 
 Currently this kickstarter is composed of:
   - Mongo
-  - Javascript on Node
+  - Node
   - Mongoose
   - Express
   - Elm
 
 ### Local Dependencies
 
-TODO
+- Mongo ~ 3.x
+  - Currently 3.x, when the drivers get updated for 4.x I'll upgrade
+- Node ~ 11.x
+  - You can most likely use older versions of node if you need to
+- NPM ~ 6.x
+  - You can most likely use older versions of npm if you need to
 
 ### Set Up
 
-TODO
+```bash
+cd frontend;
+npm install;
+cd ../backend;
+npm install;
+```
+
+###### TODO after Fork
+
+There are "TODO-STARTER" strings around the app for things you must fill in such as
+the project name and description. Replace those after forking.
 
 ### Developing
 
-TODO
+Terminal Tab 1
 
-### Project File Structure
+```bash
+cd frontend;
+npm start;
+```
 
-Let's keep it simple...
-  - frontend in `/frontend`
-  - backend in `/backend`
+Terminal Tab 2
 
-As well, the [frontend README](/frontend/README.md) and the
-[backend README](/backend/README.md) each have a segment on their file
-structure.
+```bash
+cd backend;
+npm run dev;
+```
 
 ### License
 

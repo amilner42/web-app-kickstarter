@@ -5,13 +5,10 @@ module Page.Login exposing (Model, Msg, init, subscriptions, toSession, update, 
 
 import Api.Api as Api
 import Api.Core as Core exposing (Cred)
-import Browser.Navigation as Nav
 import Bulma
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Http
-import Json.Encode as Encode
 import Route exposing (Route)
 import Session exposing (Session)
 import Viewer exposing (Viewer)
@@ -179,7 +176,6 @@ update msg model =
 
 
 {-| Helper function for `update`. Updates the form and returns Cmd.none.
-Useful for recording form fields!
 -}
 updateForm : (Form -> Form) -> Model -> ( Model, Cmd Msg )
 updateForm transform model =
@@ -199,8 +195,8 @@ subscriptions model =
 -- FORM
 
 
-{-| Marks that we've trimmed the form's fields, so we don't accidentally send
-it to the server without having trimmed it!
+{-| Marks that we've trimmed the form's fields, so we don't accidentally send it to the server
+without having trimmed it.
 -}
 type TrimmedForm
     = Trimmed Form

@@ -1,8 +1,11 @@
 module Username exposing (Username, decoder, encode, toHtml, toString, urlParser)
 
+{-| A simple wrapper over the username of a user.
+-}
+
 import Html exposing (Html)
 import Json.Decode as Decode exposing (Decoder)
-import Json.Encode as Encode exposing (Value)
+import Json.Encode as Encode
 import Url.Parser
 
 
@@ -14,7 +17,7 @@ type Username
 
 
 
--- CREATE
+-- SERIALIZATION
 
 
 decoder : Decoder Username
@@ -22,13 +25,13 @@ decoder =
     Decode.map Username Decode.string
 
 
-
--- TRANSFORM
-
-
-encode : Username -> Value
+encode : Username -> Encode.Value
 encode (Username username) =
     Encode.string username
+
+
+
+-- HELPERS
 
 
 toString : Username -> String

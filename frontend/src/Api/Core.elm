@@ -3,19 +3,22 @@ port module Api.Core exposing (Cred, FormError(..), HttpError(..), application, 
 {-| This module provides a few core API-related responsibilities:
 
   - Providing the opaque Cred type
-  - Providing HTTP helpers which use Endpoint, all http requests should be through these helpers
+  - Providing HTTP-request helpers which use `Endpoint` and `HttpError`
   - Handling the main `Application` which uses Cred so must be in here to prevent circular deps
+  - Providing a modified `Http.Error` and `FormError` types
+  - Providing helpers for dealing with form errors
 
-This module does NOT contain the actual routes to the API though, refer to the `Api.Api` module for those routes.
+This module does NOT contain the actual routes to the API though, refer to the `Api.Api` module for
+interaction with the API.
 
 -}
 
 import Api.Endpoint as Endpoint exposing (Endpoint)
 import Browser
 import Browser.Navigation as Nav
-import Http exposing (Body, Expect)
+import Http
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string)
-import Json.Decode.Pipeline as Pipeline exposing (optional, required)
+import Json.Decode.Pipeline as Pipeline exposing (required)
 import Json.Encode as Encode
 import Url exposing (Url)
 import Username exposing (Username)
@@ -24,14 +27,15 @@ import Username exposing (Username)
 -- CRED
 
 
-{-| The authentication credentials for the Viewer (that is, the currently logged-in user.), this includes:
+{-| The authentication credentials for the Viewer (that is, the currently logged-in user.),
+this includes:
 
   - The cred's Username
   - The cred's authentication token
 
-By design, there is no way to access the token directly as a String. It can be encoded for persistence, and it can be
-added to a header to a HttpBuilder for a request, but that's it. This token should never be rendered to the end user,
-and with this API, it can't be!
+By design, there is no way to access the token directly as a String. It can be encoded for
+persistence, and it can be added to a header to a HttpBuilder for a request, but that's it. This
+token should never be rendered to the end user, and with this API, it can't be!
 
 -}
 type Cred
@@ -231,7 +235,7 @@ getFormErrors fe serverErrorToList clientErrorToList =
 {-| Similar to `Http.expectJson` but this uses our custom `HttpError` which has a body on the server error response
 instead of just a status code.
 -}
-expectJson : (Result (HttpError errorBody) successBody -> msg) -> Decode.Decoder successBody -> Decode.Decoder errorBody -> Expect msg
+expectJson : (Result (HttpError errorBody) successBody -> msg) -> Decode.Decoder successBody -> Decode.Decoder errorBody -> Http.Expect msg
 expectJson toMsg successDecoder errorDecoder =
     Http.expectStringResponse toMsg <|
         \response ->
@@ -264,7 +268,7 @@ expectJson toMsg successDecoder errorDecoder =
 
 {-| Similar to `expectJson` but needed when expecting credentials in the response.
 -}
-expectJsonWithCred : (Result (HttpError errorBody) successBody -> msg) -> Decode.Decoder (Cred -> successBody) -> Decode.Decoder errorBody -> Expect msg
+expectJsonWithCred : (Result (HttpError errorBody) successBody -> msg) -> Decode.Decoder (Cred -> successBody) -> Decode.Decoder errorBody -> Http.Expect msg
 expectJsonWithCred toMsg successDecoder errorDecoder =
     Http.expectStringResponse toMsg <|
         \response ->
@@ -320,7 +324,7 @@ get url maybeCred expect =
         }
 
 
-put : Endpoint -> Cred -> Body -> Http.Expect a -> Cmd.Cmd a
+put : Endpoint -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
 put url cred body expect =
     Endpoint.request
         { method = "PUT"
@@ -335,7 +339,7 @@ put url cred body expect =
         }
 
 
-post : Endpoint -> Maybe Cred -> Body -> Http.Expect a -> Cmd.Cmd a
+post : Endpoint -> Maybe Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
 post url maybeCred body expect =
     Endpoint.request
         { method = "POST"
@@ -356,7 +360,7 @@ post url maybeCred body expect =
         }
 
 
-delete : Endpoint -> Cred -> Body -> Http.Expect a -> Cmd.Cmd a
+delete : Endpoint -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
 delete url cred body expect =
     Endpoint.request
         { method = "DELETE"

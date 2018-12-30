@@ -1,5 +1,8 @@
 module Page.NotFound exposing (view)
 
+{-| Simpe text-based Page-Not-Found page.
+-}
+
 import Asset
 import Html exposing (..)
 import Html.Attributes exposing (..)

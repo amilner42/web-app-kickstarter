@@ -1,7 +1,10 @@
 module Route exposing (Route(..), fromUrl, href, replaceUrl)
 
+{-| A type to represent possible routes with helper functions.
+-}
+
 import Browser.Navigation as Nav
-import Html exposing (Attribute)
+import Html exposing (..)
 import Html.Attributes as Attr
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
@@ -11,6 +14,11 @@ import Username exposing (Username)
 -- ROUTING
 
 
+{-| All website routes.
+
+NOTE: Root will just redirect to whatever other page is currently set as the route.
+
+-}
 type Route
     = Root
     | Home
@@ -33,11 +41,15 @@ parser =
 -- PUBLIC HELPERS
 
 
+{-| A href that takes a Route instead of a url.
+-}
 href : Route -> Attribute msg
 href targetRoute =
     Attr.href (routeToString targetRoute)
 
 
+{-| A replaceUrl that takes a Route instead of a url.
+-}
 replaceUrl : Nav.Key -> Route -> Cmd msg
 replaceUrl key route =
     Nav.replaceUrl key (routeToString route)

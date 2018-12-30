@@ -1,16 +1,14 @@
 module Page.Register exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+{-| The registration page.
+-}
+
 import Api.Api as Api
 import Api.Core as Core exposing (Cred)
-import Browser.Navigation as Nav
 import Bulma
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Http
-import Json.Decode as Decode exposing (Decoder, decodeString, field, string)
-import Json.Decode.Pipeline exposing (optional)
-import Json.Encode as Encode
 import Route exposing (Route)
 import Session exposing (Session)
 import Viewer exposing (Viewer)
@@ -207,7 +205,6 @@ update msg model =
 
 
 {-| Helper function for `update`. Updates the form and returns Cmd.none.
-Useful for recording form fields!
 -}
 updateForm : (Form -> Form) -> Model -> ( Model, Cmd Msg )
 updateForm transform model =
@@ -236,11 +233,18 @@ toSession model =
 -- FORM
 
 
-{-| Marks that we've trimmed the form's fields, so we don't accidentally send
-it to the server without having trimmed it!
+{-| Marks that we've trimmed the form's fields, so we don't accidentally send it to the server
+without having trimmed it.
 -}
 type TrimmedForm
     = Trimmed Form
+
+
+{-| Passwords must be at least this many characters long.
+-}
+minPasswordChars : Int
+minPasswordChars =
+    6
 
 
 {-| Trim the form and validate its fields. If there are errors, report them.
@@ -265,8 +269,8 @@ validate form =
             , password =
                 if String.isEmpty form.password then
                     [ "password can't be blank." ]
-                else if String.length form.password < Viewer.minPasswordChars then
-                    [ "password must be at least " ++ String.fromInt Viewer.minPasswordChars ++ " characters long." ]
+                else if String.length form.password < minPasswordChars then
+                    [ "password must be at least " ++ String.fromInt minPasswordChars ++ " characters long." ]
                 else
                     []
             }
@@ -292,6 +296,8 @@ trimFields form =
 -- HTTP
 
 
+{-| The `ClientError` has the same structure as the server error.
+-}
 type alias ClientError =
     Api.RegisterError
 

@@ -1,13 +1,13 @@
 module Api.Api exposing (LoginError, RegisterError, hasLoginError, hasRegisterError, login, noLoginError, noRegisterError, register)
 
-{-| This module contains strictly the routes to the API. All API requests will be made through these functions.
+{-| This module strictly contains the routes to the API and their respective errors.
 
-NOTE: Extra things that are unrelated to the API requests and handling their errors should most likely be put
-in `Api.Core`.
+NOTE: Extra things that are unrelated to the API requests and handling their errors should most
+likely be put in `Api.Core`.
 
 -}
 
-import Api.Core as Core exposing (delete, expectJsonWithCred, get, post, put)
+import Api.Core as Core
 import Api.Endpoint as Endpoint
 import Http
 import Json.Decode as Decode
@@ -52,11 +52,11 @@ login { email, password } handleResult =
             Encode.object [ ( "user", user ) ]
                 |> Http.jsonBody
     in
-    post
+    Core.post
         Endpoint.login
         Nothing
         body
-        (expectJsonWithCred handleResult Viewer.decoder decodeLoginError)
+        (Core.expectJsonWithCred handleResult Viewer.decoder decodeLoginError)
 
 
 
@@ -100,11 +100,11 @@ register { username, email, password } handleResult =
             Encode.object [ ( "user", user ) ]
                 |> Http.jsonBody
     in
-    post
+    Core.post
         Endpoint.users
         Nothing
         body
-        (expectJsonWithCred handleResult Viewer.decoder decodeRegisterError)
+        (Core.expectJsonWithCred handleResult Viewer.decoder decodeRegisterError)
 
 
 

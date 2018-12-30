@@ -1,7 +1,7 @@
 module Api.Endpoint exposing (Endpoint, login, request, users)
 
-{-| This module hides creates the opaque Endpoint type and keeps all endpoints within this file so this file serves
-as the single source of truth for all app API endpoints.
+{-| This module hides creates the opaque Endpoint type and keeps all endpoints within this file so
+this file serves as the single source of truth for all app API endpoints.
 -}
 
 import Http
@@ -16,6 +16,28 @@ import Username exposing (Username)
 -}
 type Endpoint
     = Endpoint String
+
+
+
+-- INTERNAL
+
+
+unwrap : Endpoint -> String
+unwrap (Endpoint str) =
+    str
+
+
+url : List String -> List QueryParameter -> Endpoint
+url paths queryParams =
+    let
+        -- Webpack will set this to the API base URL according to prod/dev mode
+        apiBaseUrl =
+            "__WEBPACK_CONSTANT_API_BASE_URL__"
+    in
+    Url.Builder.crossOrigin apiBaseUrl
+        paths
+        queryParams
+        |> Endpoint
 
 
 
@@ -44,24 +66,6 @@ request config =
         , url = unwrap config.url
         , tracker = config.tracker
         }
-
-
-unwrap : Endpoint -> String
-unwrap (Endpoint str) =
-    str
-
-
-url : List String -> List QueryParameter -> Endpoint
-url paths queryParams =
-    let
-        -- Webpack will set this to the API base URL according to prod/dev mode
-        apiBaseUrl =
-            "__WEBPACK_CONSTANT_API_BASE_URL__"
-    in
-    Url.Builder.crossOrigin apiBaseUrl
-        paths
-        queryParams
-        |> Endpoint
 
 
 

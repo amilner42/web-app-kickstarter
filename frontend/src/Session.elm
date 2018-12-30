@@ -1,11 +1,10 @@
 module Session exposing (Session, changes, cred, fromViewer, navKey, viewer)
 
+{-| A session contains a `Nav.Key` and a `Viewer.Viewer` if you are logged-in.
+-}
+
 import Api.Core as Core exposing (Cred)
 import Browser.Navigation as Nav
-import Json.Decode as Decode exposing (Decoder)
-import Json.Decode.Pipeline exposing (custom, required)
-import Json.Encode as Encode exposing (Value)
-import Time
 import Viewer exposing (Viewer)
 
 

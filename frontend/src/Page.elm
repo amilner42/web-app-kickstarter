@@ -1,4 +1,7 @@
-module Page exposing (Page(..), view, viewErrors)
+module Page exposing (view)
+
+{-| The top-level page has a navbar and content from a sub-page.
+-}
 
 import Api.Core exposing (Cred)
 import Asset
@@ -12,30 +15,25 @@ import Username exposing (Username)
 import Viewer exposing (Viewer)
 
 
-{-| Determines which navbar link (if any) will be rendered as active.
--}
-type Page
-    = Other
-    | Home
-    | Login
-    | Register
-
-
 {-| Take a page's Html and frames it with a header.
 
-The caller provides the current user, so we can display in either
-"signed in" (rendering username) or "signed out" mode.
+The caller provides the `Viewer` to render the appropriate navbar.
 
 -}
-view : Maybe Viewer -> Page -> { title : String, content : Html msg } -> Document msg
-view maybeViewer page { title, content } =
+view : Maybe Viewer -> { title : String, content : Html msg } -> Document msg
+view maybeViewer { title, content } =
     { title = title
-    , body = viewHeader page maybeViewer :: [ content ]
+    , body = viewNavbar maybeViewer :: [ content ]
     }
 
 
-viewHeader : Page -> Maybe Viewer -> Html msg
-viewHeader activePage maybeViewer =
+{-| Render the navbar.
+
+Will have log-in/sign-up or logout buttons according to whether there is a `Viewer`.
+
+-}
+viewNavbar : Maybe Viewer -> Html msg
+viewNavbar maybeViewer =
     nav [ class "navbar is-light" ]
         [ div
             [ class "navbar-brand" ]
@@ -73,31 +71,3 @@ viewHeader activePage maybeViewer =
                 ]
             ]
         ]
-
-
-isActive : Page -> Route -> Bool
-isActive page route =
-    case ( page, route ) of
-        ( Home, Route.Home ) ->
-            True
-
-        ( Login, Route.Login ) ->
-            True
-
-        ( Register, Route.Register ) ->
-            True
-
-        _ ->
-            False
-
-
-{-| Render dismissable errors. We use this all over the place!
--}
-viewErrors : msg -> List String -> Html msg
-viewErrors dismissErrors errors =
-    if List.isEmpty errors then
-        Html.text ""
-    else
-        div [] <|
-            List.map (\error -> p [] [ text error ]) errors
-                ++ [ button [ onClick dismissErrors ] [ text "Ok" ] ]

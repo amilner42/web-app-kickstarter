@@ -1,13 +1,13 @@
-module Asset exposing (Image, elmLogo, githubLogo, src)
+module Asset exposing (Image, githubLogo, src)
 
-{-| Assets, such as images, videos, and audio. (We only have images for now.)
+{-| Assets, such as images, videos, and audio.
 
-We should never expose asset URLs directly; this module should be in charge of
-all of them. One source of truth!
+Don't expose asset URLs directly; this module should be in charge of all of them. Better to have
+a single source of truth.
 
 -}
 
-import Html exposing (Attribute, Html)
+import Html exposing (..)
 import Html.Attributes as Attr
 
 
@@ -17,11 +17,6 @@ type Image
 
 
 -- IMAGES
-
-
-elmLogo : Image
-elmLogo =
-    image "elm-logo.png"
 
 
 githubLogo : Image

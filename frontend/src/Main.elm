@@ -1,5 +1,8 @@
 module Main exposing (main)
 
+{-| The entry-point to the application. This module should remain minimal.
+-}
+
 import Api.Core as Core exposing (Cred)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
@@ -45,10 +48,10 @@ init maybeViewer url navKey =
 view : Model -> Document Msg
 view model =
     let
-        viewPage page toMsg config =
+        viewPage toMsg config =
             let
                 { title, body } =
-                    Page.view (Session.viewer (toSession model)) page config
+                    Page.view (Session.viewer (toSession model)) config
             in
             { title = title
             , body = List.map (Html.map toMsg) body
@@ -56,19 +59,19 @@ view model =
     in
     case model of
         Redirect _ ->
-            viewPage Page.Other (\_ -> Ignored) Blank.view
+            viewPage (\_ -> Ignored) Blank.view
 
         NotFound _ ->
-            viewPage Page.Other (\_ -> Ignored) NotFound.view
+            viewPage (\_ -> Ignored) NotFound.view
 
         Home home ->
-            viewPage Page.Home GotHomeMsg (Home.view home)
+            viewPage GotHomeMsg (Home.view home)
 
         Login login ->
-            viewPage Page.Other GotLoginMsg (Login.view login)
+            viewPage GotLoginMsg (Login.view login)
 
         Register register ->
-            viewPage Page.Other GotRegisterMsg (Register.view register)
+            viewPage GotRegisterMsg (Register.view register)
 
 
 
