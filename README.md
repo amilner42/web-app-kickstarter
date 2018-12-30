@@ -1,110 +1,86 @@
-# MEEN Kickstarter
+# Kickstarter
+##### Develop Modern Web Applications
 
-### Credit
+### Introduction
 
-After a summer of working with [Radify](http://radify.io), a (hopefully) stable
-base for [mea2n applications](https://github.com/amilner42/mea2n-kickstarter)
-was developed mostly by @nateabele and myself. I then switched the Angular 2 for
-Elm, leaving us with meen-stack. While trying to build the `frontend`, an
-[example app](https://github.com/sporto/elm-tutorial-app/) created by @sporto
-was of great use to me. So huge thanks to both of them!
+The web moves fast. It's hard to keep up. This project provides a kickstarter for
+developing modern web applications. The kickstarter here will allow you to launch
+into developing your application and avoid dealing with common annoyances such as
+setting up your build pipeline and doing standard user authentication.
 
-### Examples
+As new technology emerges that catches my attention and seems to be worth the upgrade
+I may switch and update this kickstarter accordingly. Therefore, all technology
+in this kickstarter is liable to be swapped.
 
-If you happen to use this kickstarter to develop an open source app, feel free to
-add it to this list!
+Currently this kickstarter is composed of:
+  - Mongo
+  - Node
+  - Mongoose
+  - Express
+  - Elm
 
-- [Less Money More Happy](https://github.com/amilner42/less-money-more-happy)
+### KickStarter Snapshots
 
-### Quick Rant
+![Sign Up Page](/preview/sign-up-page.jpg)
 
-Ahh where to begin...I realized there were fundamental problems with Angular,
-with React, with all these front-end frameworks. I realized my frame of mind was
-off, I was building apps that were "easy" to develop on but they were very
-"complex". I needed to go for "simple", and the "easy" would come over time.
-This shift of mind was inspired by this incredible
-[talk](https://www.youtube.com/watch?v=rI8tNMsozo0). I highly recommend watching
-that...now. Then I discovered Elm, both faster than Angular 2 and React,
-with incredibly strong type inference, almost no runtime exceptions,
-forwards/backwards debugging, no null/undefined ... the list goes on ...
+![Sign Up Error](/preview/sign-up-page-error.jpg)
 
-Essentially, this kickstarter attempts to offer similar benefits to my last
-[mea2n kickstarter](https://github.com/amilner42/mea2n-kickstarter), but uses
-Elm for better **simple** software engineering.
+![Home Page](/preview/logged-in.jpg)
+
+![Mobile Navbar Collapsed](/preview/mobile-navbar-collapsed.jpg)
+
+![Mobile Navbar Expanded](/preview/mobile-navbar-expanded.jpg)
 
 ### Local Dependencies
 
-The project only has 3 local dependencies, `node` and `npm`, and `mongodb`.
-  - node ~ V6.0.0
-  - npm ~ V3.10.3
-  - monodb ~ V3.2.9
-
-You don't _need_ these versions, but it's more likely to work properly if at
-least the major versions are correct.
+- Mongo ~ 3.x
+  - Currently 3.x, when the drivers get updated for 4.x I'll upgrade
+- Node ~ 11.x
+  - You can most likely use older versions of node if you need to
+- NPM ~ 6.x
+  - You can most likely use older versions of npm if you need to
 
 ### Set Up
 
-Once you have those local dependencies, simply run `./bin/install.sh` to install
-all node/elm modules as well as typings...that's it!
+```bash
+cd frontend;
+npm install;
+cd ../backend;
+npm install;
+```
+
+###### TODO after Fork
+
+There are "TODO-STARTER" strings around the app for things you must fill in such as
+the project name and description. Replace those after forking.
 
 ### Developing
 
-To develop run `./bin/dev.sh` and that will compile your frontend and backend
-code, watch for changes, and host it on localhost:3000.
+Terminal Tab 1
 
-My IDE of choice to develop in is Atom, I have a soft spot in my heart for
-Github (lots of <3). If you do choose to use Atom, you can get beautiful auto
-complete for BOTH the frontend (Elm) and the backend (Typescript) by getting
-the following atom plugins:
-  - elmjutsu : A combination of elm goodies wrapped up in one plugin.
-  - elm-format : Allows you to run elm-format on save, very convenient.
-  - atom-typescript : the only typescript plugin you will ever need.
+```bash
+cd frontend;
+npm start;
+```
 
-I highly recommend getting Atom with the plugins above, it'll only take a few
-minutes and your development experience across the full stack will be great!
+Terminal Tab 2
 
-### Project File Structure
+```bash
+cd backend;
+npm run dev;
+```
 
-Let's keep it simple...
-  - frontend in `/frontend`
-  - backend in `/backend`
-  - tooling scripts in `/bin`
-  - extra docs in `/docs`
+### Production
 
-As well, the [frontend README](/frontend/README.md) and the
-[backend README](/backend/README.md) each have a segment on their file
-structure.
+```bash
+cd frontend;
+npm run prod;
+cd ../backend;
+# Make sure env variables are set
+npm run build;
+```
 
-### Versioning
-
-As this is a kickstarter and not a library, it seems unclear how I would go
-about using [semantic versioning](http://semver.org/) (also I don't expect
-anyone to ever update the kickstarter mid-project). So for now I will be simply
-upgrading the version (eg. 2 to 3) when I think enough new stuff is in the
-new version that it's worth upgrading (maybe I'll try and have a change-log...
-we'll see...).
-
-### Contributing
-
-Please :)
-
-Standard github PR model, please make a meaningful PR which ideally is divided
-into the following sections:
-  - Closes
-  - Description
-  - Screenshots (if applicable)
-  - Future (any possible future ideas that came up from this issue)
-
-Doc fixes can be sent without much care and are always appreciated.
-
-### Bugs / Feature Requests
-
-Go make an issue, thanks! I'll take a look as soon as I can, this project is
-currently being actively worked on by me.
 
 ### License
 
-3-clause BSD License.
-
-That being said, if you do make improvements to the kickstarter itself, I *ask*
-that you share your work (but I do not *force* it).
+[MIT LICENSE](/LICENSE)
