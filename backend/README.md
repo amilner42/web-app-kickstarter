@@ -13,8 +13,8 @@ JWT for authentication.
 ### Env variables
 
 ```javascript
-// Env variables
-const isProduction = process.env.NODE_ENV === 'production';
-const mongoProdURI = process.env.MONGODB_URI; // In dev defaults to 'kickstarter'
-const port = process.env.PORT; // Defaults to 3001
+process.env.NODE_ENV === 'production';
+process.env.MONGODB_URI; // In dev it's set to 'kickstarter'
+process.env.PORT; // Defaults to 3001
+process.env.SECRET; // In dev it's set to 'secret'
 ```
