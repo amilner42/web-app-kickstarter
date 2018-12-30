@@ -70,6 +70,17 @@ cd backend;
 npm run dev;
 ```
 
+### Production
+
+```bash
+cd frontend;
+npm run prod;
+cd ../backend;
+# Make sure env variables are set
+npm run build;
+```
+
+
 ### License
 
 [MIT LICENSE](/LICENSE)

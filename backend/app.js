@@ -9,7 +9,10 @@ var http = require('http'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
 
-var isProduction = process.env.NODE_ENV === 'production';
+// Env variables
+const isProduction = process.env.NODE_ENV === 'production';
+const mongoProdURI = process.env.MONGODB_URI;
+const port = process.env.PORT;
 
 // Create global app object
 var app = express();
@@ -30,9 +33,9 @@ if (!isProduction) {
 }
 
 if(isProduction){
-  mongoose.connect(process.env.MONGODB_URI);
+  mongoose.connect(mongoProdURI);
 } else {
-  mongoose.connect('mongodb://localhost/conduit');
+  mongoose.connect('mongodb://localhost/kickstarter');
   mongoose.set('debug', true);
 }
 
@@ -76,6 +79,6 @@ app.use(function(err, req, res, next) {
 });
 
 // finally, let's start our server...
-var server = app.listen( process.env.PORT || 3001, function(){
+var server = app.listen( port || 3001, function(){
   console.log('Listening on port ' + server.address().port);
 });
