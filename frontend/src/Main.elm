@@ -26,7 +26,13 @@ import Viewer exposing (Viewer)
 -- MODEL
 
 
-type Model
+type alias Model =
+    { mobileNavbarOpen : Bool
+    , pageModel : PageModel
+    }
+
+
+type PageModel
     = Redirect Session
     | NotFound Session
     | Home Home.Model
@@ -38,7 +44,9 @@ init : Maybe Viewer -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init maybeViewer url navKey =
     changeRouteTo
         (Route.fromUrl url)
-        (Redirect (Session.fromViewer navKey maybeViewer))
+        { mobileNavbarOpen = False
+        , pageModel = Redirect (Session.fromViewer navKey maybeViewer)
+        }
 
 
 
@@ -48,16 +56,22 @@ init maybeViewer url navKey =
 view : Model -> Document Msg
 view model =
     let
-        viewPage toMsg config =
+        viewPage toMsg pageView =
             let
                 { title, body } =
-                    Page.view (Session.viewer (toSession model)) config
+                    Page.view
+                        { mobileNavbarOpen = model.mobileNavbarOpen
+                        , toggleMobileNavbar = ToggledMobileNavbar
+                        }
+                        (Session.viewer (toSession model))
+                        pageView
+                        toMsg
             in
             { title = title
-            , body = List.map (Html.map toMsg) body
+            , body = body
             }
     in
-    case model of
+    case model.pageModel of
         Redirect _ ->
             viewPage (\_ -> Ignored) Blank.view
 
@@ -87,11 +101,12 @@ type Msg
     | GotLoginMsg Login.Msg
     | GotRegisterMsg Register.Msg
     | GotSession Session
+    | ToggledMobileNavbar
 
 
 toSession : Model -> Session
-toSession page =
-    case page of
+toSession { pageModel } =
+    case pageModel of
         Redirect session ->
             session
 
@@ -113,33 +128,42 @@ changeRouteTo maybeRoute model =
     let
         session =
             toSession model
+
+        closeMobileNavbar =
+            { model | mobileNavbarOpen = False }
     in
     case maybeRoute of
         Nothing ->
-            ( NotFound session, Cmd.none )
+            ( { mobileNavbarOpen = False, pageModel = NotFound session }
+            , Cmd.none
+            )
 
         Just Route.Root ->
-            ( model, Route.replaceUrl (Session.navKey session) Route.Home )
+            ( closeMobileNavbar
+            , Route.replaceUrl (Session.navKey session) Route.Home
+            )
 
         Just Route.Logout ->
-            ( model, Core.logout )
+            ( closeMobileNavbar
+            , Core.logout
+            )
 
         Just Route.Home ->
             Home.init session
-                |> updateWith Home GotHomeMsg model
+                |> updatePageModel Home GotHomeMsg model
 
         Just Route.Login ->
             Login.init session
-                |> updateWith Login GotLoginMsg model
+                |> updatePageModel Login GotLoginMsg model
 
         Just Route.Register ->
             Register.init session
-                |> updateWith Register GotRegisterMsg model
+                |> updatePageModel Register GotRegisterMsg model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case ( msg, model ) of
+    case ( msg, model.pageModel ) of
         ( Ignored, _ ) ->
             ( model, Cmd.none )
 
@@ -174,20 +198,25 @@ update msg model =
         ( ChangedRoute route, _ ) ->
             changeRouteTo route model
 
-        ( GotLoginMsg subMsg, Login login ) ->
-            Login.update subMsg login
-                |> updateWith Login GotLoginMsg model
+        ( ToggledMobileNavbar, _ ) ->
+            ( { model | mobileNavbarOpen = not model.mobileNavbarOpen }
+            , Cmd.none
+            )
 
-        ( GotRegisterMsg subMsg, Register register ) ->
-            Register.update subMsg register
-                |> updateWith Register GotRegisterMsg model
+        ( GotLoginMsg pageMsg, Login login ) ->
+            Login.update pageMsg login
+                |> updatePageModel Login GotLoginMsg model
 
-        ( GotHomeMsg subMsg, Home home ) ->
-            Home.update subMsg home
-                |> updateWith Home GotHomeMsg model
+        ( GotRegisterMsg pageMsg, Register register ) ->
+            Register.update pageMsg register
+                |> updatePageModel Register GotRegisterMsg model
+
+        ( GotHomeMsg pageMsg, Home home ) ->
+            Home.update pageMsg home
+                |> updatePageModel Home GotHomeMsg model
 
         ( GotSession session, Redirect _ ) ->
-            ( Redirect session
+            ( { model | pageModel = Redirect session }
             , Route.replaceUrl (Session.navKey session) Route.Home
             )
 
@@ -196,10 +225,23 @@ update msg model =
             ( model, Cmd.none )
 
 
-updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
-updateWith toModel toMsg model ( subModel, subCmd ) =
-    ( toModel subModel
-    , Cmd.map toMsg subCmd
+{-| For updating the model given a page model and page msg.
+
+This update will close the mobileNavbar.
+
+-}
+updatePageModel :
+    (pageModel -> PageModel)
+    -> (pageMsg -> Msg)
+    -> Model
+    -> ( pageModel, Cmd pageMsg )
+    -> ( Model, Cmd Msg )
+updatePageModel toPageModel toMsg model ( pageModel, pageCmd ) =
+    ( { model
+        | mobileNavbarOpen = False
+        , pageModel = toPageModel pageModel
+      }
+    , Cmd.map toMsg pageCmd
     )
 
 
@@ -209,7 +251,7 @@ updateWith toModel toMsg model ( subModel, subCmd ) =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case model of
+    case model.pageModel of
         NotFound _ ->
             Sub.none
 

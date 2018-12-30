@@ -1,6 +1,6 @@
 module Page exposing (view)
 
-{-| The top-level page has a navbar and content from a sub-page.
+{-| This allows you to insert a page, providing the navbar outline common to all pages.
 -}
 
 import Api.Core exposing (Cred)
@@ -15,15 +15,19 @@ import Username exposing (Username)
 import Viewer exposing (Viewer)
 
 
-{-| Take a page's Html and frames it with a header.
-
-The caller provides the `Viewer` to render the appropriate navbar.
-
+{-| Take a page's Html and frames it with a navbar.
 -}
-view : Maybe Viewer -> { title : String, content : Html msg } -> Document msg
-view maybeViewer { title, content } =
+view :
+    { mobileNavbarOpen : Bool, toggleMobileNavbar : msg }
+    -> Maybe Viewer
+    -> { title : String, content : Html pageMsg }
+    -> (pageMsg -> msg)
+    -> Document msg
+view navConfig maybeViewer { title, content } toMsg =
     { title = title
-    , body = viewNavbar maybeViewer :: [ content ]
+    , body =
+        viewNavbar navConfig maybeViewer
+            :: List.map (Html.map toMsg) [ content ]
     }
 
 
@@ -32,42 +36,50 @@ view maybeViewer { title, content } =
 Will have log-in/sign-up or logout buttons according to whether there is a `Viewer`.
 
 -}
-viewNavbar : Maybe Viewer -> Html msg
-viewNavbar maybeViewer =
+viewNavbar : { mobileNavbarOpen : Bool, toggleMobileNavbar : msg } -> Maybe Viewer -> Html msg
+viewNavbar { mobileNavbarOpen, toggleMobileNavbar } maybeViewer =
     nav [ class "navbar is-light" ]
         [ div
             [ class "navbar-brand" ]
             [ a
                 [ class "navbar-item", href "https://github.com/amilner42/meen-kickstarter" ]
                 [ img [ Asset.src Asset.githubLogo ] [] ]
-            , div [ class "navbar-burger" ] [ span [] [], span [] [], span [] [] ]
+            , div
+                [ classList
+                    [ ( "navbar-burger", True )
+                    , ( "is-active", mobileNavbarOpen )
+                    ]
+                , onClick toggleMobileNavbar
+                ]
+                [ span [] [], span [] [], span [] [] ]
             ]
-        , div [ classList [ ( "navbar-menu", True ) ] ]
+        , div
+            [ classList
+                [ ( "navbar-menu", True )
+                , ( "is-active", mobileNavbarOpen )
+                ]
+            ]
             [ div
                 [ class "navbar-start" ]
                 [ a [ class "navbar-item", Route.href Route.Home ] [ text "Home" ]
                 ]
             , div
                 [ class "navbar-end" ]
-                [ div
-                    [ class "navbar-item" ]
-                    [ div [ class "buttons" ] <|
-                        case maybeViewer of
-                            Nothing ->
-                                [ a
-                                    [ class "button is-light", Route.href Route.Register ]
-                                    [ text "Sign up" ]
-                                , a
-                                    [ class "button is-light", Route.href Route.Login ]
-                                    [ text "Log in" ]
-                                ]
+                (case maybeViewer of
+                    Nothing ->
+                        [ a
+                            [ class "navbar-item", Route.href Route.Register ]
+                            [ text "Sign up" ]
+                        , a
+                            [ class "navbar-item", Route.href Route.Login ]
+                            [ text "Log in" ]
+                        ]
 
-                            Just viewer ->
-                                [ a
-                                    [ class "button is-light", Route.href Route.Logout ]
-                                    [ text "Log out" ]
-                                ]
-                    ]
-                ]
+                    Just viewer ->
+                        [ a
+                            [ class "button is-light", Route.href Route.Logout ]
+                            [ text "Log out" ]
+                        ]
+                )
             ]
         ]

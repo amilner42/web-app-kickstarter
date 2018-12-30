@@ -21,3 +21,4 @@ tool.
     - [x] Hot reloading
 - [x] Do things the elm-way: have things be data structure oriented and avoid a component-centric
 approach.
+- [x] Have things be mobile-friendly.
