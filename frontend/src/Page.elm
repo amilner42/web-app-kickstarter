@@ -77,7 +77,7 @@ viewNavbar { mobileNavbarOpen, toggleMobileNavbar } maybeViewer =
 
                     Just viewer ->
                         [ a
-                            [ class "button is-light", Route.href Route.Logout ]
+                            [ class "navbar-item", Route.href Route.Logout ]
                             [ text "Log out" ]
                         ]
                 )
