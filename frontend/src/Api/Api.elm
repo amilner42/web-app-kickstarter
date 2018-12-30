@@ -56,6 +56,7 @@ login { email, password } handleResult =
         Endpoint.login
         (Just (seconds 10))
         Nothing
+        Nothing
         body
         (Core.expectJsonWithCred handleResult Viewer.decoder decodeLoginError)
 
@@ -104,6 +105,7 @@ register { username, email, password } handleResult =
     Core.post
         Endpoint.users
         (Just (seconds 10))
+        Nothing
         Nothing
         body
         (Core.expectJsonWithCred handleResult Viewer.decoder decodeRegisterError)

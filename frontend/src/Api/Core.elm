@@ -303,8 +303,8 @@ expectJsonWithCred toMsg successDecoder errorDecoder =
 -- HTTP METHODS
 
 
-get : Endpoint -> Maybe Float -> Maybe Cred -> Http.Expect a -> Cmd.Cmd a
-get url timeout maybeCred expect =
+get : Endpoint -> Maybe Float -> Maybe String -> Maybe Cred -> Http.Expect a -> Cmd.Cmd a
+get url timeout tracker maybeCred expect =
     Endpoint.request
         { method = "GET"
         , url = url
@@ -318,12 +318,12 @@ get url timeout maybeCred expect =
                     []
         , body = Http.emptyBody
         , timeout = timeout
-        , tracker = Nothing -- TODO
+        , tracker = tracker
         }
 
 
-put : Endpoint -> Maybe Float -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
-put url timeout cred body expect =
+put : Endpoint -> Maybe Float -> Maybe String -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
+put url timeout tracker cred body expect =
     Endpoint.request
         { method = "PUT"
         , url = url
@@ -331,12 +331,12 @@ put url timeout cred body expect =
         , headers = [ credHeader cred ]
         , body = body
         , timeout = timeout
-        , tracker = Nothing -- TODO
+        , tracker = tracker
         }
 
 
-post : Endpoint -> Maybe Float -> Maybe Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
-post url timeout maybeCred body expect =
+post : Endpoint -> Maybe Float -> Maybe String -> Maybe Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
+post url timeout tracker maybeCred body expect =
     Endpoint.request
         { method = "POST"
         , url = url
@@ -350,12 +350,12 @@ post url timeout maybeCred body expect =
                     []
         , body = body
         , timeout = timeout
-        , tracker = Nothing -- TODO
+        , tracker = tracker
         }
 
 
-delete : Endpoint -> Maybe Float -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
-delete url timeout cred body expect =
+delete : Endpoint -> Maybe Float -> Maybe String -> Cred -> Http.Body -> Http.Expect a -> Cmd.Cmd a
+delete url timeout tracker cred body expect =
     Endpoint.request
         { method = "DELETE"
         , url = url
@@ -363,5 +363,5 @@ delete url timeout cred body expect =
         , headers = [ credHeader cred ]
         , body = body
         , timeout = timeout
-        , tracker = Nothing -- TODO
+        , tracker = tracker
         }
