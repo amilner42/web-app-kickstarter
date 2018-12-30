@@ -153,12 +153,28 @@ changeRouteTo maybeRoute model =
                 |> updatePageModel Home GotHomeMsg model
 
         Just Route.Login ->
-            Login.init session
-                |> updatePageModel Login GotLoginMsg model
+            -- Don't go to login if they are already signed in.
+            case Session.viewer <| toSession model of
+                Nothing ->
+                    Login.init session
+                        |> updatePageModel Login GotLoginMsg model
+
+                Just _ ->
+                    ( closeMobileNavbar
+                    , Route.replaceUrl (Session.navKey session) Route.Home
+                    )
 
         Just Route.Register ->
-            Register.init session
-                |> updatePageModel Register GotRegisterMsg model
+            -- Don't go to register if they are already signed in.
+            case Session.viewer <| toSession model of
+                Nothing ->
+                    Register.init session
+                        |> updatePageModel Register GotRegisterMsg model
+
+                Just _ ->
+                    ( closeMobileNavbar
+                    , Route.replaceUrl (Session.navKey session) Route.Home
+                    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
