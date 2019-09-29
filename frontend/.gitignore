@@ -4,28 +4,14 @@ logs
 npm-debug.log*
 
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
-
 # Dependency directory
-node_modules
-
-# Optional npm cache directory
-.npm
-yarn.lock
-
-# Optional REPL history
-.node_repl_history
+node_modules/
 
 # elm-package generated files
 elm-stuff/
-# elm-repl generated files
-repl-temp-*
 
+# Mac
 .DS_Store
-example/dist
 
-ignore
+# Prod build
 dist
-tests/VerifyExamples
-package-lock.json

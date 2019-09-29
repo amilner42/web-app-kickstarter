@@ -23,6 +23,7 @@ import Url exposing (Url)
 import Viewer exposing (Viewer)
 
 
+
 -- MODEL
 
 
@@ -223,21 +224,33 @@ update msg model =
             Login.update pageMsg login
                 |> updatePageModel Login GotLoginMsg model
 
+        -- Ignore message for wrong page.
+        ( GotLoginMsg _, _ ) ->
+            ( model, Cmd.none )
+
         ( GotRegisterMsg pageMsg, Register register ) ->
             Register.update pageMsg register
                 |> updatePageModel Register GotRegisterMsg model
 
+        -- Ignore message for wrong page.
+        ( GotRegisterMsg _, _ ) ->
+            ( model, Cmd.none )
+
         ( GotHomeMsg pageMsg, Home home ) ->
             Home.update pageMsg home
                 |> updatePageModel Home GotHomeMsg model
+
+        -- Ignore message for wrong page.
+        ( GotHomeMsg _, _ ) ->
+            ( model, Cmd.none )
 
         ( GotSession session, Redirect _ ) ->
             ( { model | pageModel = Redirect session }
             , Route.replaceUrl (Session.navKey session) Route.Home
             )
 
-        ( _, _ ) ->
-            -- Disregard messages that arrived for the wrong page.
+        -- Ignore message for wrong page.
+        ( GotSession _, _ ) ->
             ( model, Cmd.none )
 
 
