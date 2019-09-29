@@ -1,7 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 const merge = require("webpack-merge");
-const elmMinify = require("elm-minify");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
@@ -11,9 +10,15 @@ const StringReplacePlugin = require("string-replace-webpack-plugin");
 // to extract the css as a separate file
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
+
+// Variables
+const DEV_API_URL = "http://localhost:3001/api";
+const PROD_API_URL = "TODO";
+
 var MODE =
     process.env.npm_lifecycle_event === "prod" ? "production" : "development";
 var filename = MODE == "production" ? "[name]-[hash].js" : "index.js";
+
 
 var common = {
     mode: MODE,
@@ -98,7 +103,7 @@ if (MODE === "development") {
                             {
                                 pattern: /__WEBPACK_CONSTANT_API_BASE_URL__/g,
                                 replacement: function (match, p1, offset, string) {
-                                   return "http://localhost:3001/api";
+                                   return DEV_API_URL;
                                 }
                            }
                        ]
@@ -140,8 +145,6 @@ if (MODE === "production") {
     console.log("Building for Production...");
     module.exports = merge(common, {
         plugins: [
-            // Minify elm code
-            new elmMinify.WebpackPlugin(),
             // Delete everything from /dist directory and report to user
             new CleanWebpackPlugin(["dist"], {
                 root: __dirname,
@@ -151,10 +154,7 @@ if (MODE === "production") {
             }),
             // Copy static assets
             new CopyWebpackPlugin([
-                {
-                    from: "src/assets",
-                    to: "assets/"
-                }
+                { from: "src/assets", to: "assets/" },
             ]),
             new MiniCssExtractPlugin({
                 // Options similar to the same options in webpackOptions.output
@@ -171,7 +171,7 @@ if (MODE === "production") {
                             {
                                 pattern: /__WEBPACK_CONSTANT_API_BASE_URL__/g,
                                 replacement: function (match, p1, offset, string) {
-                                   return "TODO PRODUCTION API BASE URL";
+                                   return PROD_API_URL;
                                 }
                            }
                        ]
