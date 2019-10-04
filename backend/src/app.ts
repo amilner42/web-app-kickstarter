@@ -8,10 +8,10 @@ import passport from "passport";
 import bluebird from "bluebird";
 import { MONGODB_URI, SESSION_SECRET, WEB_CLIENT_ORIGIN, COOKIE_NAME,  COOKIE_EXPIRY_MILLI } from "./util/secrets";
 import { expressValidatorToFormErrorMiddleware } from "./util/form";
-
-
+import cookieParser from "cookie-parser";
 
 import * as userRoutes from "./routes/user";
+
 
 // Create Express server
 const app = express();
@@ -32,7 +32,7 @@ const MongoStore = connectMongo(expressSession);
 // Express configuration
 app.set("port", process.env.PORT || 3001);
 app.use(cors({ credentials: true, origin: WEB_CLIENT_ORIGIN }));
-app.use(require('cookie-parser')(SESSION_SECRET));
+app.use(cookieParser(SESSION_SECRET));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(expressSession({
@@ -45,7 +45,7 @@ app.use(expressSession({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-require('./config/passport');
+require("./config/passport");
 
 /**
  * Primary app routes.
