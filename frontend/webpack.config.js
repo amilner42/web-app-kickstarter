@@ -12,8 +12,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 
 // Variables
-const DEV_API_URL = "http://localhost:3001/api";
-const PROD_API_URL = "TODO";
+const DEV_API_URL = "http://localhost:3001";
+const PROD_API_URL = "TODO-STARTER";
 
 var MODE =
     process.env.npm_lifecycle_event === "prod" ? "production" : "development";

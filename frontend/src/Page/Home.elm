@@ -1,4 +1,4 @@
-module Page.Home exposing (Model, Msg, init, subscriptions, toSession, update, view)
+module Page.Home exposing (Model, Msg, init, update, view)
 
 {-| The homepage. You can get here via either the / or /#/ routes.
 -}
@@ -10,12 +10,12 @@ import Html.Events exposing (..)
 import Session exposing (Session)
 
 
+
 -- MODEL
 
 
 type alias Model =
-    { session : Session
-    }
+    { session : Session }
 
 
 init : Session -> ( Model, Cmd Msg )
@@ -54,29 +54,11 @@ view model =
 
 
 type Msg
-    = GotSession Session.Session
+    = NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotSession session ->
-            ( { model | session = session }, Cmd.none )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Session.changes GotSession (Session.navKey model.session)
-
-
-
--- EXPORT
-
-
-toSession : Model -> Session
-toSession model =
-    model.session
+        NoOp ->
+            ( model, Cmd.none )

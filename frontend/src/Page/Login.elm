@@ -1,10 +1,11 @@
-module Page.Login exposing (Model, Msg, init, subscriptions, toSession, update, view)
+module Page.Login exposing (Model, Msg, init, update, view)
 
 {-| The login page.
 -}
 
 import Api.Api as Api
 import Api.Core as Core exposing (Cred)
+import Api.Errors.Form as FormError
 import Bulma
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -14,13 +15,14 @@ import Session exposing (Session)
 import Viewer exposing (Viewer)
 
 
+
 -- MODEL
 
 
 type alias Model =
     { session : Session
     , form : Form
-    , formError : Core.FormError Api.LoginError ClientError
+    , formError : FormError.Error
     }
 
 
@@ -33,11 +35,11 @@ type alias Form =
 init : Session -> ( Model, Cmd msg )
 init session =
     ( { session = session
-      , formError = Core.NoError
       , form =
             { email = ""
             , password = ""
             }
+      , formError = FormError.empty
       }
     , Cmd.none
     )
@@ -61,12 +63,7 @@ view model =
                         [ h1 [ class "title has-text-centered" ] [ text "Log In" ]
                         , p
                             [ class "title is-size-7 has-text-danger has-text-centered" ]
-                            (Core.getFormErrors
-                                model.formError
-                                (\serverError -> serverError.emailOrPassword)
-                                (always [])
-                                |> List.map text
-                            )
+                            (List.map text <| model.formError.entire)
                         , Bulma.formControl
                             (\hasError ->
                                 input
@@ -77,19 +74,7 @@ view model =
                                     ]
                                     []
                             )
-                            (case model.formError of
-                                Core.NoError ->
-                                    []
-
-                                Core.ClientError clientError ->
-                                    clientError.email
-
-                                Core.HttpError (Core.BadStatus _ httpError) ->
-                                    []
-
-                                Core.HttpError _ ->
-                                    []
-                            )
+                            (FormError.getErrorForField "email" model.formError)
                         , Bulma.formControl
                             (\hasError ->
                                 input
@@ -101,19 +86,7 @@ view model =
                                     ]
                                     []
                             )
-                            (case model.formError of
-                                Core.NoError ->
-                                    []
-
-                                Core.ClientError clientError ->
-                                    clientError.password
-
-                                Core.HttpError (Core.BadStatus _ httpError) ->
-                                    []
-
-                                Core.HttpError _ ->
-                                    []
-                            )
+                            (FormError.getErrorForField "password" model.formError)
                         , button
                             [ class "button is-success is-fullwidth is-large"
                             , onClick SubmittedForm
@@ -134,8 +107,7 @@ type Msg
     = SubmittedForm
     | EnteredEmail String
     | EnteredPassword String
-    | CompletedLogin (Result (Core.HttpError Api.LoginError) Viewer)
-    | GotSession Session
+    | CompletedLogin (Result (Core.HttpError FormError.Error) Viewer)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -144,12 +116,12 @@ update msg model =
         SubmittedForm ->
             case validate model.form of
                 Ok validForm ->
-                    ( { model | formError = Core.NoError }
+                    ( { model | formError = FormError.empty }
                     , login validForm CompletedLogin
                     )
 
-                Err loginError ->
-                    ( { model | formError = Core.ClientError loginError }
+                Err formError ->
+                    ( { model | formError = formError }
                     , Cmd.none
                     )
 
@@ -160,18 +132,17 @@ update msg model =
             updateForm (\form -> { form | password = password }) model
 
         CompletedLogin (Err httpLoginError) ->
-            ( { model | formError = Core.HttpError <| httpLoginError }
+            ( { model | formError = FormError.fromHttpError httpLoginError }
             , Cmd.none
             )
 
         CompletedLogin (Ok viewer) ->
-            ( model
-            , Viewer.store viewer
-            )
-
-        GotSession session ->
-            ( { model | session = session }
-            , Route.replaceUrl (Session.navKey session) Route.Home
+            let
+                navKey =
+                    Session.navKey model.session
+            in
+            ( { model | session = Session.fromViewer navKey (Just viewer) }
+            , Route.replaceUrl navKey Route.Home
             )
 
 
@@ -180,15 +151,6 @@ update msg model =
 updateForm : (Form -> Form) -> Model -> ( Model, Cmd Msg )
 updateForm transform model =
     ( { model | form = transform model.form }, Cmd.none )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Session.changes GotSession (Session.navKey model.session)
 
 
 
@@ -204,27 +166,33 @@ type TrimmedForm
 
 {-| Trim the form and validate its fields. If there are errors, report them.
 -}
-validate : Form -> Result ClientError TrimmedForm
+validate : Form -> Result FormError.Error TrimmedForm
 validate form =
     let
         trimmedForm =
             trimFields form
 
         loginError =
-            { email =
-                if String.isEmpty form.email then
-                    [ "email can't be blank" ]
-                else
-                    []
-            , password =
-                if String.isEmpty form.password then
-                    [ "password can't be blank" ]
-                else
-                    []
-            }
+            (FormError.fromFieldErrors << FormError.fieldErrorsFromList)
+                [ ( "email"
+                  , if String.isEmpty form.email then
+                        Just [ "email can't be blank" ]
+
+                    else
+                        Nothing
+                  )
+                , ( "password"
+                  , if String.isEmpty form.password then
+                        Just [ "password can't be blank" ]
+
+                    else
+                        Nothing
+                  )
+                ]
     in
-    if hasClientError loginError then
+    if FormError.hasError loginError then
         Err loginError
+
     else
         Ok trimmedForm
 
@@ -243,31 +211,6 @@ trimFields form =
 -- HTTP
 
 
-emptyClientError : ClientError
-emptyClientError =
-    ClientError [] []
-
-
-hasClientError : ClientError -> Bool
-hasClientError =
-    (/=) emptyClientError
-
-
-type alias ClientError =
-    { email : List String
-    , password : List String
-    }
-
-
-login : TrimmedForm -> (Result.Result (Core.HttpError Api.LoginError) Viewer.Viewer -> msg) -> Cmd.Cmd msg
+login : TrimmedForm -> (Result.Result (Core.HttpError FormError.Error) Viewer.Viewer -> msg) -> Cmd.Cmd msg
 login (Trimmed form) =
     Api.login { email = form.email, password = form.password }
-
-
-
--- EXPORT
-
-
-toSession : Model -> Session
-toSession model =
-    model.session

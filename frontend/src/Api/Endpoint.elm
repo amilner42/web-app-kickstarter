@@ -1,29 +1,66 @@
-module Api.Endpoint exposing (Endpoint, login, request, users)
+module Api.Endpoint exposing (Endpoint, login, logout, me, request, users)
 
-{-| This module hides creates the opaque Endpoint type and keeps all endpoints within this file so
-this file serves as the single source of truth for all app API endpoints.
+{-| This module defines the opaque `Endpoint` type and the `request` ability to make an http request to an endpoint.
 -}
 
 import Http
 import Url.Builder exposing (QueryParameter)
-import Username exposing (Username)
 
 
--- TYPES
-
-
-{-| Get a URL to the app API.
--}
 type Endpoint
     = Endpoint String
+
+
+{-| Http.request, except it takes an Endpoint instead of a Url.
+-}
+request :
+    { body : Http.Body
+    , expect : Http.Expect msg
+    , headers : List Http.Header
+    , method : String
+    , timeout : Maybe Float
+    , endpoint : Endpoint
+    , tracker : Maybe String
+    }
+    -> Cmd msg
+request config =
+    Http.riskyRequest
+        { body = config.body
+        , expect = config.expect
+        , headers = config.headers
+        , method = config.method
+        , timeout = config.timeout
+        , url = getEndpointUrl config.endpoint
+        , tracker = config.tracker
+        }
+
+
+login : Endpoint
+login =
+    url [ "login" ] []
+
+
+logout : Endpoint
+logout =
+    url [ "logout" ] []
+
+
+me : Endpoint
+me =
+    url [ "me" ] []
+
+
+users : Endpoint
+users =
+    url [ "users" ] []
 
 
 
 -- INTERNAL
 
 
-unwrap : Endpoint -> String
-unwrap (Endpoint str) =
+getEndpointUrl : Endpoint -> String
+getEndpointUrl (Endpoint str) =
     str
 
 
@@ -38,45 +75,3 @@ url paths queryParams =
         paths
         queryParams
         |> Endpoint
-
-
-
--- HELPERS
-
-
-{-| Http.request, except it takes an Endpoint instead of a Url.
--}
-request :
-    { body : Http.Body
-    , expect : Http.Expect msg
-    , headers : List Http.Header
-    , method : String
-    , timeout : Maybe Float
-    , url : Endpoint
-    , tracker : Maybe String
-    }
-    -> Cmd msg
-request config =
-    Http.request
-        { body = config.body
-        , expect = config.expect
-        , headers = config.headers
-        , method = config.method
-        , timeout = config.timeout
-        , url = unwrap config.url
-        , tracker = config.tracker
-        }
-
-
-
--- ENDPOINTS
-
-
-login : Endpoint
-login =
-    url [ "users", "login" ] []
-
-
-users : Endpoint
-users =
-    url [ "users" ] []
