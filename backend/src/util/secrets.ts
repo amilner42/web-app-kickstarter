@@ -10,13 +10,13 @@ if (fs.existsSync(".env")) {
     dotenv.config({ path: ".env.example" });  // you can delete this after you create your own .env file!
 }
 export const ENVIRONMENT = process.env.NODE_ENV;
-const prod = ENVIRONMENT === "production"; // Anything else is treated as 'dev'
+export const IS_PROD = ENVIRONMENT === "production"; // Anything else is treated as 'dev'
 
 export const SESSION_SECRET = process.env["SESSION_SECRET"];
-export const MONGODB_URI = prod ? process.env["MONGODB_URI"] : process.env["MONGODB_URI_LOCAL"];
-export const WEB_CLIENT_ORIGIN = prod ? process.env["WEB_CLIENT_ORIGIN"] : "http://localhost:3000";
-export const COOKIE_EXPIRY_MILLI = prod ? parseInt(process.env["COOKIE_EXPIRY_MILLI"]) : 7 * 24 * 60 * 60 * 1000;
-export const COOKIE_NAME = prod ? process.env["COOKIE_NAME"] : "devCookieName";
+export const MONGODB_URI = IS_PROD ? process.env["MONGODB_URI"] : process.env["MONGODB_URI_LOCAL"];
+export const WEB_CLIENT_ORIGIN = IS_PROD ? process.env["WEB_CLIENT_ORIGIN"] : "http://localhost:3000";
+export const COOKIE_EXPIRY_MILLI = IS_PROD ? parseInt(process.env["COOKIE_EXPIRY_MILLI"]) : 7 * 24 * 60 * 60 * 1000;
+export const COOKIE_NAME = IS_PROD ? process.env["COOKIE_NAME"] : "devCookieName";
 
 if (!SESSION_SECRET) {
     logger.error("No client secret. Set SESSION_SECRET environment variable.");
@@ -24,7 +24,7 @@ if (!SESSION_SECRET) {
 }
 
 if (!MONGODB_URI) {
-    if (prod) {
+    if (IS_PROD) {
         logger.error("No mongo connection string. Set MONGODB_URI environment variable.");
     } else {
         logger.error("No mongo connection string. Set MONGODB_URI_LOCAL environment variable.");

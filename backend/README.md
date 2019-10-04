@@ -22,6 +22,14 @@ cd backend;
 npm run watch;
 ```
 
+### Testing
+
+```bash
+cd backend;
+npm run build;
+npm run test;
+```
+
 ### Production
 
 ```bash

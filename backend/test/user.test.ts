@@ -1,3 +1,4 @@
+ // eslint-disable-next-line
 const request = require("supertest");
 import app from "../src/app";
 import { expect } from "chai";
@@ -7,7 +8,6 @@ describe("POST /login", () => {
         return request(app).post("/login")
             .field("email", "john@me.com")
             .field("password", "Hunter2")
-            .expect(302)
             .end(function(err: any, res: any) {
                 expect(res.error).not.to.be.undefined;
                 done();
