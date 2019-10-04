@@ -1,4 +1,4 @@
-module Viewer exposing (Viewer, cred, decoder)
+module Viewer exposing (Viewer, decoder, getCred, getEmail)
 
 {-| The logged-in user currently viewing this page.
 -}
@@ -19,9 +19,14 @@ type Viewer
 -- INFO
 
 
-cred : Viewer -> Core.Cred
-cred (Viewer val) =
-    val
+getCred : Viewer -> Core.Cred
+getCred (Viewer cred) =
+    cred
+
+
+getEmail : Viewer -> String
+getEmail (Viewer cred) =
+    Core.getEmail cred
 
 
 decoder : Decode.Decoder (Core.Cred -> Viewer)

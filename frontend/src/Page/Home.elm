@@ -8,6 +8,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Session exposing (Session)
+import Viewer
 
 
 
@@ -42,6 +43,16 @@ view model =
                         [ h1
                             [ class "title has-text-centered" ]
                             [ text "Home Page" ]
+                        , div
+                            [ class "content has-text-centered" ]
+                            [ text <|
+                                case Session.viewer model.session of
+                                    Nothing ->
+                                        "Guest"
+
+                                    Just viewer ->
+                                        "Logged In: " ++ Viewer.getEmail viewer
+                            ]
                         ]
                     ]
                 ]

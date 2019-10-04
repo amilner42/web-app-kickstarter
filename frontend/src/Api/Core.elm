@@ -1,4 +1,4 @@
-module Api.Core exposing (Cred, HttpError(..), delete, expectJson, expectJsonWithCred, get, post, put)
+module Api.Core exposing (Cred, HttpError(..), delete, expectJson, expectJsonWithCred, get, getEmail, post, put)
 
 {-| This module provides all http helpers.
 

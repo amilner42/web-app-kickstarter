@@ -27,7 +27,7 @@ cred : Session -> Maybe Cred
 cred session =
     case session of
         LoggedIn _ val ->
-            Just (Viewer.cred val)
+            Just (Viewer.getCred val)
 
         Guest _ ->
             Nothing

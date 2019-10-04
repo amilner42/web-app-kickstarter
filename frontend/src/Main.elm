@@ -182,6 +182,10 @@ changeRouteTo maybeRoute model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        navKey =
+            Session.navKey <| toSession model
+    in
     case ( msg, model.pageModel ) of
         ( Ignored, _ ) ->
             ( model, Cmd.none )
@@ -224,23 +228,24 @@ update msg model =
 
         ( CompletedGetUser maybeRoute (Ok viewer), _ ) ->
             let
-                navKey =
-                    Session.navKey <| toSession model
-
                 newSession =
                     Session.fromViewer navKey (Just viewer)
-
-                goToRoute =
-                    Just <| Maybe.withDefault Route.Home maybeRoute
             in
-            changeRouteTo goToRoute { model | pageModel = Redirect newSession }
+            ( { model | pageModel = Redirect newSession }
+            , Route.replaceUrl navKey <| Maybe.withDefault Route.Home maybeRoute
+            )
 
         ( CompletedGetUser maybeRoute (Err err), _ ) ->
-            ( model, Cmd.none )
+            ( model
+            , Route.replaceUrl navKey <| Maybe.withDefault Route.Home maybeRoute
+            )
 
         ( CompletedLogout (Ok _), _ ) ->
-            ( model, Cmd.none )
+            ( { model | pageModel = Redirect <| Session.Guest navKey }
+            , Route.replaceUrl navKey Route.Home
+            )
 
+        -- TODO handle logout failure
         ( CompletedLogout (Err _), _ ) ->
             ( model, Cmd.none )
 
