@@ -3,7 +3,10 @@ module Main exposing (main)
 {-| The entry-point to the application. This module should remain minimal.
 -}
 
+import Api.Api as Api
 import Api.Core as Core exposing (Cred)
+import Api.Errors.GetCurrentUser as GetCurrentUserError
+import Api.Errors.Unknown as UnknownError
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html exposing (..)
@@ -41,13 +44,11 @@ type PageModel
     | Register Register.Model
 
 
-init : Maybe Viewer -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init maybeViewer url navKey =
-    changeRouteTo
-        (Route.fromUrl url)
-        { mobileNavbarOpen = False
-        , pageModel = Redirect (Session.fromViewer navKey maybeViewer)
-        }
+init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url navKey =
+    ( { mobileNavbarOpen = False, pageModel = Redirect <| Session.Guest navKey }
+    , Api.getCurrentUser (CompletedGetUser <| Route.fromUrl url)
+    )
 
 
 
@@ -98,11 +99,12 @@ type Msg
     | ChangedRoute (Maybe Route)
     | ChangedUrl Url
     | ClickedLink Browser.UrlRequest
+    | ToggledMobileNavbar
+    | CompletedGetUser (Maybe Route) (Result (Core.HttpError GetCurrentUserError.Error) Viewer.Viewer)
+    | CompletedLogout (Result (Core.HttpError UnknownError.Error) ())
     | GotHomeMsg Home.Msg
     | GotLoginMsg Login.Msg
     | GotRegisterMsg Register.Msg
-    | GotSession Session
-    | ToggledMobileNavbar
 
 
 toSession : Model -> Session
@@ -114,14 +116,14 @@ toSession { pageModel } =
         NotFound session ->
             session
 
-        Home home ->
-            Home.toSession home
+        Home homeModel ->
+            homeModel.session
 
-        Login login ->
-            Login.toSession login
+        Login loginModel ->
+            loginModel.session
 
-        Register register ->
-            Register.toSession register
+        Register registerModel ->
+            registerModel.session
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -146,7 +148,7 @@ changeRouteTo maybeRoute model =
 
         Just Route.Logout ->
             ( closeMobileNavbar
-            , Core.logout
+            , Api.logout CompletedLogout
             )
 
         Just Route.Home ->
@@ -180,6 +182,10 @@ changeRouteTo maybeRoute model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        navKey =
+            Session.navKey <| toSession model
+    in
     case ( msg, model.pageModel ) of
         ( Ignored, _ ) ->
             ( model, Cmd.none )
@@ -220,6 +226,29 @@ update msg model =
             , Cmd.none
             )
 
+        ( CompletedGetUser maybeRoute (Ok viewer), _ ) ->
+            let
+                newSession =
+                    Session.fromViewer navKey (Just viewer)
+            in
+            ( { model | pageModel = Redirect newSession }
+            , Route.replaceUrl navKey <| Maybe.withDefault Route.Home maybeRoute
+            )
+
+        ( CompletedGetUser maybeRoute (Err err), _ ) ->
+            ( model
+            , Route.replaceUrl navKey <| Maybe.withDefault Route.Home maybeRoute
+            )
+
+        ( CompletedLogout (Ok _), _ ) ->
+            ( { model | pageModel = Redirect <| Session.Guest navKey }
+            , Route.replaceUrl navKey Route.Home
+            )
+
+        -- TODO handle logout failure
+        ( CompletedLogout (Err _), _ ) ->
+            ( model, Cmd.none )
+
         ( GotLoginMsg pageMsg, Login login ) ->
             Login.update pageMsg login
                 |> updatePageModel Login GotLoginMsg model
@@ -242,15 +271,6 @@ update msg model =
 
         -- Ignore message for wrong page.
         ( GotHomeMsg _, _ ) ->
-            ( model, Cmd.none )
-
-        ( GotSession session, Redirect _ ) ->
-            ( { model | pageModel = Redirect session }
-            , Route.replaceUrl (Session.navKey session) Route.Home
-            )
-
-        -- Ignore message for wrong page.
-        ( GotSession _, _ ) ->
             ( model, Cmd.none )
 
 
@@ -280,21 +300,7 @@ updatePageModel toPageModel toMsg model ( pageModel, pageCmd ) =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case model.pageModel of
-        NotFound _ ->
-            Sub.none
-
-        Redirect _ ->
-            Session.changes GotSession (Session.navKey (toSession model))
-
-        Home home ->
-            Sub.map GotHomeMsg (Home.subscriptions home)
-
-        Login login ->
-            Sub.map GotLoginMsg (Login.subscriptions login)
-
-        Register register ->
-            Sub.map GotRegisterMsg (Register.subscriptions register)
+    Sub.none
 
 
 
@@ -303,7 +309,7 @@ subscriptions model =
 
 main : Program Decode.Value Model Msg
 main =
-    Core.application Viewer.decoder
+    Browser.application
         { init = init
         , onUrlChange = ChangedUrl
         , onUrlRequest = ClickedLink

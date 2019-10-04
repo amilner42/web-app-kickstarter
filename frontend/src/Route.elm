@@ -8,7 +8,7 @@ import Html exposing (..)
 import Html.Attributes as Attr
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
-import Username exposing (Username)
+
 
 
 -- ROUTING

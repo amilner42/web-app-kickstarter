@@ -1,4 +1,4 @@
-module Session exposing (Session, changes, cred, fromViewer, navKey, viewer)
+module Session exposing (Session(..), cred, fromViewer, navKey, viewer)
 
 {-| A session contains a `Nav.Key` and a `Viewer.Viewer` if you are logged-in.
 -}
@@ -8,16 +8,9 @@ import Browser.Navigation as Nav
 import Viewer exposing (Viewer)
 
 
--- TYPES
-
-
 type Session
     = LoggedIn Nav.Key Viewer
     | Guest Nav.Key
-
-
-
--- INFO
 
 
 viewer : Session -> Maybe Viewer
@@ -34,7 +27,7 @@ cred : Session -> Maybe Cred
 cred session =
     case session of
         LoggedIn _ val ->
-            Just (Viewer.cred val)
+            Just (Viewer.getCred val)
 
         Guest _ ->
             Nothing
@@ -48,15 +41,6 @@ navKey session =
 
         Guest key ->
             key
-
-
-
--- CHANGES
-
-
-changes : (Session -> msg) -> Nav.Key -> Sub msg
-changes toMsg key =
-    Core.viewerChanges (\maybeViewer -> toMsg (fromViewer key maybeViewer)) Viewer.decoder
 
 
 fromViewer : Nav.Key -> Maybe Viewer -> Session

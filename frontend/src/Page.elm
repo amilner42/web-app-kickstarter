@@ -11,7 +11,6 @@ import Html.Attributes exposing (class, classList, href)
 import Html.Events exposing (onClick)
 import Route exposing (Route)
 import Session exposing (Session)
-import Username exposing (Username)
 import Viewer exposing (Viewer)
 
 
