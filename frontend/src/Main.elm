@@ -3,10 +3,6 @@ module Main exposing (main)
 {-| The entry-point to the application. This module should remain minimal.
 -}
 
-import Api.Api as Api
-import Api.Core as Core exposing (Cred)
-import Api.Errors.GetCurrentUser as GetCurrentUserError
-import Api.Errors.Unknown as UnknownError
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html exposing (..)
@@ -15,15 +11,12 @@ import Html.Events exposing (..)
 import Http exposing (Error(..))
 import Json.Decode as Decode
 import Page
+import Page.AboutUs as AboutUs
 import Page.Blank as Blank
 import Page.Home as Home
-import Page.Login as Login
 import Page.NotFound as NotFound
-import Page.Register as Register
 import Route exposing (Route)
-import Session exposing (Session)
 import Url exposing (Url)
-import Viewer exposing (Viewer)
 
 
 
@@ -36,18 +29,33 @@ type alias Model =
     }
 
 
+toNavKey : Model -> Nav.Key
+toNavKey model =
+    case model.pageModel of
+        Redirect navKey ->
+            navKey
+
+        NotFound navKey ->
+            navKey
+
+        AboutUs navKey ->
+            navKey
+
+        Home { navKey } ->
+            navKey
+
+
 type PageModel
-    = Redirect Session
-    | NotFound Session
+    = Redirect Nav.Key
+    | NotFound Nav.Key
+    | AboutUs Nav.Key
     | Home Home.Model
-    | Login Login.Model
-    | Register Register.Model
 
 
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
-    ( { mobileNavbarOpen = False, pageModel = Redirect <| Session.Guest navKey }
-    , Api.getCurrentUser (CompletedGetUser <| Route.fromUrl url)
+    ( { mobileNavbarOpen = False, pageModel = Home <| Home.initModel navKey }
+    , Cmd.none
     )
 
 
@@ -65,7 +73,6 @@ view model =
                         { mobileNavbarOpen = model.mobileNavbarOpen
                         , toggleMobileNavbar = ToggledMobileNavbar
                         }
-                        (Session.viewer (toSession model))
                         pageView
                         toMsg
             in
@@ -83,11 +90,8 @@ view model =
         Home home ->
             viewPage GotHomeMsg (Home.view home)
 
-        Login login ->
-            viewPage GotLoginMsg (Login.view login)
-
-        Register register ->
-            viewPage GotRegisterMsg (Register.view register)
+        AboutUs _ ->
+            viewPage (\_ -> Ignored) AboutUs.view
 
 
 
@@ -100,91 +104,44 @@ type Msg
     | ChangedUrl Url
     | ClickedLink Browser.UrlRequest
     | ToggledMobileNavbar
-    | CompletedGetUser (Maybe Route) (Result (Core.HttpError GetCurrentUserError.Error) Viewer.Viewer)
-    | CompletedLogout (Result (Core.HttpError UnknownError.Error) ())
     | GotHomeMsg Home.Msg
-    | GotLoginMsg Login.Msg
-    | GotRegisterMsg Register.Msg
-
-
-toSession : Model -> Session
-toSession { pageModel } =
-    case pageModel of
-        Redirect session ->
-            session
-
-        NotFound session ->
-            session
-
-        Home homeModel ->
-            homeModel.session
-
-        Login loginModel ->
-            loginModel.session
-
-        Register registerModel ->
-            registerModel.session
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
     let
-        session =
-            toSession model
+        navKey =
+            toNavKey model
 
         closeMobileNavbar =
             { model | mobileNavbarOpen = False }
     in
     case maybeRoute of
         Nothing ->
-            ( { mobileNavbarOpen = False, pageModel = NotFound session }
+            ( { mobileNavbarOpen = False, pageModel = NotFound navKey }
             , Cmd.none
             )
 
         Just Route.Root ->
             ( closeMobileNavbar
-            , Route.replaceUrl (Session.navKey session) Route.Home
+            , Route.replaceUrl navKey Route.Home
             )
 
-        Just Route.Logout ->
-            ( closeMobileNavbar
-            , Api.logout CompletedLogout
+        Just Route.AboutUs ->
+            ( { mobileNavbarOpen = False, pageModel = AboutUs navKey }
+            , Cmd.none
             )
 
         Just Route.Home ->
-            Home.init session
+            Home.init navKey
                 |> updatePageModel Home GotHomeMsg model
-
-        Just Route.Login ->
-            -- Don't go to login if they are already signed in.
-            case Session.viewer <| toSession model of
-                Nothing ->
-                    Login.init session
-                        |> updatePageModel Login GotLoginMsg model
-
-                Just _ ->
-                    ( closeMobileNavbar
-                    , Route.replaceUrl (Session.navKey session) Route.Home
-                    )
-
-        Just Route.Register ->
-            -- Don't go to register if they are already signed in.
-            case Session.viewer <| toSession model of
-                Nothing ->
-                    Register.init session
-                        |> updatePageModel Register GotRegisterMsg model
-
-                Just _ ->
-                    ( closeMobileNavbar
-                    , Route.replaceUrl (Session.navKey session) Route.Home
-                    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         navKey =
-            Session.navKey <| toSession model
+            toNavKey model
     in
     case ( msg, model.pageModel ) of
         ( Ignored, _ ) ->
@@ -207,7 +164,7 @@ update msg model =
 
                         Just _ ->
                             ( model
-                            , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                            , Nav.pushUrl navKey (Url.toString url)
                             )
 
                 Browser.External href ->
@@ -225,45 +182,6 @@ update msg model =
             ( { model | mobileNavbarOpen = not model.mobileNavbarOpen }
             , Cmd.none
             )
-
-        ( CompletedGetUser maybeRoute (Ok viewer), _ ) ->
-            let
-                newSession =
-                    Session.fromViewer navKey (Just viewer)
-            in
-            ( { model | pageModel = Redirect newSession }
-            , Route.replaceUrl navKey <| Maybe.withDefault Route.Home maybeRoute
-            )
-
-        ( CompletedGetUser maybeRoute (Err err), _ ) ->
-            ( model
-            , Route.replaceUrl navKey <| Maybe.withDefault Route.Home maybeRoute
-            )
-
-        ( CompletedLogout (Ok _), _ ) ->
-            ( { model | pageModel = Redirect <| Session.Guest navKey }
-            , Route.replaceUrl navKey Route.Home
-            )
-
-        -- TODO handle logout failure
-        ( CompletedLogout (Err _), _ ) ->
-            ( model, Cmd.none )
-
-        ( GotLoginMsg pageMsg, Login login ) ->
-            Login.update pageMsg login
-                |> updatePageModel Login GotLoginMsg model
-
-        -- Ignore message for wrong page.
-        ( GotLoginMsg _, _ ) ->
-            ( model, Cmd.none )
-
-        ( GotRegisterMsg pageMsg, Register register ) ->
-            Register.update pageMsg register
-                |> updatePageModel Register GotRegisterMsg model
-
-        -- Ignore message for wrong page.
-        ( GotRegisterMsg _, _ ) ->
-            ( model, Cmd.none )
 
         ( GotHomeMsg pageMsg, Home home ) ->
             Home.update pageMsg home

@@ -1,14 +1,16 @@
-module Page.Home exposing (Model, Msg, init, update, view)
+module Page.Home exposing (Model, Msg, init, initModel, update, view)
 
 {-| The homepage. You can get here via either the / or /#/ routes.
 -}
 
-import Api.Core exposing (Cred)
+import Api.Api as Api
+import Api.Core as Core
+import Api.Errors.Form as FormError
+import Browser.Navigation as Nav
+import Bulma
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Session exposing (Session)
-import Viewer
 
 
 
@@ -16,12 +18,20 @@ import Viewer
 
 
 type alias Model =
-    { session : Session }
+    { navKey : Nav.Key
+    , email : String
+    , emailFormError : FormError.Error
+    }
 
 
-init : Session -> ( Model, Cmd Msg )
-init session =
-    ( { session = session }, Cmd.none )
+init : Nav.Key -> ( Model, Cmd Msg )
+init navKey =
+    ( initModel navKey, Cmd.none )
+
+
+initModel : Nav.Key -> Model
+initModel navKey =
+    { navKey = navKey, email = "", emailFormError = FormError.empty }
 
 
 
@@ -38,21 +48,26 @@ view model =
                 [ class "container" ]
                 [ div
                     [ class "columns is-centered" ]
-                    [ div
-                        [ class "column is-half" ]
-                        [ h1
-                            [ class "title has-text-centered" ]
-                            [ text "Home Page" ]
-                        , div
-                            [ class "content has-text-centered" ]
-                            [ text <|
-                                case Session.viewer model.session of
-                                    Nothing ->
-                                        "Guest"
-
-                                    Just viewer ->
-                                        "Logged In: " ++ Viewer.getEmail viewer
+                    [ div [ class "column is-half" ]
+                        [ p
+                            [ class "title is-size-7 has-text-danger has-text-centered" ]
+                            (List.map text <| model.emailFormError.entire)
+                        , Bulma.formControl
+                            (\hasError ->
+                                input
+                                    [ classList [ ( "input", True ), ( "is-danger", hasError ) ]
+                                    , placeholder "Email"
+                                    , onInput OnEmailInput
+                                    , value model.email
+                                    ]
+                                    []
+                            )
+                            (FormError.getErrorForField "email" model.emailFormError)
+                        , button
+                            [ class "button is-success is-fullwidth is-large"
+                            , onClick AddEmail
                             ]
+                            [ text "Subscribe For Updates" ]
                         ]
                     ]
                 ]
@@ -65,11 +80,24 @@ view model =
 
 
 type Msg
-    = NoOp
+    = OnEmailInput String
+    | AddEmail
+    | CompletedAddEmail (Result (Core.HttpError FormError.Error) ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
+        OnEmailInput email ->
+            ( { model | email = email }, Cmd.none )
+
+        AddEmail ->
+            ( model
+            , Api.addEmail model.email CompletedAddEmail
+            )
+
+        CompletedAddEmail (Err httpError) ->
+            ( { model | emailFormError = FormError.fromHttpError httpError }, Cmd.none )
+
+        CompletedAddEmail (Ok _) ->
+            ( { model | email = "", emailFormError = FormError.empty }, Cmd.none )

@@ -22,18 +22,14 @@ NOTE: Root will just redirect to whatever other page is currently set as the rou
 type Route
     = Root
     | Home
-    | Login
-    | Logout
-    | Register
+    | AboutUs
 
 
 parser : Parser (Route -> a) a
 parser =
     oneOf
         [ Parser.map Home Parser.top
-        , Parser.map Login (s "login")
-        , Parser.map Logout (s "logout")
-        , Parser.map Register (s "register")
+        , Parser.map AboutUs (s "about")
         ]
 
 
@@ -76,13 +72,7 @@ routeToString page =
                 Root ->
                     []
 
-                Login ->
-                    [ "login" ]
-
-                Logout ->
-                    [ "logout" ]
-
-                Register ->
-                    [ "register" ]
+                AboutUs ->
+                    [ "about" ]
     in
     "#/" ++ String.join "/" pieces

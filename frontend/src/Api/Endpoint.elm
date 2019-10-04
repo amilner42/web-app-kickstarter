@@ -1,4 +1,4 @@
-module Api.Endpoint exposing (Endpoint, login, logout, me, request, users)
+module Api.Endpoint exposing (Endpoint, emails, request)
 
 {-| This module defines the opaque `Endpoint` type and the `request` ability to make an http request to an endpoint.
 -}
@@ -35,24 +35,9 @@ request config =
         }
 
 
-login : Endpoint
-login =
-    url [ "login" ] []
-
-
-logout : Endpoint
-logout =
-    url [ "logout" ] []
-
-
-me : Endpoint
-me =
-    url [ "me" ] []
-
-
-users : Endpoint
-users =
-    url [ "users" ] []
+emails : Endpoint
+emails =
+    url [ "emails" ] []
 
 
 

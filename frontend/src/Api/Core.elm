@@ -1,4 +1,4 @@
-module Api.Core exposing (Cred, HttpError(..), delete, expectJson, expectJsonWithCred, get, getEmail, post, put)
+module Api.Core exposing (HttpError(..), delete, expectJson, get, post, put)
 
 {-| This module provides all http helpers.
 
@@ -16,28 +16,6 @@ import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, stri
 import Json.Decode.Pipeline as Pipeline exposing (required)
 import Json.Encode as Encode
 import Url exposing (Url)
-
-
-{-| Keep this private so the only way to create this is on an HttpRequest.
--}
-type Cred
-    = Cred String
-
-
-getEmail : Cred -> String
-getEmail (Cred email) =
-    email
-
-
-decodeCredAnd : Decode.Decoder (Cred -> a) -> Decode.Decoder a
-decodeCredAnd decoder =
-    let
-        decodeCred =
-            Decode.field "email" Decode.string |> Decode.map Cred
-    in
-    Decode.map2 (\fromEmail email -> fromEmail email)
-        decoder
-        decodeCred
 
 
 {-| All possible HTTP errors, similar to `Http.Error` but `Http.BadStatus` will include the response body.
@@ -81,43 +59,6 @@ expectJson toMsg successDecoder errorDecoder =
 
                 Http.GoodStatus_ metadata body ->
                     case Decode.decodeString successDecoder body of
-                        Ok value ->
-                            Ok value
-
-                        Err err ->
-                            Err <| BadSuccessBody <| Decode.errorToString err
-
-
-{-| Similar to `expectJson` above but expects an email in the response. This is required because `Email` is opaque.
--}
-expectJsonWithCred :
-    (Result (HttpError errorBody) successBody -> msg)
-    -> Decode.Decoder (Cred -> successBody)
-    -> Decode.Decoder errorBody
-    -> Http.Expect msg
-expectJsonWithCred toMsg successDecoder errorDecoder =
-    Http.expectStringResponse toMsg <|
-        \response ->
-            case response of
-                Http.BadUrl_ url ->
-                    Err (BadUrl url)
-
-                Http.Timeout_ ->
-                    Err Timeout
-
-                Http.NetworkError_ ->
-                    Err NetworkError
-
-                Http.BadStatus_ metadata body ->
-                    case Decode.decodeString errorDecoder body of
-                        Ok value ->
-                            Err <| BadStatus metadata.statusCode value
-
-                        Err err ->
-                            Err <| BadErrorBody <| Decode.errorToString err
-
-                Http.GoodStatus_ metadata body ->
-                    case Decode.decodeString (decodeCredAnd successDecoder) body of
                         Ok value ->
                             Ok value
 
